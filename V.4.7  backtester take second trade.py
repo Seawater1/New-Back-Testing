@@ -51,9 +51,9 @@ def loadmaindata(mac, main_or_all, start_date, end_date, volume_min, pm_vol_set,
             file_path = r'C:\Users\brian\Desktop\PythonProgram\MainTickerDataBase\2021DataBase.csv'
     if mac == 1:
         if main_or_all == 'all':
-            file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_database/download_all_main.csv"
+            file_path = "/Users/briansheehan/Documents/mac_quant/download_all_main.csv"
         if main_or_all == 'main':
-            file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/2021DataBase.csv"
+            file_path = "/Users/briansheehan/Documents/mac_quant/2021DataBase.csv"
         
     # Load file of tickers and date
     print('Using filepath', file_path)
@@ -168,7 +168,7 @@ def load_interday(date,ticker,mac,database):
     if mac == 1:
         date = date.strftime("/%Y-%m-%d")# convert datetime to string
         dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
-        data = pd.read_csv('/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_%s'% dateticker )
+        data = pd.read_csv('/Users/Brian11inch/Documents/Day Trading/mac/download_all_%s'% dateticker )
     
     data.columns = ['timestamp','open','high','low','close','volume','vwap']
     data['shares_float'] = sf
@@ -685,6 +685,7 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                 ticker_return = 0
                 ticker_return_2 = 0
                 trade_count = 0
+                trade_count_2 = 0
                 outcome = 'no_trade'
                 outcome_2 = 'no_trade_2'
                 last_high = 0
@@ -818,7 +819,7 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                             loss_per_share = open_price - stop_price
                             #print('loss_per_share', loss_per_share)
                             max_shares = round((total_risk / loss_per_share),0)
-                            #print('Max shares', max_shares)
+                            print('Max shares', max_shares)
     
                             #print('Going Long ', ticker, ' Open price',open_price)
                             #print('Stop price ', stop_price)
@@ -875,7 +876,7 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                                 locate = max_shares 
                                 locate = round_to_nearest_100(locate)
                                 #print('Max Shares',max_shares)
-                                # print('Locates',locate)   
+                               # print('Locates',locate)   
                             #print('Going Short ', ticker, ' Price',open_price)
                     #########################################################
                     ######## Conditions to open second short trade ###############
@@ -906,11 +907,12 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                         open_price_2 == 0 and
                         ticker_return != 0 and
                         trade_count == 1):
-                            print('-------------Starting second trade')
-                            trade_count += 1    
+                            #print('-------------Starting second trade')
+                            trade_count += 1 
+                            # trade_count_2 += 1
                             direction = 'short'
                             open_price_2 = ohlc_intraday[date,ticker]["open"][i+1] # ["low"][i+1] +1 is the next candle. Need to work in slipage here  
-                            print('open_price_2',open_price_2)
+                            #print('open_price_2',open_price_2)
                             ohlc_intraday[date,ticker]["trade_sig_2"][i+1] = open_price_2 # ["trade_sig"][i+1]            
                             if close_stop_on == 1:
                                 stop_price_2 = (open_price_2 * close_stop) + open_price_2
@@ -920,17 +922,17 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                                 #print('PMH price',pmh_price,ticker,date)
                                 stop_price_2 = pmh_price_2    
                             loss_per_share_2 =   stop_price_2 - open_price_2
-                            print('loss_per_share_2', loss_per_share_2)
+                            #print('loss_per_share_2', loss_per_share_2)
                             max_shares_2 = round((total_risk / loss_per_share_2),0)
                             if max_shares_2 < 100:
                                 locate_2 = 100 
                                 #print('1 Max Shares',max_shares)
                                 #print('1 Locates',locate)  
                             else:
-                                locate_2 = max_shares 
+                                locate_2 = max_shares_2 
                                 locate_2 = round_to_nearest_100(locate_2)
-                                print('2Max Shares',max_shares)
-                                print('2Locates',locate)   
+                                #print('2Max Shares',max_shares)
+                                #print('2Locates',locate)   
                             #print('Going Short ', ticker, ' Price',open_price)        
                     
                     ###################################################
@@ -1137,12 +1139,13 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                 # I have the max_shares per trade
                 if ticker_return != 0:
                     payout =  ticker_return * max_shares
-                    
+                    payout_2 = ticker_return_2 *  max_shares_2
                     new_commission = trip_comm * trade_count
-                    # print("new_commission",new_commission)
+                    #new_commission_2 = trip_comm * trade_count_2
+                    #print("new_commission",new_commission)
                     locate_cost =  locate * locate_fee
-                    # print('locate_cost',locate_cost)
-                    gain = payout - (new_commission + locate_cost)
+                    #print('locate_cost',locate_cost)
+                    gain = (payout + payout_2)- (new_commission + locate_cost)
                     imaginary_account += gain
                     
                     #gain_no_fee = payout
@@ -1170,12 +1173,14 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                 if plot == 1 and trade_count > plot_trades_only:
                     plt_chart(date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2)
                     
-                    # fig, ax1 = plt.subplots()
-                    # color = 'tab:red'
-                    # ax1.set_xlabel('Flips')
-                    # ax1.set_ylabel('gains', color=color)
-                    # ax1.plot(gains, color=color)
-                    # ax1.tick_params(axis='y', labelcolor=color)
+                    ###########################################################################################
+                    fig, ax1 = plt.subplots()
+                    color = 'tab:red'
+                    ax1.set_xlabel('Flips')
+                    ax1.set_ylabel('gains', color=color)
+                    ax1.plot(gains, color=color)
+                    ax1.tick_params(axis='y', labelcolor=color)
+                    ############################################################################################
                 else:
                     pass
             except (FileNotFoundError,IndexError ) as e:
@@ -1341,7 +1346,7 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
     joined = pd.merge(results_store, main_df, on=['Date', 'Ticker'], how='left')
     winner_name = today + time_now +  '_winner_losers.csv' #
     if mac == 1:
-        joined.to_csv("/Users/briansheehan/Documents/mac_quant/Backtesting/winners.csv", index=False)
+        joined.to_csv("/Users/Brian11inch/Documents/Day Trading/mac/winners.csv", index=False)
     if mac == 0:
         joined.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% winner_name, index=False)
 
@@ -1353,7 +1358,7 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
 ##########################################################################################################################################################################################################################
 # General Settings                                                  #????????????##############################
 #############################################################################################################
-mac = 1 # 1 for mac 0 for windows  
+mac = 0 # 1 for mac 0 for windows  
 longshort =  'short'# 'long' 'short'
 main_or_all = 'all'
 plot = 0 # 1=pplot on 
@@ -1418,7 +1423,7 @@ aq_value = 1.05
 ##########################################################################################################
 #Stop loss percent from trade price
 close_stop_on = 1 
-close_stop_list =[.025]# ,.05,.075,.10]# percent away from open pricee/ .001 is to small dont get even r
+close_stop_list =[.030]# percent away from open pricee/ .001 is to small dont get even r
 # Pre-market high stop
 pre_market_h_stop_on = 0
 #Trailing stop
@@ -1475,17 +1480,17 @@ precent_greater = .50
 
 per_change_open_on = 0 # open to high change
 per_change_open_on_2 = 0 
-open_greater_list = [.5]
+open_greater_list = [.05]
 
 vwap_above_on = 0  # short
 
 vwap_below_on_list = [0] # long
 
 last_close_change_on = 1 # change from last close price
-last_close_per_list = [.40] 
+last_close_per_list = [.30] 
+
 percent_from_pmh_on = 0
 per_pmh_val = .30
-
 
 day_greater_than_pm_on = 0
 
@@ -1549,8 +1554,8 @@ for sfmin in sharesfloat_min_list:
                                                 vwap_below_on, last_close_change_on, last_close_per , day_greater_than_pm_on,pm_greater_than_day_on, st_close_lessthan_on, st_close_greaterthan_on,close_stop_on,close_stop,pre_market_h_stop_on,trail_stop_on,trail_stop_per,reward,drop_acquistions_on, aq_value,percent_from_pmh_on, per_pmh_val )
                                                 print(sfmin,sfmax,mcmin,mcmax,lcp,og,vsg,bal,bal,cs,vwap,stclt)
                                     
-                                                btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
-                                                                        columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
+                                                btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, per_change_open_on_2, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
+                                                                        columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','per_change_open_on_2','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
                                                 #Adds new line to dic each loop 
                                                 
                                                 btresults_store = btresults_store.append(btresults,ignore_index=True) 
@@ -1558,8 +1563,8 @@ for sfmin in sharesfloat_min_list:
 
 results_name = today + time_now +  '_backtest_results.csv' #
 if mac == 1:
-    btresults_store.to_csv("/Users/briansheehan/Documents/mac_quant/Backtesting/Backtest_results/%s"% results_name, index=False)
-                         
+    btresults_store.to_csv("/Users/Brian11inch/Documents/Day Trading/mac/%s"% results_name, index=False)
+    
 if mac == 0:
     btresults_store.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% results_name, index=False)
 
@@ -1611,10 +1616,7 @@ def mean_ret_loser(date_stats):
 # print("mean return per loss trade = {}".format(round(mean_ret_loser(date_stats),4)))
 
 
-
-if mac == 0:
-    telegram_send.send(messages=["Back test complete............"])
-    
 print('It took', (time.time()-start)/60, 'minutes.')
 print('Finished')
+telegram_send.send(messages=["Back test complete............"])
 
