@@ -858,6 +858,7 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                             open_price = ohlc_intraday[date,ticker]["open"][i+1] # ["low"][i+1] +1 is the next candle. Need to work in slipage here  
                             print('open_price',open_price)
                             reward_price = open_price - ((open_price * close_stop) * reward)
+                            print('reward_price',reward_price)
                             ohlc_intraday[date,ticker]["trade_sig"][i+1] = open_price # ["trade_sig"][i+1]            
                             if close_stop_on == 1:
                                 stop_price = (open_price * close_stop) + open_price
@@ -1037,59 +1038,41 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                     if  open_price != 0 and direction == 'short':
                         # Check for 3R  profit, then keep 3R as min, then let it run                       
                         if (
+                            min_reward_then_let_it_run == 1 and
+                            close_price == 0 and
                             take_profit_count == 0 and
-                            close_price == 0 and
-                            min_reward_then_let_it_run == 1 and
-                            ohlc_intraday[date,ticker]["open"][i+1] <  reward_price): # is 3 times the risk price to get 3R
+                            ohlc_intraday[date,ticker]["open"][i] <  reward_price): # is 3 times the risk price to get 3R
                             take_profit_count += 1
-                            take_profit_min = ohlc_intraday[date,ticker]["open"][i]
-                            last_low = ohlc_intraday[date,ticker]["open"][i]
-                            print('take_profit_min_______________________',take_profit_min)
-                            trail_stop_price_short = take_profit_min * (1 + trail_stop_per)
-                            print('trail_stop_price_short',trail_stop_price_short)
-                            print('close_price',close_price)
-                            
+                            last_low = ohlc_intraday[date,ticker]["open"][i] # keeps track of the lowest price
+                            print('last_low',last_low)
+                            trail_stop_price_short = ohlc_intraday[date,ticker]["open"][i] * (1 + trail_stop_per) # adds a percentage above so dont get stopped stright away
+                            print(reward,'R hit now tail will lose 1 r',trail_stop_price_short)
+                        
+                        # trail stop continues after take profit 3 r     
                         elif(
-                            take_profit_count > 0 and 
-                            close_price == 0 and
                             min_reward_then_let_it_run == 1 and
-                            ohlc_intraday[date,ticker]["open"][i+1] < last_low):
-                            # ohlc_intraday[date,ticker]["open"][i] < trail_stop_price_short):
-                            last_low = ohlc_intraday[date,ticker]["open"][i]
-                            test = ohlc_intraday[date,ticker]["open"][i]
-                            trail_stop_price_short = test * (1 + trail_stop_per)
+                            close_price == 0 and
+                            take_profit_count > 0 and
+                            ohlc_intraday[date,ticker]["open"][i] < last_low): #if price keeps dropping
+                            last_low = ohlc_intraday[date,ticker]["open"][i] # move last low doun for next loop
+                            trail_stop_price_short = ohlc_intraday[date,ticker]["open"][i] * (1 + trail_stop_per)#new trail stop out price
                             print('New trail stop price',trail_stop_price_short)
                         
+                        # check if trail stop stopped out
                         elif(
-                            take_profit_count > 0 and
-                            close_price == 0 and
                             min_reward_then_let_it_run == 1 and
-                            ohlc_intraday[date,ticker]["open"][i+1] > trail_stop_price_short):# stop loss
-                            # ohlc_intraday[date,ticker]["open"][i] < trail_stop_price_shorttest and):
-                            print('>>>>>>>>>>>>>>')
+                            close_price == 0 and
+                            take_profit_count > 0 and
+                            ohlc_intraday[date,ticker]["open"][i] > trail_stop_price_short):# stopped out
+                            print('Trail stop hit')
                             close_price = ohlc_intraday[date,ticker]["open"][i]#slipage
                             ohlc_intraday[date,ticker]["cover_sig"][i] = close_price
                             ticker_return = open_price - close_price
                             date_stats[date][ticker] = ticker_return
                             outcome = 'trailing_stop_hit'
-                            print('trailing_stop_hit',ticker, ' Price',close_price)
+                            print('min_r_trail_stop_hit',ticker, ' Price',close_price)
                             print('Ticker return', ticker_return)
                     
-                        #########################
-                        #Check for take profit min_reward_then_let_it_run##?#
-                        #########################
-                        # elif(
-                        #     close_price == 0 and
-                        #     ohlc_intraday[date,ticker]["open"][i] > trail_stop_price_short):# stop loss
-                        #     # ohlc_intraday[date,ticker]["open"][i] < trail_stop_price_shorttest and):
-                        #     print('>>>>>>>>>>>>>>')
-                        #     close_price = ohlc_intraday[date,ticker]["open"][i]#slipage
-                        #     ohlc_intraday[date,ticker]["cover_sig"][i] = close_price
-                        #     ticker_return = open_price - close_price
-                        #     date_stats[date][ticker] = ticker_return
-                        #     outcome = 'trailing_stop_hit'
-                        #     print('trailing_stop_hit',ticker, ' Price',close_price)
-                        #     print('Ticker return', ticker_return)
                           
                         ##################
                         #Trailing Stop ###
@@ -1406,7 +1389,7 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
 ##########################################################################################################################################################################################################################
 # General Settings                                                  #????????????##############################
 #############################################################################################################
-mac = 0 # 1 for mac 0 for windows  
+mac = 1 # 1 for mac 0 for windows  
 longshort =  'short'# 'long' 'short'
 main_or_all = 'all'
 plot = 1 # 1=pplot on 
@@ -1428,7 +1411,7 @@ bet_percentage = 0.01 #risk per trade of imaginary account
 # Scanner Settings
 #############################################################################################################
 # Insample out of sample settings
-insample_per_on = 0
+insample_per_on = 1
 insample_per_start = 1 # 1 = start 0, = end
 split_per = .6# Split percentage
 # Random insample out of sample testing
@@ -1438,7 +1421,7 @@ random_insample_per = .25
 # Filter by dates
 filter_by_dates_on = 1
 start_date = '2021-10-01' # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
-end_date = '2021-10-01' # YYYY-MM-DD
+end_date = '2023-03-01' # YYYY-MM-DD
 # Main file settings
 volume_min =  -999999# tradingview vol min is 1 million This is only one in use
 pm_vol_set = -999
@@ -1475,11 +1458,10 @@ close_stop_list =[.03]# ,.05,.075,.10]# percent away from open pricee/ .001 is t
 # Pre-market high stop
 pre_market_h_stop_on = 0
 #Trailing stop
-trail_stop_on = 0 
-trail_stop_per =.1# .
-# R
+trail_stop_on = 0  
 min_reward_then_let_it_run = 1
-reward_list = [3]
+reward_list = [3]# times the close_stop - 1 R for trailstop
+trail_stop_per =.1# if this is greater than close_stop it affects R
 # Commissions
 locate_fee = .0#per share
 trip_comm = 0 # round trip commission
