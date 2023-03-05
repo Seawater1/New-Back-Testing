@@ -541,8 +541,8 @@ def plt_chart(date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker
     
     ax[0].plot(ohlc_intraday[date,ticker].index, ohlc_intraday[date,ticker].close,ohlc_intraday[date,ticker].vwap)
     ax[1].bar(ohlc_intraday[date,ticker].index, ohlc_intraday[date,ticker].volume, width=1/(5*len(ohlc_intraday[date,ticker].index)))
-    #ax[0].plot(ohlc_intraday[date,ticker]['st'], color = 'green', linewidth = 2, label = 'ST UPTREND')
-    #ax[0].plot(ohlc_intraday[date,ticker]['st_dt'], color = 'r', linewidth = 2, label = 'ST DOWNTREND')
+    ax[0].plot(ohlc_intraday[date,ticker]['st'], color = 'green', linewidth = 2, label = 'ST UPTREND')
+    ax[0].plot(ohlc_intraday[date,ticker]['st_dt'], color = 'r', linewidth = 2, label = 'ST DOWNTREND')
     if longshort == 'long':
         ax[0].plot(ohlc_intraday[date,ticker]['cover_sig'], marker = '^', color = 'r', markersize = 12, linewidth = 0, label = 'Sell SIGNAL')
         ax[0].plot(ohlc_intraday[date,ticker]['trade_sig'], marker = 'v', color = 'green', markersize = 12, linewidth = 0, label = 'BUY SIGNAL')
@@ -590,7 +590,7 @@ def plt_chart(date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker
 ohlc_intraday = {}
 def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentage,sharesfloat_on, market_cap_on,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,top_gap_by_date,price_between_on,min_between_price, max_between_price , buytime_on, buy_time , selltime_on , sell_time, buy_between_time_on,buy_between_time_on_2, buy_after,buy_after_2 ,buy_before ,buy_before_2, volume_sum_cal_on, vol_sum_greaterthan, 
                            pm_volume_sum_cal_on, pm_volume_sum_greaterthat, pm_gap_on, pmg_greater , per_change_first_tick_on, precent_greater, per_change_open_on,per_change_open_on_2, open_greater, vwap_above_on,
-                           vwap_below_on, last_close_change_on, last_close_per , day_greater_than_pm_on,pm_greater_than_day_on, st_close_lessthan_on, st_close_greaterthan_on,close_stop_on,close_stop,pre_market_h_stop_on,trail_stop_on,trail_stop_per,min_reward_then_let_it_run,reward,drop_acquistions_on, aq_value, percent_from_pmh_on, per_pmh_val ):
+                           vwap_below_on, last_close_change_on, last_close_per , day_greater_than_pm_on,pm_greater_than_day_on, st_close_lessthan_on, st_close_greaterthan_on,close_stop_on,close_stop,pre_market_h_stop_on,trail_stop_on,min_reward_then_let_it_run,reward,trail_stop_per,drop_acquistions_on, aq_value, percent_from_pmh_on, per_pmh_val ):
     #dictionarys to store data
     gains = []    
     total_win = 0
@@ -651,7 +651,7 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                     df = pm_greater_than_day(df,date)
                 if st_close_lessthan_on == 1:#13
                     df = st_close_lessthan(df)#Supertrend lessthan
-                if st_close_greaterthan_on == 1:#14
+                if st_close_greaterthan_on or st_close_greaterthan_on_2 == 1:#14
                     df = st_close_greaterthan(df)#Supertrend greather than
                 if drop_acquistions_on ==1:
                     df = drop_acquistions(df,date,aq_value)
@@ -688,10 +688,13 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                 outcome = 'no_trade'
                 outcome_2 = 'no_trade_2'
                 last_high = 0
-                last_low = 99999999
-                trail_stop_price_short = 999999999
-                take_profit_count = 0
                 
+                last_low = 99999999
+                last_low_2 = 99999999
+                trail_stop_price_short = 999999999
+                trail_stop_price_short_2 = 999999999
+                take_profit_count = 0
+                take_profit_count_2 = 0
                 for i in range(len(ohlc_intraday[date,ticker])):# he skips the first bar (1,len) do i need to do this 
                     if price_between_on == 1:
                         one = ohlc_intraday[date,ticker]['price_between'][i]
@@ -765,6 +768,10 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                         fourteen = ohlc_intraday[date,ticker]["st_short"][i]
                     else:
                         fourteen = True
+                    if st_close_greaterthan_on_2 == 1:
+                        fourteen_2 = ohlc_intraday[date,ticker]["st_short"][i]
+                    else:
+                        fourteen_2 = True
                     if sharesfloat_on == 1:
                         s_f_test = ohlc_intraday[date,ticker]["shares_float_test"][i]                        
                     else:
@@ -901,7 +908,7 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                         twelve == True and
                         pm_g_t_d  == True and
                         thirteen == True and
-                        fourteen == True and
+                        fourteen_2 == True and
                         s_f_test == True and
                         m_c_test == True and
                         dacq == True and
@@ -1123,6 +1130,42 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                     ####### If second short trade is open  #############        
                     ###################################################
                     if  open_price_2 != 0 and direction == 'short':                    
+                        # Check for 3R  profit, then keep 3R as min, then let it run                       
+                        if (
+                            min_reward_then_let_it_run_2 == 1 and
+                            close_price_2 == 0 and
+                            take_profit_count_2 == 0 and
+                            ohlc_intraday[date,ticker]["open"][i] <  reward_price_2): # is 3 times the risk price to get 3R
+                            take_profit_count_2 += 1
+                            last_low_2 = ohlc_intraday[date,ticker]["open"][i] # keeps track of the lowest price
+                            print('last_low_2',last_low_2)
+                            trail_stop_price_short_2 = ohlc_intraday[date,ticker]["open"][i] * (1 + trail_stop_per) # adds a percentage above so dont get stopped stright away
+                            print(reward,' second trade R hit now tail will lose 1 r',trail_stop_price_short_2)
+                        
+                        # trail stop continues after take profit 3 r     
+                        elif(
+                            min_reward_then_let_it_run_2 == 1 and
+                            close_price_2 == 0 and
+                            take_profit_count_2 > 0 and
+                            ohlc_intraday[date,ticker]["open"][i] < last_low_2): #if price keeps dropping
+                            last_low_2 = ohlc_intraday[date,ticker]["open"][i] # move last low doun for next loop
+                            trail_stop_price_short_2 = ohlc_intraday[date,ticker]["open"][i] * (1 + trail_stop_per)#new trail stop out price
+                            print('New trail stop price-2',trail_stop_price_short_2)
+                        
+                        # check if trail stop stopped out
+                        elif(
+                            min_reward_then_let_it_run_2 == 1 and
+                            close_price_2 == 0 and
+                            take_profit_count_2 > 0 and
+                            ohlc_intraday[date,ticker]["open"][i] > trail_stop_price_short_2):# stopped out
+                            print('Trail stop hit')
+                            close_price_2 = ohlc_intraday[date,ticker]["open"][i]#slipage
+                            ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_2
+                            ticker_return_2 = open_price_2 - close_price_2
+                            date_stats[date][ticker] = ticker_return_2
+                            outcome_2 = 'trailing_stop_hit'
+                            print('min_r_trail_stop_hit',ticker, ' Price',close_price_2)
+                            print('Ticker return', ticker_return_2)
                         # Calculate trailing stop price  
                         ###############
                         # Second Time stop
@@ -1452,6 +1495,9 @@ aq_value = 1.05
 ##########################################################################################################
 #Testing Settings-------------------------------------------------------------------------------------------
 ##########################################################################################################
+# Commissions
+locate_fee = .0#per share
+trip_comm = 0 # round trip commission
 #Stop loss percent from trade price
 close_stop_on = 1 
 close_stop_list =[.03]# ,.05,.075,.10]# percent away from open pricee/ .001 is to small dont get even r
@@ -1460,11 +1506,10 @@ pre_market_h_stop_on = 0
 #Trailing stop
 trail_stop_on = 0  
 min_reward_then_let_it_run = 1
+min_reward_then_let_it_run_2 = 1
 reward_list = [3]# times the close_stop - 1 R for trailstop
-trail_stop_per =.1# if this is greater than close_stop it affects R
-# Commissions
-locate_fee = .0#per share
-trip_comm = 0 # round trip commission
+trail_stop_per_list =[.03]# if this is greater than close_stop it affects R
+
 # Both Main and All
 sharesfloat_on = 0
 sharesfloat_min_list = [-9999999]
@@ -1581,17 +1626,19 @@ for sfmin in sharesfloat_min_list:
                                             for rw in reward_list:
                                                 reward = rw
                                                 print('reward',reward)
-                                                results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentage,sharesfloat_on, market_cap_on, sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,top_gap_by_date,price_between_on,min_between_price, max_between_price , buytime_on, buy_time , selltime_on , sell_time, buy_between_time_on,buy_between_time_on_2, buy_after,buy_after_2, buy_before ,buy_before_2, volume_sum_cal_on, vol_sum_greaterthan, 
-                                                pm_volume_sum_cal_on, pm_volume_sum_greaterthat, pm_gap_on, pmg_greater , per_change_first_tick_on, precent_greater, per_change_open_on,per_change_open_on_2, open_greater, vwap_above_on,
-                                                vwap_below_on, last_close_change_on, last_close_per , day_greater_than_pm_on,pm_greater_than_day_on, st_close_lessthan_on, st_close_greaterthan_on,close_stop_on,close_stop,pre_market_h_stop_on,trail_stop_on,trail_stop_per,min_reward_then_let_it_run,reward,drop_acquistions_on, aq_value,percent_from_pmh_on, per_pmh_val )
-                                                print(sfmin,sfmax,mcmin,mcmax,lcp,og,vsg,bal,bal,cs,vwap,stclt)
-                                    
-                                                btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
-                                                                        columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
-                                                #Adds new line to dic each loop 
-                                                
-                                                btresults_store = btresults_store.append(btresults,ignore_index=True) 
-                                                btresults_store.reset_index(drop=True)
+                                                for tspl in trail_stop_per_list:
+                                                    trail_stop_per = tspl
+                                                    results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentage,sharesfloat_on, market_cap_on, sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,top_gap_by_date,price_between_on,min_between_price, max_between_price , buytime_on, buy_time , selltime_on , sell_time, buy_between_time_on,buy_between_time_on_2, buy_after,buy_after_2, buy_before ,buy_before_2, volume_sum_cal_on, vol_sum_greaterthan, 
+                                                    pm_volume_sum_cal_on, pm_volume_sum_greaterthat, pm_gap_on, pmg_greater , per_change_first_tick_on, precent_greater, per_change_open_on,per_change_open_on_2, open_greater, vwap_above_on,
+                                                    vwap_below_on, last_close_change_on, last_close_per , day_greater_than_pm_on,pm_greater_than_day_on, st_close_lessthan_on, st_close_greaterthan_on,close_stop_on,close_stop,pre_market_h_stop_on,trail_stop_on,min_reward_then_let_it_run,reward,trail_stop_per,drop_acquistions_on, aq_value,percent_from_pmh_on, per_pmh_val )
+                                                    print(sfmin,sfmax,mcmin,mcmax,lcp,og,vsg,bal,bal,cs,vwap,stclt)
+                                        
+                                                    btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward,trail_stop_per ,num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
+                                                                            columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','trail_stop_per','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
+                                                    #Adds new line to dic each loop 
+                                                    
+                                                    btresults_store = btresults_store.append(btresults,ignore_index=True) 
+                                                    btresults_store.reset_index(drop=True)
 
 results_name = today + time_now +  '_backtest_results.csv' #
 if mac == 1:
