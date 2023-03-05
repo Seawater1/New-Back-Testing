@@ -856,11 +856,12 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                             trade_count += 1    
                             direction = 'short'
                             open_price = ohlc_intraday[date,ticker]["open"][i+1] # ["low"][i+1] +1 is the next candle. Need to work in slipage here  
+                            print('open_price',open_price)
                             reward_price = open_price - ((open_price * close_stop) * reward)
                             ohlc_intraday[date,ticker]["trade_sig"][i+1] = open_price # ["trade_sig"][i+1]            
                             if close_stop_on == 1:
                                 stop_price = (open_price * close_stop) + open_price
-                                #print('Stop price ', stop_price)
+                                print('Stop price ', stop_price)
                             if pre_market_h_stop_on == 1:
                                 pmh_price = get_pmh_price(df,date)
                                 #print('PMH price',pmh_price,ticker,date)
@@ -871,9 +872,7 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                             max_shares = round((risk_per_trade / loss_per_share),0)
                            
                             if max_shares < 100:
-                                locate = 100 
-                                #print('1 Max Shares',max_shares)
-                                #print('1 Locates',locate)  
+                                locate = 100   
                             else:
                                 locate = max_shares 
                                 locate = round_to_nearest_100(locate)
@@ -1036,17 +1035,17 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                     ####### If short trade is open  ###################        
                     ###################################################
                     if  open_price != 0 and direction == 'short':
-                        # first check for take profit                       
+                        # Check for 3R  profit, then keep 3R as min, then let it run                       
                         if (
                             take_profit_count == 0 and
                             close_price == 0 and
                             min_reward_then_let_it_run == 1 and
                             ohlc_intraday[date,ticker]["open"][i+1] <  reward_price): # is 3 times the risk price to get 3R
                             take_profit_count += 1
-                            take_profit = ohlc_intraday[date,ticker]["open"][i]
+                            take_profit_min = ohlc_intraday[date,ticker]["open"][i]
                             last_low = ohlc_intraday[date,ticker]["open"][i]
-                            print('take_profit_______________________',take_profit)
-                            trail_stop_price_short = take_profit * (1 + trail_stop_per)
+                            print('take_profit_min_______________________',take_profit_min)
+                            trail_stop_price_short = take_profit_min * (1 + trail_stop_per)
                             print('trail_stop_price_short',trail_stop_price_short)
                             print('close_price',close_price)
                             
@@ -1439,7 +1438,7 @@ random_insample_per = .25
 # Filter by dates
 filter_by_dates_on = 1
 start_date = '2021-10-01' # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
-end_date = '2023-03-05' # YYYY-MM-DD
+end_date = '2021-10-01' # YYYY-MM-DD
 # Main file settings
 volume_min =  -999999# tradingview vol min is 1 million This is only one in use
 pm_vol_set = -999
