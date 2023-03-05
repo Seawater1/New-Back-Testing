@@ -1150,7 +1150,7 @@ def backtester(locate_fee,trip_comm,full_balance,imaginary_account,bet_percentag
                             ohlc_intraday[date,ticker]["open"][i] < last_low_2): #if price keeps dropping
                             last_low_2 = ohlc_intraday[date,ticker]["open"][i] # move last low doun for next loop
                             trail_stop_price_short_2 = ohlc_intraday[date,ticker]["open"][i] * (1 + trail_stop_per)#new trail stop out price
-                            print('New trail stop price-2',trail_stop_price_short_2)
+                            # print('New trail stop price-2',trail_stop_price_short_2)
                         
                         # check if trail stop stopped out
                         elif(
@@ -1463,8 +1463,8 @@ random_insample_start = 1 # 1 for start 0 for end
 random_insample_per = .25
 # Filter by dates
 filter_by_dates_on = 1
-start_date = '2021-10-01' # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
-end_date = '2023-03-01' # YYYY-MM-DD
+start_date = '2021-10-05' # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
+end_date = '2021-10-05' # YYYY-MM-DD
 # Main file settings
 volume_min =  -999999# tradingview vol min is 1 million This is only one in use
 pm_vol_set = -999
@@ -1539,7 +1539,7 @@ buy_after_list = ['09:29:00']
 buy_before =  '09:35:00'
 
 buy_between_time_on_2 = 1
-buy_after_2 = '09:38:00'
+buy_after_2 = '09:33:00'
 buy_before_2 =  '10:35:00'
 
 volume_sum_cal_on = 0
@@ -1555,8 +1555,8 @@ per_change_first_tick_on = 0 # % Change from first tick of my data greater than
 precent_greater = .50
 
 per_change_open_on = 0 # open to high change
-per_change_open_on_2 = 0 
-open_greater_list = [.5]
+per_change_open_on_2 = 1 
+open_greater_list = [.05]
 
 vwap_above_on = 0  # short
 
@@ -1575,7 +1575,7 @@ pm_greater_than_day_on = 0
 
 st_close_lessthan_on_list = [0] # Long
 st_close_greaterthan_on =   0 # short
-
+st_close_greaterthan_on_2 = 1 # short 2 
 ###########################################################################################################
 ########################### Run code here   #############################################################################
 
