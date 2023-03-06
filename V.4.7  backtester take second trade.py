@@ -656,7 +656,7 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
                     df = vwap_above(df)# Close below VWAP
                 if vwap_below_on == 1:#10
                     df = vwap_below(df)
-                if last_close_change_on ==1 or last_close_change_on_ ==1:#11
+                if last_close_change_on ==1 or last_close_change_on_2 ==1:#11
                     df = last_close_change(df,last_close,last_close_per)
                 if day_greater_than_pm_on ==1:#12  
                     df = day_greater_than_pm(df,date)
@@ -677,6 +677,7 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
                 df['cover_sig'] = np.nan
                 df['cover_sig_2'] = np.nan
                 df['trade_count'] = np.nan
+                df['trade_count_2'] = np.nan
                 open_price = '' # price you open a trade
                 open_price_2 = '' 
                 direction = '' # Long short
@@ -908,10 +909,11 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
                     
                     if (
                         longshort == 'short' and
+                        1 == 2 and
                         # one == True and
                         # two == True and
                         # three == False and
-                        # four_2 == True and
+                        four_2 == True and
                         # five == True and
                         # six == True and
                         # seven == True and
@@ -932,7 +934,7 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
                         ticker_return != 0 and
                         trade_count == 1):
                             print('-------------Starting second trade')
-                            trade_count += 1
+                            # trade_count += 1
                             trade_count_2 += 1
                             direction = 'short'
                             open_price_2 = ohlc_intraday[date,ticker]["open"][i+1] # ["low"][i+1] +1 is the next candle. Need to work in slipage here  
@@ -1065,21 +1067,23 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
                             min_reward_then_let_it_run == 1 and
                             close_price == 0 and
                             take_profit_count == 0 and
-                            ohlc_intraday[date,ticker]["open"][i] <  reward_price): # is 3 times the risk price to get 3R
+                            ohlc_intraday[date,ticker]["high"][i] <  reward_price): # is 3 times the risk price to get 3R
                             take_profit_count += 1
-                            last_low = ohlc_intraday[date,ticker]["open"][i] # keeps track of the lowest price
+                            last_low = ohlc_intraday[date,ticker]["high"][i] # keeps track of the lowest price
                             print('last_low',last_low)
-                            trail_stop_price_short = ohlc_intraday[date,ticker]["open"][i] * (1 + trail_stop_per) # adds a percentage above so dont get stopped stright away
-                            print(reward,'R hit now tail will lose 1 r',trail_stop_price_short)
+                            trail_stop_price_short = ohlc_intraday[date,ticker]["high"][i] * (1 + .02) # adds a percentage above so dont get stopped stright away
+                            print('Tight stop here of 2 %')
+                            print(reward,'R, Price target hit. New stop price',trail_stop_price_short)
+                            print('Last high price',last_low)
                         
                         # trail stop continues after take profit 3 r     
                         elif(
                             min_reward_then_let_it_run == 1 and
                             close_price == 0 and
                             take_profit_count > 0 and
-                            ohlc_intraday[date,ticker]["open"][i] < last_low): #if price keeps dropping
-                            last_low = ohlc_intraday[date,ticker]["open"][i] # move last low doun for next loop
-                            trail_stop_price_short = ohlc_intraday[date,ticker]["open"][i] * (1 + trail_stop_per)#new trail stop out price
+                            ohlc_intraday[date,ticker]["high"][i] < last_low): #if price keeps dropping
+                            last_low = ohlc_intraday[date,ticker]["high"][i] # move last low doun for next loop
+                            trail_stop_price_short = ohlc_intraday[date,ticker]["high"][i] * (1 + trail_stop_per)#new trail stop out price
                             #print('New trail stop price',trail_stop_price_short)
                         
                         # check if trail stop stopped out
@@ -1088,13 +1092,13 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
                             close_price == 0 and
                             take_profit_count > 0 and
                             ohlc_intraday[date,ticker]["high"][i] > trail_stop_price_short):# stopped out
-                            print('Trail stop hit')
                             #close_price = ohlc_intraday[date,ticker]["open"][i]#slipage
                             close_price = trail_stop_price_short
                             ohlc_intraday[date,ticker]["cover_sig"][i] = close_price
                             ticker_return = open_price - close_price
                             date_stats[date][ticker] = ticker_return
                             outcome = 'trailing_stop_hit'
+                            print('Trail stop hit')
                             print('min_r_trail_stop_hit',ticker, ' Price',close_price)
                             print('Ticker return', ticker_return)
                     
@@ -1158,7 +1162,8 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
                             take_profit_count_2 += 1
                             last_low_2 = ohlc_intraday[date,ticker]["high"][i] # keeps track of the lowest price
                             
-                            trail_stop_price_short_2 = ohlc_intraday[date,ticker]["high"][i] * (1 + trail_stop_per) # adds a percentage above so dont get stopped stright away
+                            trail_stop_price_short_2 = ohlc_intraday[date,ticker]["high"][i] * (1 + .02) # adds a percentage above so dont get stopped stright away
+                            print('Tight stop here of 2 %')
                             print(reward,'R, Price target hit. New stop price',trail_stop_price_short_2)
                             print('Last high price',last_low_2)
                         # trail stop continues after take profit 3 r     
@@ -1169,20 +1174,20 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
                             ohlc_intraday[date,ticker]["high"][i] < last_low_2): #if price keeps dropping
                             last_low_2 = ohlc_intraday[date,ticker]["high"][i] # move last low doun for next loop
                             trail_stop_price_short_2 = ohlc_intraday[date,ticker]["high"][i] * (1 + trail_stop_per)#new trail stop out price
-                            print('New trail stop price-2',trail_stop_price_short_2,'last high',last_low_2)
+                            #print('New trail stop price-2',trail_stop_price_short_2,'last high',last_low_2)
                         # check if trail stop stopped out
                         elif(
                             min_reward_then_let_it_run_2 == 1 and
                             close_price_2 == 0 and
                             take_profit_count_2 > 0 and
                             ohlc_intraday[date,ticker]["high"][i] > trail_stop_price_short_2):# stopped out
-                            print('Trail stop hit')
                             #close_price_2 = ohlc_intraday[date,ticker]["open"][i]#slipage
                             close_price_2 = trail_stop_price_short_2
                             ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_2
                             ticker_return_2 = open_price_2 - close_price_2
                             date_stats[date][ticker] = ticker_return_2
                             outcome_2 = 'trailing_stop_hit'
+                            print('Trail stop hit')
                             print('min_r_trail_stop_hit',ticker, ' Price',close_price_2)
                             print('Ticker return', ticker_return_2)
                         # Calculate trailing stop price  
@@ -1268,7 +1273,6 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
     ###################################  Plot    ##############################################################
     ###########################################################################################################
                 if plot == 1 and trade_count > plot_trades_only:
-                    plt_chart(date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2)
                     
                     # fig, ax1 = plt.subplots()
                     # color = 'tab:red'
@@ -1291,6 +1295,8 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
                     
                     fig.tight_layout()
                     plt.show()
+                    
+                    plt_chart(date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2)
                 else:
                     pass
             except (FileNotFoundError,IndexError ) as e:
@@ -1495,16 +1501,16 @@ close_slippage = 0
 #############################################################################################################
 # Insample out of sample settings
 insample_per_on = 1
-return_start = False #True 
-split_per = .99# Split percentage .90 returns the last 10%
+return_start = True #True 
+split_per = .60# 
 # Random insample out of sample testing
 random_insample_on = 0 # Turn on randon insample
 random_insample_start = 1 # 1 for start 0 for end   
 random_insample_per = .25
 # Filter by dates
 filter_by_dates_on = 1
-start_date = '2021-03-23' # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
-end_date = '2023-03-23' # YYYY-MM-DD
+start_date = '2021-10-01' # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
+end_date = '2023-03-06' # YYYY-MM-DD
 # Main file settings
 volume_min =  -999999# tradingview vol min is 1 million This is only one in use
 pm_vol_set = -999
@@ -1536,19 +1542,19 @@ aq_value = 1.05
 #Testing Settings-------------------------------------------------------------------------------------------
 ##########################################################################################################
 # Commissions
-locate_fee = .0#per share
-trip_comm = 0 # round trip commission
+locate_fee = .05#per share
+trip_comm = 2 # round trip commission
 #Stop loss percent from trade price
 close_stop_on = 1 
-close_stop_list =[.03]# ,.05,.075,.10]# percent away from open pricee/ .001 is to small dont get even r
+close_stop_list =[.03,.05,.075,.10]# ,.05,.075,.10]# percent away from open pricee/ .001 is to small dont get even r
 # Pre-market high stop
 pre_market_h_stop_on = 0
 #Trailing stop
 trail_stop_on = 0  
-min_reward_then_let_it_run = 1
-min_reward_then_let_it_run_2 = 1
-reward_list = [4]# times the close_stop - 1 R for trailstop
-trail_stop_per_list =[.1]# if this is greater than close_stop it affects R
+min_reward_then_let_it_run = 0
+min_reward_then_let_it_run_2 = 0
+reward_list = [3,4]# times the close_stop - 1 R for trailstop
+trail_stop_per_list =[0]#.03,.06,.1 if this is greater than close_stop it affects R
 
 # Both Main and All
 sharesfloat_on = 0
@@ -1595,8 +1601,8 @@ per_change_first_tick_on = 0 # % Change from first tick of my data greater than
 precent_greater = .50
 
 per_change_open_on = 0 # open to high change
-per_change_open_on_2 = 1 
-open_greater_list = [.0]
+per_change_open_on_2 = 0 
+open_greater_list = [-.1]
 
 vwap_above_on = 0  # short
 
@@ -1616,7 +1622,7 @@ pm_greater_than_day_on = 0
 
 st_close_lessthan_on_list = [0] # Long
 st_close_greaterthan_on =   0 # short
-st_close_greaterthan_on_2 = 1 # short 2 
+st_close_greaterthan_on_2 = 0 # short 2 
 ###########################################################################################################
 ########################### Run code here   #############################################################################
 
