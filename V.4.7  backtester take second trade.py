@@ -78,7 +78,7 @@ def loadmaindata(mac, main_or_all, start_date, end_date, volume_min, pm_vol_set,
         print('Spliting insample and out of smaple -----------------------------------------------------------------',split_per)
         num_rows = len(df)
         split_index = int(num_rows * split_per)
-        if return_start:
+        if return_start == 1:
             df = df[:split_index]
             print('start --- split')
             
@@ -1233,7 +1233,7 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
                     
                     # print('tot_slip',tot_slip)
                     # print('open_price',open_price)
-                    # print('max_shares',max_shares)
+                    print('max_shares',max_shares)
                     locate_cost_ps = open_price * max_locate_per_price
                     locate_cost = locate_cost_ps * max_shares
                     print('locate_cost',locate_cost)
@@ -1430,7 +1430,23 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
         results_store.plot(x='date',  y=['balance', 'balance_no_fee'], color=['red', 'blue'],ax=ax,linewidth=0.25)
         #results_store.plot(x='date', y='balance', kind='scatter',color=['red'], ax=ax, s=1 )
         #plt.show()
-
+        #####################################################################################
+        fig, ax1 = plt.subplots()
+        color1 = 'tab:red'
+        color2 = 'tab:blue'
+        ax1.set_xlabel('Flips')
+        ax1.set_ylabel('gains', color=color1)
+        ax1.plot(gains, color=color1)
+        ax1.tick_params(axis='y', labelcolor=color1)
+        
+        ax2 = ax1.twinx()
+        ax2.set_ylabel('gains_2', color=color2)
+        ax2.plot(gains_2, color=color2)
+        ax2.tick_params(axis='y', labelcolor=color2)
+        
+        fig.tight_layout()
+        plt.show()
+        #####################################################################################
 
         
         #print('Maximum Drawdown ?????????????????????????', max_dd)
@@ -1477,18 +1493,18 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
 mac = 0 # 1 for mac 0 for windows  
 longshort =  'short'# 'long' 'short'
 main_or_all = 'all'
-plot = 1 # 1=pplot on 
+plot = 0 # 1=pplot on 
 plot_trades_only = 0 # 0 or -1
 save_winners_df = 1 
 
 # Balance 
-start_balance = 1431
+start_balance = 10000
 # Percent of account t risk
 risk_acc = .01 #.01
 total_risk = start_balance * risk_acc
 # New Balance for  System
 full_balance = 0
-imaginary_account = 1431
+imaginary_account = 10000
 full_balance_2 = full_balance
 imaginary_account_2 = imaginary_account
 bet_percentage = 0.01 #risk per trade of imaginary account
@@ -1501,7 +1517,7 @@ close_slippage = 0
 #############################################################################################################
 # Insample out of sample settings
 insample_per_on = 1
-return_start = True #True 
+return_start = 1 #True 
 split_per = .60# 
 # Random insample out of sample testing
 random_insample_on = 0 # Turn on randon insample
@@ -1546,14 +1562,14 @@ locate_fee = .05#per share
 trip_comm = 2 # round trip commission
 #Stop loss percent from trade price
 close_stop_on = 1 
-close_stop_list =[.03,.05,.075,.10]# ,.05,.075,.10]# percent away from open pricee/ .001 is to small dont get even r
+close_stop_list =[.10]# ,.05,.075,.10]# percent away from open pricee/ .001 is to small dont get even r
 # Pre-market high stop
 pre_market_h_stop_on = 0
 #Trailing stop
 trail_stop_on = 0  
 min_reward_then_let_it_run = 0
 min_reward_then_let_it_run_2 = 0
-reward_list = [3,4]# times the close_stop - 1 R for trailstop
+reward_list = [4]# times the close_stop - 1 R for trailstop
 trail_stop_per_list =[0]#.03,.06,.1 if this is greater than close_stop it affects R
 
 # Both Main and All
@@ -1581,7 +1597,7 @@ selltime_on = 1 # Sell time has to stay on
 sell_time = '15:58:00'
 
 buy_between_time_on = 1
-buy_after_list = ['09:29:00']
+buy_after_list = ['09:29:00','09:35:00']
 buy_before =  '09:35:00'
 
 buy_between_time_on_2 = 1
@@ -1610,7 +1626,7 @@ vwap_below_on_list = [0] # long
 
 last_close_change_on = 1 # change from last close price
 last_close_change_on_2 = 0
-last_close_per_list = [.40] 
+last_close_per_list = [.20,.30,.40,.50] 
 
 percent_from_pmh_on = 0
 per_pmh_val = .30
