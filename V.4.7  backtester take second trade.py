@@ -1234,8 +1234,9 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
                     # print('tot_slip',tot_slip)
                     # print('open_price',open_price)
                     print('max_shares',max_shares)
-                    locate_cost_ps = open_price * max_locate_per_price
-                    locate_cost = locate_cost_ps * max_shares
+                    locate_cost_ps = open_price * max_locate_by_price
+                    print('locate qty',locate)
+                    locate_cost = locate_cost_ps * locate
                     print('locate_cost',locate_cost)
                     # print("new_commission",new_commission)
                     #locate_cost =  locate * locate_fee
@@ -1498,17 +1499,17 @@ plot_trades_only = 0 # 0 or -1
 save_winners_df = 1 
 
 # Balance 
-start_balance = 10000
+start_balance = 1200
 # Percent of account t risk
-risk_acc = .01 #.01
+risk_acc = .05 #.01
 total_risk = start_balance * risk_acc
 # New Balance for  System
 full_balance = 0
-imaginary_account = 10000
+imaginary_account = 1200
 full_balance_2 = full_balance
 imaginary_account_2 = imaginary_account
-bet_percentage = 0.01 #risk per trade of imaginary account
-max_locate_per_price = .01
+bet_percentage = 0.05 #risk per trade of imaginary account
+max_locate_by_price = .01 
 open_slippage = 0
 close_slippage = 0
 
@@ -1535,7 +1536,7 @@ mid_change_set = -9999
 
 # download all file settings
 change_from_open = -999
-yclose_to_open_percent_filter = 15 #?????
+yclose_to_open_percent_filter = 5 #?????
 Yclose_to_hod = -9999
 all_pm_vol_filter = -9999
 all_pm_gap_filter = -999999 #Pre-market Gap % | Pre-market Change
@@ -1597,10 +1598,10 @@ selltime_on = 1 # Sell time has to stay on
 sell_time = '15:58:00'
 
 buy_between_time_on = 1
-buy_after_list = ['09:29:00','09:35:00']
+buy_after_list = ['09:29:00']
 buy_before =  '09:35:00'
 
-buy_between_time_on_2 = 1
+buy_between_time_on_2 = 0
 buy_after_2 = '09:33:00'
 buy_before_2 =  '10:35:00'
 
@@ -1626,7 +1627,7 @@ vwap_below_on_list = [0] # long
 
 last_close_change_on = 1 # change from last close price
 last_close_change_on_2 = 0
-last_close_per_list = [.20,.30,.40,.50] 
+last_close_per_list = [.30] 
 
 percent_from_pmh_on = 0
 per_pmh_val = .30
