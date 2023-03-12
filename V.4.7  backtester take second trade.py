@@ -1423,7 +1423,7 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
         finish_bal = round(results_store['balance'].iloc[-1],2)
         expectancy = round(results_store['R'].mean(),3)
         
-        ax = plt.gca()
+        # ax = plt.gca()
     
         #results_store.plot(kind='line',y='balance',x = 'date',ax=ax)
         #Need a new column with balance without fees and plot thatn
@@ -1495,21 +1495,21 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
 mac = 0 # 1 for mac 0 for windows  
 longshort =  'short'# 'long' 'short'
 main_or_all = 'all'
-plot = 0 # 1=pplot on 
+plot = 1 # 1=pplot on 
 plot_trades_only = 0 # 0 or -1
 save_winners_df = 1 
 
 # Balance 
-start_balance = 10000
+start_balance = 12000
 # Percent of account t risk
-risk_acc = .01 #.01
+risk_acc = .03 #.01
 total_risk = start_balance * risk_acc
 # New Balance for  System
 full_balance = 0
-imaginary_account = 10000
+imaginary_account = 12000
 full_balance_2 = full_balance
 imaginary_account_2 = imaginary_account
-bet_percentage = 0.01 #risk per trade of imaginary account
+bet_percentage = 0.03 #risk per trade of imaginary account
 max_locate_by_price = .01 
 open_slippage = 0
 close_slippage = 0
@@ -1518,7 +1518,7 @@ close_slippage = 0
 # Scanner Settings
 #############################################################################################################
 # Insample out of sample settings
-insample_per_on = 1
+insample_per_on = 0
 return_start = 1 #True 
 split_per = .60# 
 # Random insample out of sample testing
@@ -1527,8 +1527,8 @@ random_insample_start = 1 # 1 for start 0 for end
 random_insample_per = .25
 # Filter by dates
 filter_by_dates_on = 1
-start_date = '2021-10-01' # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
-end_date = '2023-03-06' # YYYY-MM-DD
+start_date = '2022-06-01' # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
+end_date = '2023-03-11' # YYYY-MM-DD
 # Main file settings
 volume_min =  -999999# tradingview vol min is 1 million This is only one in use
 pm_vol_set = -999
@@ -1596,7 +1596,7 @@ buytime_on = 0  # On off switch
 buy_time = '09:30:00'
 
 selltime_on = 1 # Sell time has to stay on
-sell_time_list = ['13:00:00','13:30:00','14:00:00','14:30:00','15:30:00','15:58:00',]
+sell_time_list = ['14:00:00']
 
 buy_between_time_on = 1
 buy_after_list = ['09:29:00']
@@ -1708,7 +1708,7 @@ for sfmin in sharesfloat_min_list:
                                                         btresults_store = btresults_store.append(btresults,ignore_index=True) 
                                                         btresults_store.reset_index(drop=True)
 
-results_name = today + time_now +  '_backtest_results.csv' #
+results_name = today + time_now +  '_backtest_results_2.csv' #
 if mac == 1:
     btresults_store.to_csv("/Users/briansheehan/Documents/mac_quant/Backtesting/Backtest_results/%s"% results_name, index=False)
                          
