@@ -3,7 +3,23 @@
 
 
 """
-
+def backtester(params):
+    open_slippage = params['open_slippage']
+    close_slippage = params['close_slippage']
+    locate_fee = params['locate_fee']
+    trip_comm = params['trip_comm']
+    full_balance = params['full_balance']
+    imaginary_account = params['imaginary_account']
+    full_balance_2 = params['full_balance_2']
+    imaginary_account_2 = params['imaginary_account_2']
+    bet_percentage = params['bet_percentage']
+    sharesfloat_on = params['sharesfloat_on']
+    market_cap_on = params['market_cap_on']
+    sharesfloat_min = params['sharesfloat_min']
+    sharesfloat_max = params['sharesfloat_max']
+    market_cap_min = params['market_cap_min']
+    market_cap_max = params['market_cap_max']
+    top_gap_by_date = params['top_gap_by_date']
 
 # Import libraries
 
@@ -42,8 +58,22 @@ time_now = today_dt.strftime("_%H-%M")
 ## Functions to load data
 ############################################################################################################
 
-def loadmaindata(mac, main_or_all, start_date, end_date, volume_min, pm_vol_set, y_cl_gap, mid_change_set,change_from_open,Yclose_to_hod,all_pm_vol_filter ,all_pm_gap_filter,yclose_to_open_percent_filter ):
-   
+def loadmaindata(**kwargs):
+    mac = kwargs.get('mac', 0)
+    main_or_all = kwargs.get('main_or_all', 'all')
+    filter_by_dates_on = kwargs.get('filter_by_dates_on', 0)
+    start_date = kwargs.get('start_date', '')
+    end_date = kwargs.get('end_date', '')
+    volume_min = kwargs.get('volume_min', -999999)
+    pm_vol_set = kwargs.get('pm_vol_set', -999)
+    y_cl_gap = kwargs.get('y_cl_gap', -9999)
+    mid_change_set = kwargs.get('mid_change_set', -9999)
+    change_from_open = kwargs.get('change_from_open', -999)
+    yclose_to_open_percent_filter = kwargs.get('yclose_to_open_percent_filter', 15)
+    Yclose_to_hod = kwargs.get('Yclose_to_hod', -9999)
+    all_pm_vol_filter = kwargs.get('all_pm_vol_filter', -9999)
+    all_pm_gap_filter = kwargs.get('all_pm_gap_filter', -
+  
     if mac == 0:
         if main_or_all == 'all': 
             file_path = r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_database\download_all_main.csv'
@@ -600,6 +630,8 @@ ohlc_intraday = {}
 def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,imaginary_account,full_balance_2,imaginary_account_2,bet_percentage,sharesfloat_on, market_cap_on,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,top_gap_by_date,price_between_on,min_between_price, max_between_price , buytime_on, buy_time , selltime_on , sell_time, buy_between_time_on,buy_between_time_on_2, buy_after,buy_after_2 ,buy_before ,buy_before_2, volume_sum_cal_on, vol_sum_greaterthan, 
                            pm_volume_sum_cal_on, pm_volume_sum_greaterthat, pm_gap_on, pmg_greater , per_change_first_tick_on, precent_greater, per_change_open_on,per_change_open_on_2, open_greater, vwap_above_on,
                            vwap_below_on, last_close_change_on,last_close_change_on_2, last_close_per , day_greater_than_pm_on,pm_greater_than_day_on, st_close_lessthan_on, st_close_greaterthan_on,close_stop_on,close_stop,pre_market_h_stop_on,trail_stop_on,min_reward_then_let_it_run,reward,trail_stop_per,drop_acquistions_on, aq_value, percent_from_pmh_on, per_pmh_val ):
+    print('------  Starting Testing strategy  ---------------------------------------------------------')      
+    print('Going ', longshort)
     #dictionarys to store data
     gains = [] 
     gains_2 = []
@@ -1486,225 +1518,203 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
     return results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2              
 ##########################################################################################################################################################################################################################
 ##########################################################################################################################################################################################################################
+load_parms = {
+    'mac': 1,
+    'main_or_all': 'all',
+    'filter_by_dates_on': 1,
+    'start_date': '2021-10-01',
+    'end_date': '2023-03-12',
+    'volume_min': -999999,
+    'pm_vol_set': -999,
+    'y_cl_gap': -9999,
+    'mid_change_set': -9999,
+    'change_from_open': -999,
+    'yclose_to_open_percent_filter': 15,
+    'Yclose_to_hod': -9999,
+    'all_pm_vol_filter': -9999,
+    'all_pm_gap_filter': -999999,
+}
 
 ##########################################################################################################################################################################################################################
 # General Settings                                                  #????????????##############################
 #############################################################################################################
-mac = 1 # 1 for mac 0 for windows  
-longshort =  'short'# 'long' 'short'
-main_or_all = 'all'
-plot = 0 # 1=pplot on 
-plot_trades_only = 0 # 0 or -1
-save_winners_df = 1 
+default_parms = {
+    # System settings
 
-# Balance 
-start_balance = 5000
-# Percent of account t risk
-risk_acc = .01 #.01
-total_risk = start_balance * risk_acc
+    "longshort": "short",  # 'long' or 'short'
 
-#############################
-# New Balance for  System
-full_balance = 0
-imaginary_account = 5000
-full_balance_2 = full_balance
-imaginary_account_2 = imaginary_account
-bet_percentage = 0.01 #risk per trade of imaginary account
-max_locate_per_price = .01
-max_risk = 50 # set low to to prevent compounding 
-open_slippage = 0
-close_slippage = 0
+    "plot": 0,  # 1 to plot on
+    "plot_trades_only": 0,  # 0 or -1
+    "save_winners_df": 1,
 
-#############################################################################################################
-# Scanner Settings
-#############################################################################################################
-# Insample out of sample settings
-insample_per_on = 1
-return_start = 1 #True 
-split_per = .60# 
-# Random insample out of sample testing
-random_insample_on = 0 # Turn on randon insample
-random_insample_start = 1 # 1 for start 0 for end   
-random_insample_per = .25
-# Filter by dates
-filter_by_dates_on = 1
-start_date = '2021-10-01' # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
-end_date = '2023-03-12' # YYYY-MM-DD
-# Main file settings
-volume_min =  -999999# tradingview vol min is 1 million This is only one in use
-pm_vol_set = -999
-y_cl_gap   = -9999
-mid_change_set = -9999
+    # Balance
+    "start_balance": 5000,
+    # Percent of account to risk
+    "risk_acc": 0.01,  # 0.01
+    "total_risk": start_balance * risk_acc,
 
-# download all file settings
-change_from_open = -999
-yclose_to_open_percent_filter = 15 #?????
-Yclose_to_hod = -9999
-all_pm_vol_filter = -9999
-all_pm_gap_filter = -999999 #Pre-market Gap % | Pre-market Change
+    # New Balance for System
+    "full_balance": 0,
+    "imaginary_account": 5000,
+    "full_balance_2": full_balance,
+    "imaginary_account_2": imaginary_account,
+    "bet_percentage": 0.01,  # risk per trade of imaginary account
+    "max_locate_per_price": 0.01,
+    "max_risk": 50,  # set low to prevent compounding
+    "open_slippage": 0,
+    "close_slippage": 0,
 
-##########################################################################################################
-#Indicator Settings---------------------------------------------------------------------------------------
-##########################################################################################################
-#Super T setting
-lookback = 10 
-multiplier = 3
-#ATR settings
-lenth = 14
-lessthan = .11
-shift = 3 
-# Acquisition filter
-drop_acquistions_on = 1 
-aq_value = 1.05
-
-##########################################################################################################
-#Testing Settings-------------------------------------------------------------------------------------------
-##########################################################################################################
-# Commissions
-locate_fee = .05#per share
-trip_comm = 2 # round trip commission
-#Stop loss percent from trade price
-close_stop_on = 1 
-close_stop_list =[.10]# ,.05,.075,.10]# percent away from open pricee/ .001 is to small dont get even r
-# Pre-market high stop
-pre_market_h_stop_on = 0
-#Trailing stop
-trail_stop_on = 0  
-min_reward_then_let_it_run = 0
-min_reward_then_let_it_run_2 = 0
-reward_list = [4]# times the close_stop - 1 R for trailstop
-trail_stop_per_list =[0]#.03,.06,.1 if this is greater than close_stop it affects R
-
-# Both Main and All
-sharesfloat_on = 0
-sharesfloat_min_list = [-9999999]
-sharesfloat_max_list = [9999999999]
-market_cap_on = 0
-market_cap_min_list = [-999]
-market_cap_max_list = [9999999999999999]
-
-# sharesfloat_min_list = [0, 2000000,5000000,10000000 ]
-# sharesfloat_max_list = [2000000,5000000 ,10000000, 999999999999999999999999]
-# market_cap_min_list = [0 ,10000000,20000000,50000000]
-# market_cap_max_list = [10000000,20000000,50000000,99999999999999999999]
+    # Scanner Settings
+    # Insample out of sample settings
+    "insample_per_on": 1,
+    "return_start": 1,  # True
+    "split_per": 0.60,
+    # Random insample out of sample testing
+    "random_insample_on": 0,  # Turn on randon insample
+    "random_insample_start": 1,  # 1 for start 0 for end
+    "random_insample_per": 0.25,
 
 
-price_between_on = 1
-min_between_price = 2.5
-max_between_price = 20
+    # Indicator Settings
+    # Super T setting
+    "lookback": 10,
+    "multiplier": 3,
+    # ATR settings
+    "lenth": 14,
+    "lessthan": 0.11,
+    "shift": 3,
+    # Acquisition filter
+    "drop_acquistions_on": 1,
+    "aq_value": 1.05,
 
-buytime_on = 0  # On off switch
-buy_time = '09:30:00'
+    # Testing Settings
+    # Commissions
+    "locate_fee": 0.05,  # per share
+    "trip_comm": 2,  # round trip commission
+    # Stop loss percent from trade price
+    "close_stop_on": 1,
+    "close_stop_list": [0.10],  # percent percent away from open pricee/ .001 is to small dont get even r
 
-selltime_on = 1 # Sell time has to stay on
-sell_time = '15:58:00'
+    # Indicator Settings
+    # Super T setting
+    "lookback": 10,
+    "multiplier": 3,
+    # ATR settings
+    "lenth": 14,
+    "lessthan": 0.11,
+    "shift": 3,
+    # Acquisition filter
+    "drop_acquistions_on": 1,
+    "aq_value": 1.05,
+    
+    # Testing Settings
+    # Commissions
+    "locate_fee": 0.05,  # per share
+    "trip_comm": 2,  # round trip commission
+    # Stop loss percent from trade price
+    "close_stop_on": 1,
+    "close_stop_list": [0.10],  # percent percent away from open pricee/ .001 is to small dont get even r
 
-buy_between_time_on = 1
-buy_after_list = ['09:29:00']
-buy_before =  '09:35:00'
+    # Pre-market high stop
+    "pre_market_h_stop_on": 0,
+    #Trailing stop
+    "pre_market_h_stop_on": 0,
+    "trail_stop_on": 0,
+    "min_reward_then_let_it_run": 0,
+    "min_reward_then_let_it_run_2": 0,
+    "reward_list": [4],# times the close_stop - 1 R for trailstop
+    "trail_stop_per_list": [0],#.03,.06,.1 if this is greater than close_stop it affects R
 
-buy_between_time_on_2 = 1
-buy_after_2 = '09:33:00'
-buy_before_2 =  '10:35:00'
+    # Both Main and All
+    "sharesfloat_on": 0,
+    "sharesfloat_min_list": [-9999999],
+    "sharesfloat_max_list": [9999999999],
+    "market_cap_on": 0,
+    "market_cap_min_list": [-999],
+    "market_cap_max_list": [9999999999999999],
 
-volume_sum_cal_on = 0
-vol_sum_greaterthan_list = [1000000]
-
-pm_volume_sum_cal_on = 0
-pm_volume_sum_greaterthat = 1000000
-
-pm_gap_on = 0 # y_close to PMH
-pmg_greater = .40
-
-per_change_first_tick_on = 0 # % Change from first tick of my data greater than
-precent_greater = .50
-
-per_change_open_on = 0 # open to high change
-per_change_open_on_2 = 0 
-open_greater_list = [-.1]
-
-vwap_above_on = 0  # short
-
-vwap_below_on_list = [0] # long
-
-last_close_change_on = 1 # change from last close price
-last_close_change_on_2 = 0
-last_close_per_list = [.30] 
-
-percent_from_pmh_on = 0
-per_pmh_val = .30
-
-
-day_greater_than_pm_on = 0
-
-pm_greater_than_day_on = 0
-
-st_close_lessthan_on_list = [0] # Long
-st_close_greaterthan_on =   0 # short
-st_close_greaterthan_on_2 = 0 # short 2 
+    "sharesfloat_on": 0,
+    "sharesfloat_min_list": [-9999999],
+    "sharesfloat_max_list": [9999999999],
+    "market_cap_on": 0,
+    "market_cap_min_list": [-999],
+    "market_cap_max_list": [9999999999999999],
+    "price_between_on": 1,
+    "min_between_price": 2.5,
+    "max_between_price": 20,
+    "buytime_on": 0,
+    "buy_time": "09:30:00",
+    "selltime_on": 1,
+    "sell_time": "15:58:00",
+    "buy_between_time_on": 1,
+    "buy_after_list": ["09:29:00"],
+    "buy_before": "09:35:00",
+    "buy_between_time_on_2": 1,
+    "buy_after_2": "09:33:00",
+    "buy_before_2": "10:35:00",
+    "volume_sum_cal_on": 0,
+    "vol_sum_greaterthan_list": [1000000],
+    "pm_volume_sum_cal_on": 0,
+    "pm_volume_sum_greaterthat": 1000000,
+    "pm_gap_on": 0,
+    "pmg_greater": 0.4,
+    "per_change_first_tick_on": 0,
+    "precent_greater": 0.5,
+    "per_change_open_on": 0,
+    "per_change_open_on_2": 0,
+    "open_greater_list": [-0.1],
+    "vwap_above_on": 0,
+    "vwap_below_on_list": [0],
+    "last_close_change_on": 1,
+    "last_close_change_on_2": 0,
+    "last_close_per_list": [0.3],
+    "percent_from_pmh_on": 0,
+    "per_pmh_val": 0.3,
+    "day_greater_than_pm_on": 0,
+    "pm_greater_than_day_on": 0,
+    "st_close_lessthan_on_list": [0],# Long
+    "st_close_greaterthan_on": 0, # short
+    "st_close_greaterthan_on_2": 0 # short 2
+}
 ###########################################################################################################
+# Set up active parameters
+active_parms = {
+    # System settings
+    "mac": 1,  # 1 for mac 0 for windows
+    "longshort": "short",  # 'long' or 'short'
+    "main_or_all": "all",
+    "plot": 0,  # 1 to plot on
+    "plot_trades_only": 0,  # 0 or -1
+    "save_winners_df": 1,
+    # add more active parameters here
+}
+
+# Loop through parameters
+for param_name, default_value in default_parms.items():
+    active_value = active_parms.get(param_name, default_value)
+    # use active_value here as the value of the parameter
+    print(f"{param_name}: {active_value}")
 ########################### Run code here   #############################################################################
 
-print('------  Starting Testing strategy  ---------------------------------------------------------')      
-print('Going ', longshort)
+
 
 btresults_store = pd.DataFrame()
 #Get list of stocks you want to test
 # for sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,vwap_below_on,st_close_lessthan_on in zip(sharesfloat_min_list, sharesfloat_max_list,market_cap_min_list,market_cap_max_list, vwap_below_on_list, st_close_lessthan_on_list):
 #     #print(sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max  )
 #try:
-top_gap_by_date,file_path, df3 = loadmaindata(mac, main_or_all, start_date, end_date, volume_min, pm_vol_set, y_cl_gap, mid_change_set,change_from_open,Yclose_to_hod ,all_pm_vol_filter,all_pm_gap_filter,yclose_to_open_percent_filter )
+top_gap_by_date,file_path, df3 = loadmaindata(load_parms)
 
 
-for sfmin in sharesfloat_min_list:
-    sharesfloat_min = sfmin 
-    print('sharesfloat_min',sharesfloat_min)
-    for sfmax in sharesfloat_max_list:
-        sharesfloat_max = sfmax
-        print('sharesfloat_max',sharesfloat_max)
-        for mcmin in market_cap_min_list:
-            market_cap_min = mcmin
-            print('market_cap_min',market_cap_min)
-            for mcmax in market_cap_max_list:
-                market_cap_max = mcmax
-                print('market_cap_max',market_cap_max)
-                for lcp in last_close_per_list:
-                    last_close_per = lcp
-                    print('last_close_per',last_close_per)
-                    for  og in  open_greater_list:
-                        open_greater = og
-                        print('open_greater',open_greater)
-                        for vsg in vol_sum_greaterthan_list:
-                            vol_sum_greaterthan = vsg
-                            print('vol_sum_greaterthan',vol_sum_greaterthan)
-                            for bal in buy_after_list:
-                                buy_after = bal
-                                print('buy_after',buy_after)
-                                for cs in close_stop_list:
-                                    close_stop = cs
-                                    print('close_stop',close_stop)
-                                    for vwap in vwap_below_on_list:
-                                        vwap_below_on = vwap
-                                        print('vwap_below_on',vwap_below_on)
-                                        for stclt in st_close_lessthan_on_list:
-                                            st_close_lessthan_on = stclt
-                                            print('st_close_lessthan_on',st_close_lessthan_on) 
-                                            for rw in reward_list:
-                                                reward = rw
-                                                print('reward',reward)
-                                                for tspl in trail_stop_per_list:
-                                                    trail_stop_per = tspl
-                                                    results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,imaginary_account,full_balance_2,imaginary_account_2,bet_percentage,sharesfloat_on, market_cap_on, sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,top_gap_by_date,price_between_on,min_between_price, max_between_price , buytime_on, buy_time , selltime_on , sell_time, buy_between_time_on,buy_between_time_on_2, buy_after,buy_after_2, buy_before ,buy_before_2, volume_sum_cal_on, vol_sum_greaterthan, 
-                                                    pm_volume_sum_cal_on, pm_volume_sum_greaterthat, pm_gap_on, pmg_greater , per_change_first_tick_on, precent_greater, per_change_open_on,per_change_open_on_2, open_greater, vwap_above_on,
-                                                    vwap_below_on, last_close_change_on,last_close_change_on_2, last_close_per , day_greater_than_pm_on,pm_greater_than_day_on, st_close_lessthan_on, st_close_greaterthan_on,close_stop_on,close_stop,pre_market_h_stop_on,trail_stop_on,min_reward_then_let_it_run,reward,trail_stop_per,drop_acquistions_on, aq_value,percent_from_pmh_on, per_pmh_val )
-                                                    print(sfmin,sfmax,mcmin,mcmax,lcp,og,vsg,bal,bal,cs,vwap,stclt)
-                                        
-                                                    btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward,trail_stop_per ,num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
-                                                                            columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','trail_stop_per','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
-                                                    #Adds new line to dic each loop 
-                                                    
-                                                    btresults_store = btresults_store.append(btresults,ignore_index=True) 
-                                                    btresults_store.reset_index(drop=True)
+
+results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = backtester(active_value)
+
+btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward,trail_stop_per ,num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
+                        columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','trail_stop_per','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
+#Adds new line to dic each loop 
+
+btresults_store = btresults_store.append(btresults,ignore_index=True) 
+btresults_store.reset_index(drop=True)
 
 results_name = today + time_now +  '_backtest_results.csv' #
 if mac == 1:
