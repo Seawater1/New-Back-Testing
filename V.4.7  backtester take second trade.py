@@ -586,11 +586,8 @@ def plt_chart(date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker
     return plt.show()
 ####################################################################################################################
 ####################################################################################################################
-###########################################             The big picture          ###################################?
+###########################################             The big picture          ###################################
 ####################################################################################################################
-
-#check if close if less the open and by how much?
-#as above but check for push on the open?
 
 
 
@@ -618,9 +615,12 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
         for ticker in top_gap_by_date[date]:# the key is date
             #print('Loading data and applying indicator for ',date,ticker)
             try:
+                print()
                 risk_per_trade = imaginary_account * bet_percentage
-                
-                #print('risk_per_trade',risk_per_trade)
+                if risk_per_trade > max_risk:
+                    risk_per_trade = max_risk
+                    print('Compounding off ')
+                print('risk_per_trade',risk_per_trade)
                 df = load_interday(date,ticker,mac,df3)# load interday files ??? does this need to be moved to the top of fucntion
                 # get last close price
                 last_close = top_gap_by_date[date][ticker]
@@ -1490,7 +1490,7 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
 ##########################################################################################################################################################################################################################
 # General Settings                                                  #????????????##############################
 #############################################################################################################
-mac = 0 # 1 for mac 0 for windows  
+mac = 1 # 1 for mac 0 for windows  
 longshort =  'short'# 'long' 'short'
 main_or_all = 'all'
 plot = 0 # 1=pplot on 
@@ -1498,17 +1498,20 @@ plot_trades_only = 0 # 0 or -1
 save_winners_df = 1 
 
 # Balance 
-start_balance = 10000
+start_balance = 5000
 # Percent of account t risk
 risk_acc = .01 #.01
 total_risk = start_balance * risk_acc
+
+#############################
 # New Balance for  System
 full_balance = 0
-imaginary_account = 10000
+imaginary_account = 5000
 full_balance_2 = full_balance
 imaginary_account_2 = imaginary_account
 bet_percentage = 0.01 #risk per trade of imaginary account
 max_locate_per_price = .01
+max_risk = 50 # set low to to prevent compounding 
 open_slippage = 0
 close_slippage = 0
 
@@ -1526,11 +1529,11 @@ random_insample_per = .25
 # Filter by dates
 filter_by_dates_on = 1
 start_date = '2021-10-01' # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
-end_date = '2023-03-06' # YYYY-MM-DD
+end_date = '2023-03-12' # YYYY-MM-DD
 # Main file settings
 volume_min =  -999999# tradingview vol min is 1 million This is only one in use
 pm_vol_set = -999
-y_cl_gap = -9999
+y_cl_gap   = -9999
 mid_change_set = -9999
 
 # download all file settings
@@ -1597,7 +1600,7 @@ selltime_on = 1 # Sell time has to stay on
 sell_time = '15:58:00'
 
 buy_between_time_on = 1
-buy_after_list = ['09:29:00','09:35:00']
+buy_after_list = ['09:29:00']
 buy_before =  '09:35:00'
 
 buy_between_time_on_2 = 1
@@ -1626,7 +1629,7 @@ vwap_below_on_list = [0] # long
 
 last_close_change_on = 1 # change from last close price
 last_close_change_on_2 = 0
-last_close_per_list = [.20,.30,.40,.50] 
+last_close_per_list = [.30] 
 
 percent_from_pmh_on = 0
 per_pmh_val = .30
