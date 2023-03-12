@@ -3,23 +3,7 @@
 
 
 """
-def backtester(params):
-    open_slippage = params['open_slippage']
-    close_slippage = params['close_slippage']
-    locate_fee = params['locate_fee']
-    trip_comm = params['trip_comm']
-    full_balance = params['full_balance']
-    imaginary_account = params['imaginary_account']
-    full_balance_2 = params['full_balance_2']
-    imaginary_account_2 = params['imaginary_account_2']
-    bet_percentage = params['bet_percentage']
-    sharesfloat_on = params['sharesfloat_on']
-    market_cap_on = params['market_cap_on']
-    sharesfloat_min = params['sharesfloat_min']
-    sharesfloat_max = params['sharesfloat_max']
-    market_cap_min = params['market_cap_min']
-    market_cap_max = params['market_cap_max']
-    top_gap_by_date = params['top_gap_by_date']
+
 
 # Import libraries
 
@@ -59,20 +43,23 @@ time_now = today_dt.strftime("_%H-%M")
 ############################################################################################################
 
 def loadmaindata(**kwargs):
-    mac = kwargs.get('mac', 0)
-    main_or_all = kwargs.get('main_or_all', 'all')
-    filter_by_dates_on = kwargs.get('filter_by_dates_on', 0)
-    start_date = kwargs.get('start_date', '')
-    end_date = kwargs.get('end_date', '')
-    volume_min = kwargs.get('volume_min', -999999)
-    pm_vol_set = kwargs.get('pm_vol_set', -999)
-    y_cl_gap = kwargs.get('y_cl_gap', -9999)
-    mid_change_set = kwargs.get('mid_change_set', -9999)
-    change_from_open = kwargs.get('change_from_open', -999)
-    yclose_to_open_percent_filter = kwargs.get('yclose_to_open_percent_filter', 15)
-    Yclose_to_hod = kwargs.get('Yclose_to_hod', -9999)
-    all_pm_vol_filter = kwargs.get('all_pm_vol_filter', -9999)
-    all_pm_gap_filter = kwargs.get('all_pm_gap_filter', -
+    mac = load_parms['mac']
+    main_or_all = load_parms['main_or_all']
+    filter_by_dates_on = load_parms['filter_by_dates_on']
+    start_date = load_parms['start_date']
+    end_date = load_parms['end_date']
+    volume_min = load_parms['volume_min']
+    pm_vol_set = load_parms['pm_vol_set']
+    y_cl_gap = load_parms['y_cl_gap']
+    mid_change_set = load_parms['mid_change_set']
+    change_from_open = load_parms['change_from_open']
+    yclose_to_open_percent_filter = load_parms['yclose_to_open_percent_filter']
+    Yclose_to_hod = load_parms['Yclose_to_hod']
+    all_pm_vol_filter = load_parms['all_pm_vol_filter']
+    all_pm_gap_filter = load_parms['all_pm_gap_filter']
+
+    yclose_to_open_percent_filter = load_parms['yclose_to_open_percent_filter']
+ 
   
     if mac == 0:
         if main_or_all == 'all': 
