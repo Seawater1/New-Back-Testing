@@ -622,10 +622,7 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
                 if risk_per_trade > max_risk:
                     risk_per_trade = max_risk
                     print('Compounding off, ,limiting max risk ')
-                print('risk_per_trade',risk_per_trade)
-                
-                
-                #print('risk_per_trade',risk_per_trade)
+                # print('risk_per_trade',risk_per_trade)
                 df = load_interday(date,ticker,mac,df3)# load interday files ??? does this need to be moved to the top of fucntion
                 # get last close price
                 last_close = top_gap_by_date[date][ticker]
@@ -1500,14 +1497,14 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
 mac = 0 # 1 for mac 0 for windows  
 longshort =  'short'# 'long' 'short'
 main_or_all = 'all'
-plot = 1 # 1=pplot on 
+plot = 0 # 1=pplot on 
 plot_trades_only = 0 # 0 or -1
 save_winners_df = 1 
 
 # Balance 
 start_balance = 1200
 # Percent of account t risk
-risk_acc = .03 #.01
+risk_acc = .04 #.01
 total_risk = start_balance * risk_acc
 ########################################
 # New Balance for  System
@@ -1515,8 +1512,8 @@ full_balance = 0
 imaginary_account = 1200
 full_balance_2 = full_balance
 imaginary_account_2 = imaginary_account
-bet_percentage = 0.03 #risk per trade of imaginary account
-max_risk = 36
+bet_percentage = 0.04 #risk per trade of imaginary account
+max_risk = 9999 # compounding off 
 max_locate_by_price = .01 
 open_slippage = 0
 close_slippage = 0
@@ -1525,7 +1522,7 @@ close_slippage = 0
 # Scanner Settings
 #############################################################################################################
 # Insample out of sample settings
-insample_per_on = 0
+insample_per_on = 1
 return_start = 1 #True 
 split_per = .60# 
 # Random insample out of sample testing
@@ -1534,8 +1531,8 @@ random_insample_start = 1 # 1 for start 0 for end
 random_insample_per = .25
 # Filter by dates
 filter_by_dates_on = 1
-start_date = '2021-10-01' # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
-end_date = '2023-03-11' # YYYY-MM-DD
+start_date = '2021-11-01' # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
+end_date = '2023-03-12' # YYYY-MM-DD
 # Main file settings
 volume_min =  -999999# tradingview vol min is 1 million This is only one in use
 pm_vol_set = -999
@@ -1544,7 +1541,7 @@ mid_change_set = -9999
 
 # download all file settings
 change_from_open = -999
-yclose_to_open_percent_filter = 5 #?????
+yclose_to_open_percent_filter = 20 #?????
 Yclose_to_hod = -9999
 all_pm_vol_filter = -9999
 all_pm_gap_filter = -999999 #Pre-market Gap % | Pre-market Change
@@ -1603,7 +1600,7 @@ buytime_on = 0  # On off switch
 buy_time = '09:30:00'
 
 selltime_on = 1 # Sell time has to stay on
-sell_time_list = ['14:00:00']
+sell_time_list = ['13:45:00']
 
 buy_between_time_on = 1
 buy_after_list = ['09:29:00']
