@@ -619,6 +619,11 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
             #print('Loading data and applying indicator for ',date,ticker)
             try:
                 risk_per_trade = imaginary_account * bet_percentage
+                if risk_per_trade > max_risk:
+                    risk_per_trade = max_risk
+                    print('Compounding off, ,limiting max risk ')
+                print('risk_per_trade',risk_per_trade)
+                
                 
                 #print('risk_per_trade',risk_per_trade)
                 df = load_interday(date,ticker,mac,df3)# load interday files ??? does this need to be moved to the top of fucntion
@@ -1500,16 +1505,18 @@ plot_trades_only = 0 # 0 or -1
 save_winners_df = 1 
 
 # Balance 
-start_balance = 12000
+start_balance = 1200
 # Percent of account t risk
 risk_acc = .03 #.01
 total_risk = start_balance * risk_acc
+########################################
 # New Balance for  System
 full_balance = 0
-imaginary_account = 12000
+imaginary_account = 1200
 full_balance_2 = full_balance
 imaginary_account_2 = imaginary_account
 bet_percentage = 0.03 #risk per trade of imaginary account
+max_risk = 36
 max_locate_by_price = .01 
 open_slippage = 0
 close_slippage = 0
@@ -1527,7 +1534,7 @@ random_insample_start = 1 # 1 for start 0 for end
 random_insample_per = .25
 # Filter by dates
 filter_by_dates_on = 1
-start_date = '2022-06-01' # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
+start_date = '2021-10-01' # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
 end_date = '2023-03-11' # YYYY-MM-DD
 # Main file settings
 volume_min =  -999999# tradingview vol min is 1 million This is only one in use
@@ -1600,7 +1607,7 @@ sell_time_list = ['14:00:00']
 
 buy_between_time_on = 1
 buy_after_list = ['09:29:00']
-buy_before =  '09:35:00'
+buy_before =  '09:30:00'
 
 buy_between_time_on_2 = 0
 buy_after_2 = '09:33:00'
