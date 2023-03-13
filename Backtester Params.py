@@ -608,15 +608,14 @@ def plt_chart(active_value,date, ticker, ohlc_intraday,outcome,ticker_return,out
 ####################################################################################################################
 
 ohlc_intraday = {}
-def backtester(load_parms,active_value):
-    mac = load_parms['mac']
+def backtester(active_value):
+    mac = active_value['mac']
     longshort = active_value["longshort"]
     plot = active_value["plot"]
     plot_trades_only = active_value["plot_trades_only"]
     save_winners_df = active_value["save_winners_df"]
     start_balance = active_value["start_balance"]
     risk_acc = active_value["risk_acc"]
-    total_risk = active_value["total_risk"]
     full_balance = active_value["full_balance"]
     imaginary_account = active_value["imaginary_account"]
     full_balance_2 = active_value["full_balance_2"]
@@ -626,23 +625,8 @@ def backtester(load_parms,active_value):
     max_risk = active_value["max_risk"]
     open_slippage = active_value["open_slippage"]
     close_slippage = active_value["close_slippage"]
-    insample_per_on = active_value["insample_per_on"]
-    return_start = active_value["return_start"]
-    split_per = active_value["split_per"]
-    random_insample_on = active_value["random_insample_on"]
-    random_insample_start = active_value["random_insample_start"]
-    random_insample_per = active_value["random_insample_per"]
-    lookback = active_value["lookback"]
-    multiplier = active_value["multiplier"]
-    lenth = active_value["lenth"]
-    lessthan = active_value["lessthan"]
-    shift = active_value["shift"]
-    drop_acquistions_on = active_value["drop_acquistions_on"]
-    aq_value = active_value["aq_value"]
-    locate_fee = active_value["locate_fee"]
-    trip_comm = active_value["trip_comm"]
-    close_stop_on = active_value["close_stop_on"]
-    close_stop_ = active_value["close_stop"]
+    
+
     lookback = active_value["lookback"]
     multiplier = active_value["multiplier"]
     lenth = active_value["lenth"]
@@ -654,25 +638,23 @@ def backtester(load_parms,active_value):
     trip_comm = active_value["trip_comm"]
     close_stop_on = active_value["close_stop_on"]
     close_stop = active_value["close_stop"]
+
+
     pre_market_h_stop_on = active_value["pre_market_h_stop_on"]
     pre_market_h_stop_on = active_value["pre_market_h_stop_on"]
-    trail_stop_on = active_value["triptrail_stop_on_comm"]
+    trail_stop_on = active_value["trail_stop_on"]
     min_reward_then_let_it_run = active_value["min_reward_then_let_it_run"]
     min_reward_then_let_it_run_2 = active_value["min_reward_then_let_it_run_2"]
     reward = active_value["reward"]
     trail_stop_per = active_value["trail_stop_per"]
+    
     sharesfloat_on = active_value["sharesfloat_on"]
     sharesfloat_min = active_value["sharesfloat_min"]
     sharesfloat_max = active_value["sharesfloat_max"]
     market_cap_on = active_value["market_cap_on"]
     market_cap_min = active_value["market_cap_min"]
     market_cap_max = active_value["market_cap_max"]
-    sharesfloat_on = active_value["sharesfloat_on"]
-    sharesfloat_min = active_value["sharesfloat_min"]
-    sharesfloat_max = active_value["sharesfloat_max"]
-    market_cap_on = active_value["market_cap_on"]
-    market_cap_min = active_value["market_cap_min"]
-    market_cap_max = active_value["market_cap_max"]
+
     price_between_on = active_value["price_between_on"]
     min_between_price = active_value["min_between_price"]
     max_between_price = active_value["max_between_price"]
@@ -994,6 +976,8 @@ def backtester(load_parms,active_value):
                             direction = 'short'
                             open_price = ohlc_intraday[date,ticker]["open"][i+1]# ["low"][i+1] +1 is the next candle. Need to work in slipage here  
                             print('open_price',open_price)
+                            print('close_stop',close_stop)
+                            print('reward',reward)
                             reward_price = open_price - ((open_price * close_stop) * reward)
                             print('reward_price',reward_price)
                             ohlc_intraday[date,ticker]["trade_sig"][i+1] = open_price# ["trade_sig"][i+1]            
@@ -1604,7 +1588,7 @@ def backtester(load_parms,active_value):
 ##########################################################################################################################################################################################################################
 ##########################################################################################################################################################################################################################
 load_parms = {
-    'mac': 0,
+    'mac': 1,
     'main_or_all': 'all',
     'filter_by_dates_on': 1,
     'start_date': '2021-10-01',
@@ -1629,6 +1613,26 @@ load_parms = {
 #############################################################################################################
 
 default_parms = {
+    'mac': 1,
+    'main_or_all': 'all',
+    'filter_by_dates_on': 1,
+    'start_date': '2021-10-01',
+    'end_date': '2023-03-12',
+    # Scanner Settings
+    # Insample out of sample settings
+    "insample_per_on": 1,
+    "split_per": 0.60,
+    "return_start": 1,  # True
+    # Random insample out of sample testing
+    "random_insample_on": 0,  # Turn on randon insample
+    "random_insample_start": 1,  # 1 for start 0 for end
+    "random_insample_per": 0.25,
+ 
+    #Scanner
+    'volume_min': -999999,
+    'pm_vol_set': 0, # main
+    'yclose_to_open_percent_filter': 15,# all
+
     # System settings
 
     "longshort": "short",  # 'long' or 'short'
@@ -1653,17 +1657,6 @@ default_parms = {
     "open_slippage": 0,
     "close_slippage": 0,
 
-    # Scanner Settings
-    # Insample out of sample settings
-    "insample_per_on": 1,
-    "return_start": 1,  # True
-    "split_per": 0.60,
-    # Random insample out of sample testing
-    "random_insample_on": 0,  # Turn on randon insample
-    "random_insample_start": 1,  # 1 for start 0 for end
-    "random_insample_per": 0.25,
-
-
     # Indicator Settings
     # Super T setting
     "lookback": 10,
@@ -1682,27 +1675,7 @@ default_parms = {
     "trip_comm": 2,  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": 1,
-    "close_stop": [0.10],  # percent percent away from open pricee/ .001 is to small dont get even r
-
-    # Indicator Settings
-    # Super T setting
-    "lookback": 10,
-    "multiplier": 3,
-    # ATR settings
-    "lenth": 14,
-    "lessthan": 0.11,
-    "shift": 3,
-    # Acquisition filter
-    "drop_acquistions_on": 1,
-    "aq_value": 1.05,
-    
-    # Testing Settings
-    # Commissions
-    "locate_fee": 0.05,  # per share
-    "trip_comm": 2,  # round trip commission
-    # Stop loss percent from trade price
-    "close_stop_on": 1,
-    "close_stop": [0.10],  # percent percent away from open pricee/ .001 is to small dont get even r
+    "close_stop": 0.10,  # percent percent away from open pricee/ .001 is to small dont get even r
 
     # Pre-market high stop
     "pre_market_h_stop_on": 0,
@@ -1711,23 +1684,17 @@ default_parms = {
     "trail_stop_on": 0,
     "min_reward_then_let_it_run": 0,
     "min_reward_then_let_it_run_2": 0,
-    "reward": [4],# times the close_stop - 1 R for trailstop
-    "trail_stop_per": [0],#.03,.06,.1 if this is greater than close_stop it affects R
+    "reward": 4,# times the close_stop - 1 R for trailstop
+    "trail_stop_per": 0,#.03,.06,.1 if this is greater than close_stop it affects R
 
     # Both Main and All
     "sharesfloat_on": 0,
-    "sharesfloat_min": [-9999999],
-    "sharesfloat_max": [9999999999],
+    "sharesfloat_min": -9999999,
+    "sharesfloat_max": 9999999999,
     "market_cap_on": 0,
-    "market_cap_min": [-999],
-    "market_cap_max": [9999999999999999],
+    "market_cap_min": -999,
+    "market_cap_max": 9999999999999999,
 
-    "sharesfloat_on": 0,
-    "sharesfloat_min": [-9999999],
-    "sharesfloat_max": [9999999999],
-    "market_cap_on": 0,
-    "market_cap_min": [-999],
-    "market_cap_max": [9999999999999999],
     "price_between_on": 1,
     "min_between_price": 2.5,
     "max_between_price": 20,
@@ -1736,13 +1703,13 @@ default_parms = {
     "selltime_on": 1,
     "sell_time": "15:58:00",
     "buy_between_time_on": 1,
-    "buy_after": ["09:29:00"],
+    "buy_after": "09:29:00",
     "buy_before": "09:35:00",
     "buy_between_time_on_2": 1,
     "buy_after_2": "09:33:00",
     "buy_before_2": "10:35:00",
     "volume_sum_cal_on": 0,
-    "vol_sum_greaterthan": [1000000],
+    "vol_sum_greaterthan": 1000000,
     "pm_volume_sum_cal_on": 0,
     "pm_volume_sum_greaterthat": 1000000,
     "pm_gap_on": 0,
@@ -1751,19 +1718,19 @@ default_parms = {
     "precent_greater": 0.5,
     "per_change_open_on": 0,
     "per_change_open_on_2": 0,
-    "open_greater": [-0.1],
+    "open_greater": -0.1,
     "vwap_above_on": 0,
-    "vwap_below_on": [0],
+    "vwap_below_on": 0,
     "last_close_change_on": 1,
     "last_close_change_on_2": 0,
-    "last_close_per": [0.3],
+    "last_close_per": 0.3,
     "percent_from_pmh_on": 0,
     "per_pmh_val": 0.3,
     "day_greater_than_pm_on": 0,
     "pm_greater_than_day_on": 0,
-    "st_close_lessthan_on": [0],# Long
+    "st_close_lessthan_on": 0,# Long
     "st_close_greaterthan_on": 0, # short
-    "st_close_greaterthan_on_2": 0 # short 2
+    "st_close_greaterthan_on_2": 0, # short 2
 }
 ###########################################################################################################
 # Set up active parameters
@@ -1772,26 +1739,22 @@ active_parms = {
     "precent_greater": 0.5,
     "per_change_open_on": 0,
     "per_change_open_on_2": 0,
-    "open_greater": [-0.1],
-    "vwap_above_on": 0,
-    "vwap_below_on": [0],
-    "last_close_change_on": 1,
-    "last_close_change_on_2": 0,
-    "last_close_per": [0.3],
-    "percent_from_pmh_on": 0,
-    "per_pmh_val": 0.3,
-    "day_greater_than_pm_on": 0,
-    "pm_greater_than_day_on": 0,
-    "st_close_lessthan_on": [0],# Long
-    "st_close_greaterthan_on": 0, # short
-    "st_close_greaterthan_on_2": 0 # short 2
+    "open_greater": -0.1,
 }
 
+
+output_dict = {}
 # Loop through parameters
 for param_name, default_value in default_parms.items():
     active_value = active_parms.get(param_name, default_value)
     # use active_value here as the value of the parameter
+    output_dict[param_name] = active_value
     print(f"{param_name}: {active_value}")
+    print(output_dict)
+    
+
+
+
 ########################### Run code here   #############################################################################
 
 
@@ -1801,11 +1764,11 @@ btresults_store = pd.DataFrame()
 # for sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,vwap_below_on,st_close_lessthan_on in zip(sharesfloat_min, sharesfloat_max,market_cap_min,market_cap_max, vwap_below_on, st_close_lessthan_on):
 #     #print(sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max  )
 #try:
-top_gap_by_date,file_path, flt_database = loadmaindata(load_parms)
+top_gap_by_date,file_path, flt_database = loadmaindata(output_dict)
 
 
 
-results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = backtester(load_parms,active_value)
+results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = backtester(output_dict)
 # 
 # btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward,trail_stop_per ,num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
 #                         columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','trail_stop_per','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
