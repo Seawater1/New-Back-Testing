@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-
-
+sharep ration
+max drawdown
+loaddata df3 need a good looking at
 """
 
 
@@ -41,26 +42,21 @@ time_now = today_dt.strftime("_%H-%M")
 ############################################################################################################
 ## Functions to load data
 ############################################################################################################
-
-def loadmaindata(**kwargs):
+def loadmaindata(load_parms):
     mac = load_parms['mac']
     main_or_all = load_parms['main_or_all']
     filter_by_dates_on = load_parms['filter_by_dates_on']
     start_date = load_parms['start_date']
     end_date = load_parms['end_date']
+    insample_per_on = load_parms['insample_per_on']
+    split_per = load_parms['split_per']
+    return_start = load_parms['return_start']
+    random_insample_on = load_parms['random_insample_on']
+    random_insample_per = load_parms['random_insample_per']
+    random_insample_start = load_parms['random_insample_start']
     volume_min = load_parms['volume_min']
     pm_vol_set = load_parms['pm_vol_set']
-    y_cl_gap = load_parms['y_cl_gap']
-    mid_change_set = load_parms['mid_change_set']
-    change_from_open = load_parms['change_from_open']
     yclose_to_open_percent_filter = load_parms['yclose_to_open_percent_filter']
-    Yclose_to_hod = load_parms['Yclose_to_hod']
-    all_pm_vol_filter = load_parms['all_pm_vol_filter']
-    all_pm_gap_filter = load_parms['all_pm_gap_filter']
-
-    yclose_to_open_percent_filter = load_parms['yclose_to_open_percent_filter']
- 
-  
     if mac == 0:
         if main_or_all == 'all': 
             file_path = r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_database\download_all_main.csv'
@@ -70,16 +66,13 @@ def loadmaindata(**kwargs):
         if main_or_all == 'all':
             file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_database/download_all_main.csv"
         if main_or_all == 'main':
-            file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/2021DataBase.csv"
-        
+            file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/2021DataBase.csv"   
     # Load file of tickers and date
     print('Using filepath', file_path)
     df = pd.read_csv(file_path,
                       parse_dates=[1], dayfirst=True,index_col=0)# Puts year first
     df['Date'] = pd.to_datetime(df.Date)#Change time object to datetime
     print('Ticker Database no filter',df)
-    
-       
     
     #Filter by dates
     if filter_by_dates_on == 1:
@@ -88,8 +81,6 @@ def loadmaindata(**kwargs):
         df1 = df.loc[date_filter]
         df = df1
         print('DF filtered by Date', df)
-    
-    
     # Split insample and out of sample
     if insample_per_on == 1: 
         print('Spliting insample and out of smaple -----------------------------------------------------------------',split_per)
@@ -105,18 +96,6 @@ def loadmaindata(**kwargs):
             
         print('Split Percent ', split_per)
         print('In sample df ',df)
-        # #
-        # pos = ((df.index[-1])* split_per)
-        # pos1 = round(pos)
-        # start_splt = df.iloc[:pos1,:]
-        # end_split = df.iloc[pos1:,:]
-        # if insample_per_start == 1:
-        #    df = start_splt
-        #    startend = 'start --- split'
-        # else: 
-        #     df = end_split
-        #     startend = 'end --- split'
-        
         
     #Random OOS not for training for test afterwards
     if random_insample_on == 1:
@@ -153,8 +132,6 @@ def loadmaindata(**kwargs):
         #            (df['Shares Float'] < sharesfloat_max) &
         #            (df['Market Capitalization'] > market_cap_min) & 
         #            (df['Market Capitalization'] < market_cap_max))
-        
-    
     if main_or_all == 'main':                                    
          df2 = df.loc[(df['Volume'] > volume_min) &
                            (df['Pre-market Volume'] >= pm_vol_set)] # &
@@ -179,14 +156,30 @@ def loadmaindata(**kwargs):
     return top_gap_by_date,file_path,df2
 
 # function to load interday data
-def load_interday(date,ticker,mac,database):
-    
-    
-    #Filter database by data and ticker 
-    filter_criteria = ((database['Date'] == date) & (database['Ticker'] == ticker)) 
-    filter_database = database[ filter_criteria ] 
-    sf = filter_database.iloc[0,10]
-    mc = filter_database.iloc[0,28]
+def load_interday(date,ticker,mac,flt_database):
+    """
+    Parameters
+    ----------
+    date : TYPE
+        filter by date.
+    ticker : TYPE
+        filter by symbol.
+    mac : TYPE
+       mac or win.
+    flt_database : TYPE
+        main database, already filtered .
+
+    Returns
+    -------
+    data : TYPE
+        DESCRIPTION.
+
+    """
+    #Filter flt_database by data and ticker 
+    filter_criteria = ((flt_database['Date'] == date) & (flt_database['Ticker'] == ticker)) 
+    today_symbol_data = flt_database[ filter_criteria ] 
+    sf = today_symbol_data.iloc[0,10]#shares float
+    mc = today_symbol_data.iloc[0,28]# market cap 
      
     year = date.strftime("%Y") 
     
@@ -214,7 +207,7 @@ def load_interday(date,ticker,mac,database):
 def polygon_interday(symbol,date):
     api_key = 'R8G47SaJzsO0NS5JoorpojbyMcOHmur5'
     # Set the URL for the API request
-    url = f'https://api.polygon.io/v2/aggs/ticker/{symbol}/range/1/minute/{date}/{date}?adjusted=false&limit=50000&apiKey={api_key}'#https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-07-22?adjusted=false&sort=asc&limit=50000&apiKey=R8G47SaJzsO0NS5JoorpojbyMcOHmur5
+    url = f'https://api.polygon.io/v2/aggs/ticker/{symbol}/range/1/minute/{date}/{date}?adjusted=true&limit=50000&apiKey={api_key}'#https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-07-22?adjusted=false&sort=asc&limit=50000&apiKey=R8G47SaJzsO0NS5JoorpojbyMcOHmur5
     # Send the request and store the response
     response = requests.get(url)
     # Convert the response to a JSON object
@@ -565,7 +558,8 @@ def get_supertrend(high, low, close, lookback, multiplier):
 def round_to_nearest_100(number):
     return ((number + 99) // 100) * 100
 
-def plt_chart(date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2):
+def plt_chart(active_value,date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2):
+    longshort = active_value['longshort']
     fig, ax = plt.subplots(nrows=2, sharex=True, figsize=(15,8))
     
     ax[0].plot(ohlc_intraday[date,ticker].index, ohlc_intraday[date,ticker].close,ohlc_intraday[date,ticker].vwap)
@@ -614,9 +608,109 @@ def plt_chart(date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker
 ####################################################################################################################
 
 ohlc_intraday = {}
-def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,imaginary_account,full_balance_2,imaginary_account_2,bet_percentage,sharesfloat_on, market_cap_on,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,top_gap_by_date,price_between_on,min_between_price, max_between_price , buytime_on, buy_time , selltime_on , sell_time, buy_between_time_on,buy_between_time_on_2, buy_after,buy_after_2 ,buy_before ,buy_before_2, volume_sum_cal_on, vol_sum_greaterthan, 
-                           pm_volume_sum_cal_on, pm_volume_sum_greaterthat, pm_gap_on, pmg_greater , per_change_first_tick_on, precent_greater, per_change_open_on,per_change_open_on_2, open_greater, vwap_above_on,
-                           vwap_below_on, last_close_change_on,last_close_change_on_2, last_close_per , day_greater_than_pm_on,pm_greater_than_day_on, st_close_lessthan_on, st_close_greaterthan_on,close_stop_on,close_stop,pre_market_h_stop_on,trail_stop_on,min_reward_then_let_it_run,reward,trail_stop_per,drop_acquistions_on, aq_value, percent_from_pmh_on, per_pmh_val ):
+def backtester(load_parms,active_value):
+    mac = load_parms['mac']
+    longshort = active_value["longshort"]
+    plot = active_value["plot"]
+    plot_trades_only = active_value["plot_trades_only"]
+    save_winners_df = active_value["save_winners_df"]
+    start_balance = active_value["start_balance"]
+    risk_acc = active_value["risk_acc"]
+    total_risk = active_value["total_risk"]
+    full_balance = active_value["full_balance"]
+    imaginary_account = active_value["imaginary_account"]
+    full_balance_2 = active_value["full_balance_2"]
+    imaginary_account_2 = active_value["imaginary_account_2"]
+    bet_percentage = active_value["bet_percentage"]
+    max_locate_per_price = active_value["max_locate_per_price"]
+    max_risk = active_value["max_risk"]
+    open_slippage = active_value["open_slippage"]
+    close_slippage = active_value["close_slippage"]
+    insample_per_on = active_value["insample_per_on"]
+    return_start = active_value["return_start"]
+    split_per = active_value["split_per"]
+    random_insample_on = active_value["random_insample_on"]
+    random_insample_start = active_value["random_insample_start"]
+    random_insample_per = active_value["random_insample_per"]
+    lookback = active_value["lookback"]
+    multiplier = active_value["multiplier"]
+    lenth = active_value["lenth"]
+    lessthan = active_value["lessthan"]
+    shift = active_value["shift"]
+    drop_acquistions_on = active_value["drop_acquistions_on"]
+    aq_value = active_value["aq_value"]
+    locate_fee = active_value["locate_fee"]
+    trip_comm = active_value["trip_comm"]
+    close_stop_on = active_value["close_stop_on"]
+    close_stop_ = active_value["close_stop"]
+    lookback = active_value["lookback"]
+    multiplier = active_value["multiplier"]
+    lenth = active_value["lenth"]
+    lessthan = active_value["lessthan"]
+    shift = active_value["shift"]
+    drop_acquistions_on = active_value["drop_acquistions_on"]
+    aq_value = active_value["aq_value"]
+    locate_fee = active_value["locate_fee"]
+    trip_comm = active_value["trip_comm"]
+    close_stop_on = active_value["close_stop_on"]
+    close_stop = active_value["close_stop"]
+    pre_market_h_stop_on = active_value["pre_market_h_stop_on"]
+    pre_market_h_stop_on = active_value["pre_market_h_stop_on"]
+    trail_stop_on = active_value["triptrail_stop_on_comm"]
+    min_reward_then_let_it_run = active_value["min_reward_then_let_it_run"]
+    min_reward_then_let_it_run_2 = active_value["min_reward_then_let_it_run_2"]
+    reward = active_value["reward"]
+    trail_stop_per = active_value["trail_stop_per"]
+    sharesfloat_on = active_value["sharesfloat_on"]
+    sharesfloat_min = active_value["sharesfloat_min"]
+    sharesfloat_max = active_value["sharesfloat_max"]
+    market_cap_on = active_value["market_cap_on"]
+    market_cap_min = active_value["market_cap_min"]
+    market_cap_max = active_value["market_cap_max"]
+    sharesfloat_on = active_value["sharesfloat_on"]
+    sharesfloat_min = active_value["sharesfloat_min"]
+    sharesfloat_max = active_value["sharesfloat_max"]
+    market_cap_on = active_value["market_cap_on"]
+    market_cap_min = active_value["market_cap_min"]
+    market_cap_max = active_value["market_cap_max"]
+    price_between_on = active_value["price_between_on"]
+    min_between_price = active_value["min_between_price"]
+    max_between_price = active_value["max_between_price"]
+    buytime_on = active_value["buytime_on"]
+    buy_time = active_value["buy_time"]
+    selltime_on = active_value["selltime_on"]
+    sell_time = active_value["sell_time"]
+    buy_between_time_on = active_value["buy_between_time_on"]
+    buy_after = active_value["buy_after"]
+    buy_before = active_value["buy_before"]
+    buy_between_time_on_2 = active_value["buy_between_time_on_2"]
+    buy_after_2 = active_value["buy_after_2"]
+    buy_before_2 = active_value["buy_before_2"]
+    volume_sum_cal_on = active_value["volume_sum_cal_on"]
+    vol_sum_greaterthan = active_value["vol_sum_greaterthan"]
+    pm_volume_sum_cal_on = active_value["pm_volume_sum_cal_on"]
+    pm_volume_sum_greaterthat = active_value["pm_volume_sum_greaterthat"]
+    pm_gap_on = active_value["pm_gap_on"]
+    pmg_greater = active_value["pmg_greater"]
+    per_change_first_tick_on = active_value["per_change_first_tick_on"]
+    precent_greater = active_value["precent_greater"]
+    per_change_open_on = active_value["per_change_open_on"]
+    per_change_open_on_2 = active_value["per_change_open_on_2"]
+    open_greater = active_value["open_greater"]
+    vwap_above_on = active_value["vwap_above_on"]
+    vwap_below_on = active_value["vwap_below_on"]
+    last_close_change_on = active_value["last_close_change_on"]
+    last_close_change_on_2 = active_value["last_close_change_on_2"]
+    last_close_per = active_value["last_close_per"],
+    percent_from_pmh_on = active_value["percent_from_pmh_on"]
+    per_pmh_val = active_value["per_pmh_val"]
+    day_greater_than_pm_on = active_value["day_greater_than_pm_on"]
+    pm_greater_than_day_on = active_value["pm_greater_than_day_on"]
+    st_close_lessthan_on = active_value["st_close_lessthan_on"]
+    st_close_greaterthan_on = active_value["st_close_greaterthan_on"]
+    st_close_greaterthan_on_2 = active_value["st_close_greaterthan_on_2"]
+
+    
     print('------  Starting Testing strategy  ---------------------------------------------------------')      
     print('Going ', longshort)
     #dictionarys to store data
@@ -635,12 +729,14 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
             #print('Loading data and applying indicator for ',date,ticker)
             try:
                 print()
+                total_risk = start_balance * risk_acc
                 risk_per_trade = imaginary_account * bet_percentage
+                
                 if risk_per_trade > max_risk:
                     risk_per_trade = max_risk
                     print('Compounding off ')
                 print('risk_per_trade',risk_per_trade)
-                df = load_interday(date,ticker,mac,df3)# load interday files ??? does this need to be moved to the top of fucntion
+                df = load_interday(date,ticker,mac,flt_database)# load interday files ??? does this need to be moved to the top of fucntion
                 # get last close price
                 last_close = top_gap_by_date[date][ticker]
 
@@ -1502,29 +1598,36 @@ def backtester(open_slippage,close_slippage,locate_fee,trip_comm,full_balance,im
         joined.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% winner_name, index=False)
 
     
-    return results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2              
+    return results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2 
+
+                 
 ##########################################################################################################################################################################################################################
 ##########################################################################################################################################################################################################################
 load_parms = {
-    'mac': 1,
+    'mac': 0,
     'main_or_all': 'all',
     'filter_by_dates_on': 1,
     'start_date': '2021-10-01',
     'end_date': '2023-03-12',
+    
+    'insample_per_on': 0,
+    'split_per':.5,
+    'return_start':0,
+    
+    'random_insample_on' :0,
+    'random_insample_per':.5,
+    'random_insample_start':0,
+    #Scanner
     'volume_min': -999999,
-    'pm_vol_set': -999,
-    'y_cl_gap': -9999,
-    'mid_change_set': -9999,
-    'change_from_open': -999,
-    'yclose_to_open_percent_filter': 15,
-    'Yclose_to_hod': -9999,
-    'all_pm_vol_filter': -9999,
-    'all_pm_gap_filter': -999999,
+    'yclose_to_open_percent_filter': 15,# all
+    'pm_vol_set': 0, # main
+
 }
 
 ##########################################################################################################################################################################################################################
 # General Settings                                                  #????????????##############################
 #############################################################################################################
+
 default_parms = {
     # System settings
 
@@ -1538,13 +1641,12 @@ default_parms = {
     "start_balance": 5000,
     # Percent of account to risk
     "risk_acc": 0.01,  # 0.01
-    "total_risk": start_balance * risk_acc,
 
     # New Balance for System
     "full_balance": 0,
     "imaginary_account": 5000,
-    "full_balance_2": full_balance,
-    "imaginary_account_2": imaginary_account,
+    "full_balance_2": 0,
+    "imaginary_account_2": 5000,
     "bet_percentage": 0.01,  # risk per trade of imaginary account
     "max_locate_per_price": 0.01,
     "max_risk": 50,  # set low to prevent compounding
@@ -1580,7 +1682,7 @@ default_parms = {
     "trip_comm": 2,  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": 1,
-    "close_stop_list": [0.10],  # percent percent away from open pricee/ .001 is to small dont get even r
+    "close_stop": [0.10],  # percent percent away from open pricee/ .001 is to small dont get even r
 
     # Indicator Settings
     # Super T setting
@@ -1600,7 +1702,7 @@ default_parms = {
     "trip_comm": 2,  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": 1,
-    "close_stop_list": [0.10],  # percent percent away from open pricee/ .001 is to small dont get even r
+    "close_stop": [0.10],  # percent percent away from open pricee/ .001 is to small dont get even r
 
     # Pre-market high stop
     "pre_market_h_stop_on": 0,
@@ -1609,23 +1711,23 @@ default_parms = {
     "trail_stop_on": 0,
     "min_reward_then_let_it_run": 0,
     "min_reward_then_let_it_run_2": 0,
-    "reward_list": [4],# times the close_stop - 1 R for trailstop
-    "trail_stop_per_list": [0],#.03,.06,.1 if this is greater than close_stop it affects R
+    "reward": [4],# times the close_stop - 1 R for trailstop
+    "trail_stop_per": [0],#.03,.06,.1 if this is greater than close_stop it affects R
 
     # Both Main and All
     "sharesfloat_on": 0,
-    "sharesfloat_min_list": [-9999999],
-    "sharesfloat_max_list": [9999999999],
+    "sharesfloat_min": [-9999999],
+    "sharesfloat_max": [9999999999],
     "market_cap_on": 0,
-    "market_cap_min_list": [-999],
-    "market_cap_max_list": [9999999999999999],
+    "market_cap_min": [-999],
+    "market_cap_max": [9999999999999999],
 
     "sharesfloat_on": 0,
-    "sharesfloat_min_list": [-9999999],
-    "sharesfloat_max_list": [9999999999],
+    "sharesfloat_min": [-9999999],
+    "sharesfloat_max": [9999999999],
     "market_cap_on": 0,
-    "market_cap_min_list": [-999],
-    "market_cap_max_list": [9999999999999999],
+    "market_cap_min": [-999],
+    "market_cap_max": [9999999999999999],
     "price_between_on": 1,
     "min_between_price": 2.5,
     "max_between_price": 20,
@@ -1634,13 +1736,13 @@ default_parms = {
     "selltime_on": 1,
     "sell_time": "15:58:00",
     "buy_between_time_on": 1,
-    "buy_after_list": ["09:29:00"],
+    "buy_after": ["09:29:00"],
     "buy_before": "09:35:00",
     "buy_between_time_on_2": 1,
     "buy_after_2": "09:33:00",
     "buy_before_2": "10:35:00",
     "volume_sum_cal_on": 0,
-    "vol_sum_greaterthan_list": [1000000],
+    "vol_sum_greaterthan": [1000000],
     "pm_volume_sum_cal_on": 0,
     "pm_volume_sum_greaterthat": 1000000,
     "pm_gap_on": 0,
@@ -1649,31 +1751,40 @@ default_parms = {
     "precent_greater": 0.5,
     "per_change_open_on": 0,
     "per_change_open_on_2": 0,
-    "open_greater_list": [-0.1],
+    "open_greater": [-0.1],
     "vwap_above_on": 0,
-    "vwap_below_on_list": [0],
+    "vwap_below_on": [0],
     "last_close_change_on": 1,
     "last_close_change_on_2": 0,
-    "last_close_per_list": [0.3],
+    "last_close_per": [0.3],
     "percent_from_pmh_on": 0,
     "per_pmh_val": 0.3,
     "day_greater_than_pm_on": 0,
     "pm_greater_than_day_on": 0,
-    "st_close_lessthan_on_list": [0],# Long
+    "st_close_lessthan_on": [0],# Long
     "st_close_greaterthan_on": 0, # short
     "st_close_greaterthan_on_2": 0 # short 2
 }
 ###########################################################################################################
 # Set up active parameters
 active_parms = {
-    # System settings
-    "mac": 1,  # 1 for mac 0 for windows
-    "longshort": "short",  # 'long' or 'short'
-    "main_or_all": "all",
-    "plot": 0,  # 1 to plot on
-    "plot_trades_only": 0,  # 0 or -1
-    "save_winners_df": 1,
-    # add more active parameters here
+    "per_change_first_tick_on": 0,
+    "precent_greater": 0.5,
+    "per_change_open_on": 0,
+    "per_change_open_on_2": 0,
+    "open_greater": [-0.1],
+    "vwap_above_on": 0,
+    "vwap_below_on": [0],
+    "last_close_change_on": 1,
+    "last_close_change_on_2": 0,
+    "last_close_per": [0.3],
+    "percent_from_pmh_on": 0,
+    "per_pmh_val": 0.3,
+    "day_greater_than_pm_on": 0,
+    "pm_greater_than_day_on": 0,
+    "st_close_lessthan_on": [0],# Long
+    "st_close_greaterthan_on": 0, # short
+    "st_close_greaterthan_on_2": 0 # short 2
 }
 
 # Loop through parameters
@@ -1687,28 +1798,18 @@ for param_name, default_value in default_parms.items():
 
 btresults_store = pd.DataFrame()
 #Get list of stocks you want to test
-# for sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,vwap_below_on,st_close_lessthan_on in zip(sharesfloat_min_list, sharesfloat_max_list,market_cap_min_list,market_cap_max_list, vwap_below_on_list, st_close_lessthan_on_list):
+# for sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,vwap_below_on,st_close_lessthan_on in zip(sharesfloat_min, sharesfloat_max,market_cap_min,market_cap_max, vwap_below_on, st_close_lessthan_on):
 #     #print(sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max  )
 #try:
-top_gap_by_date,file_path, df3 = loadmaindata(load_parms)
+top_gap_by_date,file_path, flt_database = loadmaindata(load_parms)
 
 
 
-results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = backtester(active_value)
+results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = backtester(load_parms,active_value)
+# 
+# btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward,trail_stop_per ,num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
+#                         columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','trail_stop_per','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
 
-btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward,trail_stop_per ,num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
-                        columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','trail_stop_per','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
-#Adds new line to dic each loop 
-
-btresults_store = btresults_store.append(btresults,ignore_index=True) 
-btresults_store.reset_index(drop=True)
-
-results_name = today + time_now +  '_backtest_results.csv' #
-if mac == 1:
-    btresults_store.to_csv("/Users/briansheehan/Documents/mac_quant/Backtesting/Backtest_results/%s"% results_name, index=False)
-                         
-if mac == 0:
-    btresults_store.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% results_name, index=False)
 
 # except(UnboundLocalError) as e:
 #             print(e,'---------------------------------error----------------------------------------------')
@@ -1758,7 +1859,7 @@ def mean_ret_loser(date_stats):
 # print("mean return per loss trade = {}".format(round(mean_ret_loser(date_stats),4)))
 
 
-
+mac = load_parms['mac']
 if mac == 0:
     telegram_send.send(messages=["Back test complete............"])
     
