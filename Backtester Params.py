@@ -24,6 +24,14 @@ import telegram_send
 import pytz
 import requests
 
+from main import Backtester
+import main
+
+indc = main.Indicators()
+
+
+
+
 
 
 plt.style.use('ggplot')#Data Viz
@@ -39,170 +47,7 @@ time_now = today_dt.strftime("_%H-%M")
 
 
 
-############################################################################################################
-## Functions to load data
-############################################################################################################
-def loadmaindata(load_parms):
-    mac = load_parms['mac']
-    main_or_all = load_parms['main_or_all']
-    filter_by_dates_on = load_parms['filter_by_dates_on']
-    start_date = load_parms['start_date']
-    end_date = load_parms['end_date']
-    insample_per_on = load_parms['insample_per_on']
-    split_per = load_parms['split_per']
-    return_start = load_parms['return_start']
-    random_insample_on = load_parms['random_insample_on']
-    random_insample_per = load_parms['random_insample_per']
-    random_insample_start = load_parms['random_insample_start']
-    volume_min = load_parms['volume_min']
-    pm_vol_set = load_parms['pm_vol_set']
-    yclose_to_open_percent_filter = load_parms['yclose_to_open_percent_filter']
-    if mac == 0:
-        if main_or_all == 'all': 
-            file_path = r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_database\download_all_main.csv'
-        if main_or_all == 'main':
-            file_path = r'C:\Users\brian\Desktop\PythonProgram\MainTickerDataBase\2021DataBase.csv'
-    if mac == 1:
-        if main_or_all == 'all':
-            file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_database/download_all_main.csv"
-        if main_or_all == 'main':
-            file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/2021DataBase.csv"   
-    # Load file of tickers and date
-    print('Using filepath', file_path)
-    df = pd.read_csv(file_path,
-                      parse_dates=[1], dayfirst=True,index_col=0)# Puts year first
-    df['Date'] = pd.to_datetime(df.Date)#Change time object to datetime
-    print('Ticker Database no filter',df)
-    
-    #Filter by dates
-    if filter_by_dates_on == 1:
-        print('Flitering by dates -----------------------------------------------------------------------------------------------')
-        date_filter = (df['Date'] >= start_date) & (df['Date'] <= end_date )
-        df1 = df.loc[date_filter]
-        df = df1
-        print('DF filtered by Date', df)
-    # Split insample and out of sample
-    if insample_per_on == 1: 
-        print('Spliting insample and out of smaple -----------------------------------------------------------------',split_per)
-        num_rows = len(df)
-        split_index = int(num_rows * split_per)
-        if return_start == 1:
-            df = df[:split_index]
-            print('start --- split')
-            
-        else:
-            df = df[split_index:]
-            print('start --- split')
-            
-        print('Split Percent ', split_per)
-        print('In sample df ',df)
-        
-    #Random OOS not for training for test afterwards
-    if random_insample_on == 1:
-        print('Random insample is on -----------------------------------------------------------------------------------------')
-        pos = ((df.index[-1])* random_insample_per)
-        pos1 = round(pos)
-        start_df = df.iloc[:pos1,:]
-        end_df = df.iloc[pos1:,:]
-        if random_insample_start ==1:
-            df = start_df
-            print('Random insample start')
-            print(df)
-        else:
-            df = end_df
-            print('Random insample end')
-            print(df)        
-    
-    # if main_or_all == 'all':                  
-    #     df2 = df.loc[(df['open_to_high_percent'] > change_from_open) & 
-    #                  (df['Yclose_to_hod'] > Yclose_to_hod) &
-    #                  (df['Pre-market Volume'] > all_pm_vol_filter) &
-    #                  ((df['Pre-market Gap %'] > all_pm_gap_filter) | (df['Pre-market Change'] > all_pm_gap_filter))]
-    #     #            (df['Shares Float'] > sharesfloat_min) &
-    #     #            (df['Shares Float'] < sharesfloat_max) &
-    #     #            (df['Market Capitalization'] > market_cap_min) & 
-    #     #            (df['Market Capitalization'] < market_cap_max))
-    if main_or_all == 'all':                  
-        #df2 = df.loc[((df['Pre-market Gap %'] > all_pm_gap_filter) | (df['Pre-market Change'] > all_pm_gap_filter))]
-        #condition1 = (df['Pre-market Gap %'] > all_pm_gap_filter) | (df['Pre-market Change'] > all_pm_gap_filter)
-        condition2 = df['Yclose_to_open_percent'] > yclose_to_open_percent_filter
-        df2 = df.loc[condition2 ]#& condition2]
 
-        #            (df['Shares Float'] > sharesfloat_min) &
-        #            (df['Shares Float'] < sharesfloat_max) &
-        #            (df['Market Capitalization'] > market_cap_min) & 
-        #            (df['Market Capitalization'] < market_cap_max))
-    if main_or_all == 'main':                                    
-         df2 = df.loc[(df['Volume'] > volume_min) &
-                           (df['Pre-market Volume'] >= pm_vol_set)] # &
-                           # (df['Shares Float'] > sharesfloat_min) &
-                           # (df['Shares Float'] < sharesfloat_max) &
-                           # (df['Market Capitalization'] > market_cap_min) & 
-                           # (df['Market Capitalization'] < market_cap_max))
-     
-    
-    df3 = df2.set_index('Date')
-    print('Ticker database after filters',df3)     
-    if main_or_all == 'all':
-    # Dictionary for storing Date Ticker yesterdaysclose          
-     top_gap_by_date ={top_gap_by_date: dict(zip(sub_df['Ticker'], sub_df['last_close_price']))
-           for top_gap_by_date, sub_df in df3.groupby(df3.index)}
-        
-    if main_or_all == 'main': 
-       # Dictionary for storing Date Ticker yesterdaysclose          
-        top_gap_by_date ={top_gap_by_date: dict(zip(sub_df['Ticker'], sub_df['Yesterdays Close']))
-              for top_gap_by_date, sub_df in df3.groupby(df3.index)}
-        
-    return top_gap_by_date,file_path,df2
-
-# function to load interday data
-def load_interday(date,ticker,mac,flt_database):
-    """
-    Parameters
-    ----------
-    date : TYPE
-        filter by date.
-    ticker : TYPE
-        filter by symbol.
-    mac : TYPE
-       mac or win.
-    flt_database : TYPE
-        main database, already filtered .
-
-    Returns
-    -------
-    data : TYPE
-        DESCRIPTION.
-
-    """
-    #Filter flt_database by data and ticker 
-    filter_criteria = ((flt_database['Date'] == date) & (flt_database['Ticker'] == ticker)) 
-    today_symbol_data = flt_database[ filter_criteria ] 
-    sf = today_symbol_data.iloc[0,10]#shares float
-    mc = today_symbol_data.iloc[0,28]# market cap 
-     
-    year = date.strftime("%Y") 
-    
-    if mac == 0:
-        date = date.strftime("\%Y-%m-%d")# convert datetime to string
-        dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
-        data = pd.read_csv(r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_%s'% dateticker )
-    if mac == 1:
-        date = date.strftime("/%Y-%m-%d")# convert datetime to string
-        dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
-        data = pd.read_csv('/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_%s'% dateticker )
-    
-    data.columns = ['timestamp','open','high','low','close','volume','vwap']
-    data['shares_float'] = sf
-    data['market_cap'] = mc 
-    data['timestamp'] = pd.to_datetime(data['timestamp'])# change column to datetime
-    data.set_index('timestamp', inplace=True)# set datetime as index s i can filter time
-    #data = data.between_time('09:31', '13:00')
-    ## Do not pass values before this date
-    #fromdate=datetime.datetime(2000, 1, 1),
-    ## Do not pass values after this date
-    #todate=datetime.datetime(2021, 08, 04),
-    return data 
 
 def polygon_interday(symbol,date):
     api_key = 'R8G47SaJzsO0NS5JoorpojbyMcOHmur5'
@@ -223,340 +68,7 @@ def polygon_interday(symbol,date):
 
     return df
 
-############################################################################################################
-## Indicators #
-############################################################################################################
 
-
-def float_share_between(df,sharesfloat_min,sharesfloat_max):
-    test = (df['shares_float'] >= sharesfloat_min) & (df['shares_float'] <= sharesfloat_max)
-    df['shares_float_test'] = test
-    return df
-
-def market_cap_between(df, market_cap_min, market_cap_max):
-    test = (df['market_cap'] >= market_cap_min) & (df['market_cap'] <= market_cap_max)
-    df['market_cap_test'] = test
-    return df
-
-
-# 1 Min price
-def price_greater(df,min_price):
-    val = min_price <= df['close']
-    df['min_price'] = val
-    return df
-
-def price_between(df,min_between_price, max_between_price ):
-    "price between"
-    test = (min_between_price <= df['close']) & (df['close'] <= max_between_price)
-    df['price_between'] = test
-    return df
-
-# 2 Time greater than (Buy Time)
-def buytime(df,date,buy_time):
-    date = date.strftime("%Y-%m-%d")
-    datetest = date + ' ' + buy_time
-    df.reset_index(inplace = True, drop = False)
-    timetest = df['timestamp'] >= datetest
-    df['buy_time'] = timetest
-    df.set_index('timestamp', inplace=True)
-        
-    return df
-
-# 3 Time greater than (Sell Time)
-def selltime(df,date, sell_time):
-    date = date.strftime("%Y-%m-%d")
-    datetest = date + ' ' + sell_time
-    df.reset_index(inplace = True, drop = False)
-    timetest = df['timestamp'] >= datetest
-    df['sell_time'] = timetest
-    df.set_index('timestamp', inplace=True)
-        
-    return df
-
-def buy_between_time(df,date, buy_after ,buy_before):
-    date = date.strftime("%Y-%m-%d")
-    datebuy = date + ' ' + buy_after
-    datesell = date + ' ' + buy_before
-    df.reset_index(inplace = True, drop = False)
-    timetest = (df['timestamp'] >= datebuy) & (df['timestamp'] <= datesell)
-    df['buy_between_time'] = timetest
-    df.set_index('timestamp', inplace=True)
-        
-    return df
-def buy_between_time_2(df,date, buy_after_2 ,buy_before_2):
-    date = date.strftime("%Y-%m-%d")
-    datebuy = date + ' ' + buy_after_2
-    datesell = date + ' ' + buy_before_2
-    df.reset_index(inplace = True, drop = False)
-    timetest = (df['timestamp'] >= datebuy) & (df['timestamp'] <= datesell)
-    df['buy_between_time_2'] = timetest
-    df.set_index('timestamp', inplace=True)
-        
-    return df
-
-# Price below VWAP 
-def vwap_above(df):
-    vwap = df['vwap'] >= df['close']
-    df['vwap_above'] = vwap
-    return df
-
-# Price above VWAP 
-def vwap_below(df):
-    vwap = df['vwap'] <= df['close']
-    df['vwap_below'] = vwap
-    return df
-
-# % Change from first tick of my data greater than
-def per_change_first_tick(df,precent_greater):
-    close = df.iloc[0,3]# get open price
-    df['start_change'] = ((df['close'] - close) / close)
-    test = df['start_change'] >= precent_greater
-    df['first_tick_greater'] = test
-    return df
-
-# % Change from last close???
-def last_close_change(df,last_close,last_close_per):
-    df['last_close_change'] = ((df['close'] - last_close) / last_close) 
-    test = df['last_close_change'] >= last_close_per
-    df['last_close_change_test'] = test   
-    return df
-
-# % Change from Open
-def per_change_open(df,date,open_greater):
-    "change from the open. open bar to each open bar"
-    str_date = date.strftime("%Y-%m-%d")#convert datetime to string
-    Date0930 = str_date + ' 09:30:00'
-    Date1600 = str_date + ' 16:00:00'
-    day = df.loc[Date0930:Date1600]
-    open_price = day.iloc[0,0]# get open price
-    df['open_change'] = ((df['open'] - open_price) / open_price)
-    test = df['open_change'] >= open_greater
-    df['open_greater'] = test
-    return df
-
-# Pre market gap PMG
-def pm_gap(df,date,last_close, pmg_greater):
-    "y_close to PMH"
-    try:
-        str_date = date.strftime("%Y-%m-%d")#convert datetime to string
-        Date0400 = str_date + ' 04:00:00'
-        Date0930 = str_date + ' 09:29:00'
-        dfpm = df.loc[Date0400:Date0930]##get pre-market date only
-        pmh_time = dfpm['close'].idxmax()#get pmh time
-        pmh_price = df.loc[pmh_time]['high']# get pmh price
-        df['pm_gap_y_c'] = ((pmh_price - last_close) / last_close)
-        
-        test = df['pm_gap_y_c'] >= pmg_greater
-        df['pm_gap_greater'] = test
-        df = df.fillna(method='ffill')#fill nan with last value#
-    except:
-        print('pmg fail--------------------------------------')
-        df['pm_gap_greater'] = False
-        print(df)
-        
-    return df
-
-#VOLUME SUM CALCULATIONS
-def volume_sum_cal(df,vol_sum_greaterthan):
-    df['vol sum'] = df['volume'].cumsum()
-    vol = df['vol sum'] >= vol_sum_greaterthan
-    df['vol_sum_greater'] = vol
-    
-    return df  
-
-# PM VOLUME SUM CALCULATIONS
-def pm_volume_sum_cal(df, date, pm_vol_sum_greaterthan):
-    str_date = date.strftime("%Y-%m-%d")#convert datetime to string
-    Date0400 = str_date + ' 04:00:00'
-    Date0930 = str_date + ' 09:29:00'
-    dfpm = df.loc[Date0400:Date0930]##get pre-market date only
-    df['pm_vol_sum'] = dfpm['volume'].cumsum()
-    df = df.fillna(method='ffill')
-    vol = df['pm_vol_sum'] >= pm_vol_sum_greaterthan
-    df['pm_vol_sum_greater'] = vol
-    return df   
-
-
-# Morning spike higher than pm high
-def day_greater_than_pm(df,date):
-    print('dfsd')
-    str_date = date.strftime("%Y-%m-%d")#convert datetime to string
-    Date0400 = str_date + ' 04:00:00'
-    Date0930 = str_date + ' 09:29:00'
-    premarket1 = df.loc[Date0400:Date0930]##get pre-market date only
-    pmh_time = premarket1['high'].idxmax()#get pmh time 
-    pmh_price = df.loc[pmh_time]['high']# get pmh price
-    val = df.close >=  pmh_price# true false test
-    df['dh>pmh'] = val# add new tst column
-    
-    return df
-
-def pm_greater_than_day(df,date):
-    "pmh greater than day"
-    str_date = date.strftime("%Y-%m-%d")#convert datetime to string
-    Date0400 = str_date + ' 04:00:00'
-    Date0930 = str_date + ' 09:29:00'
-    premarket1 = df.loc[Date0400:Date0930]#get pre-market date only
-    pmh_time = premarket1['high'].idxmax()#get pmh time 
-    pmh_price = df.loc[pmh_time]['high']# get pmh price
-    val = df.close <=  pmh_price# true false test
-    df['pmg>dy'] = val# add new tst column
-    
-    return df
-
-def get_pmh_price(df,date):
-    "if day price goes above pmh stop out"
-    str_date = date.strftime("%Y-%m-%d")#convert datetime to string
-    Date0400 = str_date + ' 04:00:00'
-    Date0930 = str_date + ' 09:29:00'
-    premarket1 = df.loc[Date0400:Date0930]#get pre-market date only
-    pmh_time = premarket1['high'].idxmax()#get pmh time 
-    pmh_price = df.loc[pmh_time]['high']# get pmh price
-    return pmh_price
-
-def percent_from_pmh(df,date,per_pmh_val):
-    try:
-        'if price is percentage from pmh'
-        str_date = date.strftime("%Y-%m-%d")#convert datetime to string
-        Date0400 = str_date + ' 04:00:00'
-        Date0929 = str_date + ' 09:29:00'
-        premarket1 = df.loc[Date0400:Date0929]#get pre-market date only
-        pmh_time = premarket1['high'].idxmax()#get pmh time 
-        pmh_price = df.loc[pmh_time]['high']# get pmh price
-        df['%_from_pmh'] = pmh_price  - (per_pmh_val * pmh_price) 
-        val = df.high >= df['%_from_pmh']# true false test
-        df['from_pmh_test'] = val# add new tst column
-    except :
-        df['from_pmh_test'] = False
-        print('Getting PMH fail')
-    return df
-    
-
-def drop_acquistions(df,date,aq_value):    
-    ' Drop Acquistions '
-    str_date = date.strftime("%Y-%m-%d")#convert datetime to string
-    Date0400 = str_date + ' 08:00:00'
-    Date0930 = str_date + ' 09:29:00'
-    df1 = df.loc[Date0400:Date0930]#get pre-market date only
-    df['acquistions'] = ((df1['high'] / df1['low']))
-    df['acq_test'] = df['acquistions'].gt(aq_value).cumsum().gt(0)
-    return df
-
-#Super trend less than close
-def st_close_lessthan(df):
-    df['st_long'] = ''
-    df.loc[df.st < df.close, 'st_long'] = True
-  
-    return df
-
-#Super trend greater than close
-def st_close_greaterthan(df):
-    df['st_short'] = ''
-    df.loc[df.st > df.close, 'st_short'] = True
- 
-    return df
-    
-# ATF with shift calculations
-def ATR(DF,lenth, lessthan,shift):
-    "function to calculate True Range and Average True Range"
-    df = DF.copy()
-    df['H-L']=abs(df['high']-df['low'])
-    df['H-PC']=abs(df['high']-df['close'].shift(1))
-    df['L-PC']=abs(df['low']-df['close'].shift(1))
-    df['TR']=df[['H-L','H-PC','L-PC']].max(axis=1,skipna=False)
-    df['atr'] = df['TR'].rolling(lenth).mean()
-    #df['ATR'] = df['TR'].ewm(span=n,adjust=False,min_periods=n).mean()
-    df2 = df.drop(['H-L','H-PC','L-PC'],axis=1)
-    df['atr'] = df2
-    # True false agrument
-    # shift atr
-    df2['atr shift'] = df2['atr'].shift(+shift)
-    
-    df3 = df2['atr'] <= lessthan
-    df2['atr >'] = df3
-    
-    return df2
-
-# SUPERTREND CALCULATION
-def get_supertrend(high, low, close, lookback, multiplier):
-    tr1 = pd.DataFrame(high - low)
-    tr2 = pd.DataFrame(abs(high - close.shift(1)))
-    tr3 = pd.DataFrame(abs(low - close.shift(1)))
-    frames = [tr1, tr2, tr3]
-    tr = pd.concat(frames, axis = 1, join = 'inner').max(axis = 1)
-    atr = tr.ewm(lookback).mean()
-    
-    # H/L AVG AND BASIC UPPER & LOWER BAND
-    hl_avg = (high + low) / 2
-    upper_band = (hl_avg + multiplier * atr).dropna()
-    lower_band = (hl_avg - multiplier * atr).dropna()
-    
-    # FINAL UPPER BAND
-    final_bands = pd.DataFrame(columns = ['upper', 'lower'])
-    final_bands.iloc[:,0] = [x for x in upper_band - upper_band]
-    final_bands.iloc[:,1] = final_bands.iloc[:,0]
-   
-    
-    for i in range(len(final_bands)):
-        if i == 0:
-            final_bands.iloc[i,0] = 0
-        else:
-            if (upper_band[i] < final_bands.iloc[i-1,0]) | (close[i-1] > final_bands.iloc[i-1,0]):
-                final_bands.iloc[i,0] = upper_band[i]
-            else:
-                final_bands.iloc[i,0] = final_bands.iloc[i-1,0]#??//
-    
-    # FINAL LOWER BAND
-    for i in range(len(final_bands)):
-        if i == 0:
-            final_bands.iloc[i, 1] = 0
-        else:
-            if (lower_band[i] > final_bands.iloc[i-1,1]) | (close[i-1] < final_bands.iloc[i-1,1]):
-                final_bands.iloc[i,1] = lower_band[i]
-            else:
-                final_bands.iloc[i,1] = final_bands.iloc[i-1,1]
-    
-    # SUPERTREND
-    supertrend = pd.DataFrame(columns = [f'supertrend_{lookback}'])
-    supertrend.iloc[:,0] = [x for x in final_bands['upper'] - final_bands['upper']]
-    
-    for i in range(len(supertrend)):
-        if i == 0:
-            supertrend.iloc[i, 0] = 0
-        elif supertrend.iloc[i-1, 0] == final_bands.iloc[i-1, 0] and close[i] < final_bands.iloc[i, 0]:
-            supertrend.iloc[i, 0] = final_bands.iloc[i, 0]
-        elif supertrend.iloc[i-1, 0] == final_bands.iloc[i-1, 0] and close[i] > final_bands.iloc[i, 0]:
-            supertrend.iloc[i, 0] = final_bands.iloc[i, 1]
-        elif supertrend.iloc[i-1, 0] == final_bands.iloc[i-1, 1] and close[i] > final_bands.iloc[i, 1]:
-            supertrend.iloc[i, 0] = final_bands.iloc[i, 1]
-        elif supertrend.iloc[i-1, 0] == final_bands.iloc[i-1, 1] and close[i] < final_bands.iloc[i, 1]:
-            supertrend.iloc[i, 0] = final_bands.iloc[i, 0]
-    
-    supertrend = supertrend.set_index(upper_band.index)
-    supertrend = supertrend.dropna()[1:]
-    
-    # ST UPTREND/DOWNTREND
-    upt = []
-    dt = []
-    close = close.iloc[len(close) - len(supertrend):]
-
-    for i in range(len(supertrend)):
-        if close[i] > supertrend.iloc[i, 0]:
-            upt.append(supertrend.iloc[i, 0])
-            dt.append(np.nan)
-        elif close[i] < supertrend.iloc[i, 0]:
-            upt.append(np.nan)
-            dt.append(supertrend.iloc[i, 0])
-        else:
-            upt.append(np.nan)
-            dt.append(np.nan)
-            
-    st, upt, dt = pd.Series(supertrend.iloc[:, 0]), pd.Series(upt), pd.Series(dt)
-    upt.index, dt.index = supertrend.index, supertrend.index
-    
-    return st, upt,  dt
-def round_to_nearest_100(number):
-    return ((number + 99) // 100) * 100
 
 def plt_chart(active_value,date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2):
     longshort = active_value['longshort']
@@ -718,55 +230,55 @@ def backtester(active_value):
                     risk_per_trade = max_risk
                     print('Compounding off ')
                 print('risk_per_trade',risk_per_trade)
-                df = load_interday(date,ticker,mac,flt_database)# load interday files ??? does this need to be moved to the top of fucntion
+                df = bt.load_interday(date,ticker,mac,flt_database)# load interday files ??? does this need to be moved to the top of fucntion
                 # get last close price
                 last_close = top_gap_by_date[date][ticker]
 
                 # apply super trend always for chart
-                df['st'], df['s_upt'], df['st_dt'] = get_supertrend(df['high'], df['low'], df['close'], lookback, multiplier)
+                df['st'], df['s_upt'], df['st_dt'] = indc.get_supertrend(df['high'], df['low'], df['close'], lookback, multiplier)
                 
                 if sharesfloat_on == 1:
-                    df = float_share_between(df,sharesfloat_min,sharesfloat_max)
+                    df = indc.float_share_between(df,sharesfloat_min,sharesfloat_max)
                 if market_cap_on == 1:
-                    df = market_cap_between(df, market_cap_min, market_cap_max)
+                    df = indc.market_cap_between(df, market_cap_min, market_cap_max)
                 if price_between_on == 1:#1
-                    df = price_between(df,min_between_price, max_between_price )
+                    df = indc.price_between(df,min_between_price, max_between_price )
                 if buytime_on == 1:#2
-                    df = buytime(df,date,buy_time)# Time Greater than
+                    df = indc.buytime(df,date,buy_time)# Time Greater than
                 if selltime_on == 1:#3
-                    df = selltime(df,date,sell_time)
+                    df = indc.selltime(df,date,sell_time)
                 if buy_between_time_on == 1:#4
-                    df = buy_between_time(df, date, buy_after, buy_before)
+                    df = indc.buy_between_time(df, date, buy_after, buy_before)
                 if buy_between_time_on_2 == 1:#4
-                    df = buy_between_time_2(df, date, buy_after_2, buy_before_2)
+                    df = indc.buy_between_time_2(df, date, buy_after_2, buy_before_2)
                 if volume_sum_cal_on == 1:#5
-                    df = volume_sum_cal(df,vol_sum_greaterthan)
+                    df = indc.volume_sum_cal(df,vol_sum_greaterthan)
                 if pm_volume_sum_cal_on == 1:#6
-                    df = pm_volume_sum_cal(df,date, pm_volume_sum_greaterthat)
+                    df = indc.pm_volume_sum_cal(df,date, pm_volume_sum_greaterthat)
                 if pm_gap_on == 1:#7
-                    df = pm_gap(df,date,last_close, pmg_greater) 
+                    df = indc.pm_gap(df,date,last_close, pmg_greater) 
                 if per_change_first_tick_on == 1:#8
-                    df = per_change_first_tick(df, precent_greater)
+                    df = indc.per_change_first_tick(df, precent_greater)
                 if per_change_open_on == 1 or per_change_open_on_2 == 1:
-                    df = per_change_open(df,date, open_greater)                    
+                    df = indc.per_change_open(df,date, open_greater)                    
                 if vwap_above_on == 1:#9
-                    df = vwap_above(df)# Close below VWAP
+                    df = indc.vwap_above(df)# Close below VWAP
                 if vwap_below_on == 1:#10
-                    df = vwap_below(df)
+                    df = indc.vwap_below(df)
                 if last_close_change_on ==1 or last_close_change_on_2 ==1:#11
-                    df = last_close_change(df,last_close,last_close_per)
+                    df = indc.last_close_change(df,last_close,last_close_per)
                 if day_greater_than_pm_on ==1:#12  
-                    df = day_greater_than_pm(df,date)
+                    df = indc.day_greater_than_pm(df,date)
                 if pm_greater_than_day_on ==1: 
-                    df = pm_greater_than_day(df,date)
+                    df = indc.pm_greater_than_day(df,date)
                 if st_close_lessthan_on == 1:#13
-                    df = st_close_lessthan(df)#Supertrend lessthan
+                    df = indc.st_close_lessthan(df)#Supertrend lessthan
                 if st_close_greaterthan_on == 1 or st_close_greaterthan_on_2 == 1:#14
-                    df = st_close_greaterthan(df)#Supertrend greather than
+                    df = indc.st_close_greaterthan(df)#Supertrend greather than
                 if drop_acquistions_on ==1:
-                    df = drop_acquistions(df,date,aq_value)
+                    df = indc.drop_acquistions(df,date,aq_value)
                 if percent_from_pmh_on ==1:
-                    df = percent_from_pmh(df,date,per_pmh_val)
+                    df = indc.percent_from_pmh(df,date,per_pmh_val)
                 
                 
                 df['trade_sig'] = np.nan
@@ -933,7 +445,7 @@ def backtester(active_value):
                             if close_stop_on == 1:
                                 stop_price = open_price - (open_price * close_stop)  
                             elif pre_market_h_stop_on ==1 :
-                                pmh_price = get_pmh_price(df,date)
+                                pmh_price = indc.get_pmh_price(df,date)
                                 stop_price = pmh_price
                                 
                             loss_per_share = open_price - stop_price
@@ -985,7 +497,7 @@ def backtester(active_value):
                             if close_stop_on == 1:
                                 stop_price = (open_price * close_stop) + open_price
                             if pre_market_h_stop_on == 1:
-                                pmh_price = get_pmh_price(df,date)
+                                pmh_price = indc.get_pmh_price(df,date)
                                 #print('PMH price',pmh_price,ticker,date)
                                 stop_price = pmh_price 
                             loss_per_share =   stop_price - open_price
@@ -1043,7 +555,7 @@ def backtester(active_value):
                             if close_stop_on == 1:
                                 stop_price_2 = (open_price_2 * close_stop) + open_price_2    
                             elif pre_market_h_stop_on == 1:
-                                pmh_price_2 = get_pmh_price(df,date)
+                                pmh_price_2 = indc.get_pmh_price(df,date)
                                 #print('PMH price',pmh_price,ticker,date)
                                 stop_price_2 = pmh_price_2    
                             open_price_2 =  open_price_2
@@ -1756,7 +1268,11 @@ for param_name, default_value in default_parms.items():
 
 
 ########################### Run code here   #############################################################################
+# create an instance of the Backtester class
+bt = Backtester(output_dict)
 
+# call the loadmaindata method
+# lmd = bt.loadmaindata(output_dict)
 
 
 btresults_store = pd.DataFrame()
@@ -1764,8 +1280,8 @@ btresults_store = pd.DataFrame()
 # for sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,vwap_below_on,st_close_lessthan_on in zip(sharesfloat_min, sharesfloat_max,market_cap_min,market_cap_max, vwap_below_on, st_close_lessthan_on):
 #     #print(sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max  )
 #try:
-top_gap_by_date,file_path, flt_database = loadmaindata(output_dict)
-
+# top_gap_by_date,file_path, flt_database = loadmaindata(output_dict)
+top_gap_by_date,file_path, flt_database = bt.loadmaindata(output_dict)
 
 
 results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = backtester(output_dict)
@@ -1778,41 +1294,6 @@ results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,
 #             print(e,'---------------------------------error----------------------------------------------')
 ##############################################################################################################
 
-###########################################################################################################
-###########################KPIs#############################################################################
-
-def abs_return(date_stats):
-    df = pd.DataFrame(date_stats).T
-    df["ret"] = 1+df.mean(axis=1)
-    cum_ret = (df["ret"].cumprod() - 1)[-1]
-    return  cum_ret
-
-def win_rate(date_stats):
-    win_count = 0
-    lose_count = 0
-    for i in date_stats:
-        for ret in date_stats[i]:
-            if date_stats[i][ret] > 0:
-                win_count+=1
-            elif date_stats[i][ret] < 0:
-                lose_count+=1
-    return (win_count/(win_count+lose_count))*100
-
-def mean_ret_winner(date_stats):
-    win_ret = []
-    for i in date_stats:
-        for ret in date_stats[i]:
-            if date_stats[i][ret] > 0:
-                win_ret.append(date_stats[i][ret])                
-    return sum(win_ret)/len(win_ret)
-
-def mean_ret_loser(date_stats):
-    los_ret = []
-    for i in date_stats:
-        for ret in date_stats[i]:
-            if date_stats[i][ret] < 0:
-                los_ret.append(date_stats[i][ret])                
-    return sum(los_ret)/len(los_ret)
 
 
 # print("**********Strategy Performance Statistics**********")
