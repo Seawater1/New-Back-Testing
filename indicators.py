@@ -210,6 +210,8 @@ class Indicators:
         df1 = df.loc[Date0400:Date0930]#get pre-market date only
         df['acquistions'] = ((df1['high'] / df1['low']))
         df['acq_test'] = df['acquistions'].gt(aq_value).cumsum().gt(0)
+        # Fill remaining values with last value
+        df['acq_test'] = df['acq_test'].fillna(method='ffill')
         return df
     
     #Super trend less than close
