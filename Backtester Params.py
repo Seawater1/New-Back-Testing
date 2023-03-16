@@ -11,13 +11,13 @@ loaddata df3 need a good looking at
 import pandas as pd
 import time
 from copy import deepcopy
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy as np
 from copy import deepcopy
 from time import sleep
 import time
 import math
-import matplotlib as mpl
+# import matplotlib as mpl
 import random
 from datetime import datetime, timedelta
 import telegram_send
@@ -28,13 +28,14 @@ from main import Backtester
 import main
 
 indc = main.Indicators()
+my_plt = main.Plots()
 
 
 
 
 
 
-plt.style.use('ggplot')#Data Viz
+
 
 start = time.time()
 pd.options.mode.chained_assignment = None # wprloing with copy warning disable
@@ -45,79 +46,6 @@ today_dt = datetime.now()
 today = today_dt.strftime("%Y-%m-%d")
 time_now = today_dt.strftime("_%H-%M")
 
-
-
-
-
-def polygon_interday(symbol,date):
-    api_key = 'Or7vNE5Zw48s7lVMH5vecZJnUd7Ntgcd'
-    # Set the URL for the API request
-    url = f'https://api.polygon.io/v2/aggs/ticker/{symbol}/range/1/minute/{date}/{date}?adjusted=true&limit=50000&apiKey={api_key}'#https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-07-22?adjusted=false&sort=asc&limit=50000&apiKey=R8G47SaJzsO0NS5JoorpojbyMcOHmur5
-    # Send the request and store the response
-    response = requests.get(url)
-    # Convert the response to a JSON object
-    data = response.json()
-    # Extract the OHLC data from the JSON object
-    df = pd.DataFrame(data['results'])[['t', 'o', 'h', 'l', 'c', 'v', 'vw']]
-    df.columns = ['timestamp', 'open', 'high', 'low', 'close', 'volume', 'volume_weighted']
-    df.drop(columns='volume_weighted', axis=1, inplace=True)
-    df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms').dt.tz_localize(pytz.timezone('UTC')).dt.tz_convert(pytz.timezone('US/Eastern'))
-    df.set_index('timestamp', inplace=True)
-    # VWAP Calculations 
-    df['vwap'] = (df['volume']*(df['high']+df['low']+df['close'])/3).cumsum() / df['volume'].cumsum() 
-
-    return df
-
-
-
-def plt_chart(active_value,date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2):
-    longshort = active_value['longshort']
-    fig, ax = plt.subplots(nrows=2, sharex=True, figsize=(15,8))
-    
-    ax[0].plot(ohlc_intraday[date,ticker].index, ohlc_intraday[date,ticker].close,ohlc_intraday[date,ticker].vwap)
-    ax[1].bar(ohlc_intraday[date,ticker].index, ohlc_intraday[date,ticker].volume, width=1/(5*len(ohlc_intraday[date,ticker].index)))
-    ax[0].plot(ohlc_intraday[date,ticker]['st'], color = 'green', linewidth = 2, label = 'ST UPTREND')
-    ax[0].plot(ohlc_intraday[date,ticker]['st_dt'], color = 'r', linewidth = 2, label = 'ST DOWNTREND')
-    if longshort == 'long':
-        ax[0].plot(ohlc_intraday[date,ticker]['cover_sig'], marker = '^', color = 'r', markersize = 12, linewidth = 0, label = 'Sell SIGNAL')
-        ax[0].plot(ohlc_intraday[date,ticker]['trade_sig'], marker = 'v', color = 'green', markersize = 12, linewidth = 0, label = 'BUY SIGNAL')
-    if longshort == 'short':
-        ax[0].plot(ohlc_intraday[date,ticker]['cover_sig'], marker = '^', color = 'green', markersize = 12, linewidth = 0, label = 'COVER SIGNAL')
-        ax[0].plot(ohlc_intraday[date,ticker]['trade_sig'], marker = 'v', color = 'r', markersize = 12, linewidth = 0, label = 'SHORT SIGNAL')
-        ax[0].plot(ohlc_intraday[date,ticker]['trade_sig_2'], marker = 'v', color = 'b', markersize = 12, linewidth = 0, label = 'SHORT SIGNAL 2')
-        ax[0].plot(ohlc_intraday[date,ticker]['cover_sig_2'], marker = '^', color = 'y', markersize = 12, linewidth = 0, label = 'COVER SIGNAL')
-
-    strdate = date.strftime("%Y-%m-%d")
-    t = ticker + ' ' + strdate + ' ' + outcome + ' Returns ' + str(ticker_return) + ' ' + outcome_2 + ' Returns_2 ' + str(ticker_return_2)
-
-    plt.title(t)#('df ST TRADING SIGNALS')
-    ax[0].legend(loc = 'upper left')
-    
-    xfmt = mpl.dates.DateFormatter('%H:%M')
-    ax[1].xaxis.set_major_locator(mpl.dates.HourLocator(interval=3))
-    ax[1].xaxis.set_major_formatter(xfmt)
-    
-    ax[1].xaxis.set_minor_locator(mpl.dates.HourLocator(interval=1))
-    ax[1].xaxis.set_minor_formatter(xfmt)
-    
-    ax[1].get_xaxis().set_tick_params(which='major', pad=25)
-    
-    fig.autofmt_xdate()
-    
-   
-
-    return plt.show()
-####################################################################################################################
-####################################################################################################################
-###########################################             The big picture          ###################################
-####################################################################################################################
-
-
-
-
-
-####################################################################################################################
-####################################################################################################################
 
 ohlc_intraday = {}
 def backtester(active_value):
@@ -884,30 +812,8 @@ def backtester(active_value):
     ###################################  Plot    ##############################################################
     ###########################################################################################################
                 if plot == 1 and trade_count > plot_trades_only:
-                    
-                    # fig, ax1 = plt.subplots()
-                    # color = 'tab:red'
-                    # ax1.set_xlabel('Flips')
-                    # ax1.set_ylabel('gains', color=color)
-                    # ax1.plot(gains, color=color)
-                    # ax1.tick_params(axis='y', labelcolor=color)
-                    fig, ax1 = plt.subplots()
-                    color1 = 'tab:red'
-                    color2 = 'tab:blue'
-                    ax1.set_xlabel('Flips')
-                    ax1.set_ylabel('gains', color=color1)
-                    ax1.plot(gains, color=color1)
-                    ax1.tick_params(axis='y', labelcolor=color1)
-                    
-                    ax2 = ax1.twinx()
-                    ax2.set_ylabel('gains_2', color=color2)
-                    ax2.plot(gains_2, color=color2)
-                    ax2.tick_params(axis='y', labelcolor=color2)
-                    
-                    fig.tight_layout()
-                    plt.show()
-                    
-                    plt_chart(date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2)
+                    my_plt.plot_fips(gains, gains_2)
+                    my_plt.plt_chart(longshort ,date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2)
                 else:
                     pass
             except (FileNotFoundError,IndexError ) as e:
@@ -1149,7 +1055,7 @@ default_parms = {
 
     "longshort": "short",  # 'long' or 'short'
 
-    "plot": 0,  # 1 to plot on
+    "plot": 1,  # 1 to plot on
     "plot_trades_only": 0,  # 0 or -1
     "save_winners_df": 1,
 
@@ -1165,7 +1071,7 @@ default_parms = {
     "imaginary_account_2": 5000,
     "bet_percentage": 0.01,  # risk per trade of imaginary account
     "max_locate_per_price": 0.01,
-    "max_risk": 50,  # set low to prevent compounding
+    "max_risk": 999999,  # set low to prevent compounding
     "open_slippage": 0,
     "close_slippage": 0,
 
