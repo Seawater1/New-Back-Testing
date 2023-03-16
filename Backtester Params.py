@@ -50,7 +50,7 @@ time_now = today_dt.strftime("_%H-%M")
 
 
 def polygon_interday(symbol,date):
-    api_key = 'R8G47SaJzsO0NS5JoorpojbyMcOHmur5'
+    api_key = 'Or7vNE5Zw48s7lVMH5vecZJnUd7Ntgcd'
     # Set the URL for the API request
     url = f'https://api.polygon.io/v2/aggs/ticker/{symbol}/range/1/minute/{date}/{date}?adjusted=true&limit=50000&apiKey={api_key}'#https://api.polygon.io/v2/aggs/ticker/AAPL/range/1/day/2021-07-22/2021-07-22?adjusted=false&sort=asc&limit=50000&apiKey=R8G47SaJzsO0NS5JoorpojbyMcOHmur5
     # Send the request and store the response
