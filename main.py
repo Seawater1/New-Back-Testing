@@ -6,179 +6,49 @@ Created on Tue Mar 14 06:27:52 2023
 @author: briansheehan
 """
 import pandas as pd
+import numpy as np
 from indicators import Indicators
+from load_data import Load_date
 from plots import Plots
+from datetime import datetime, timedelta
+import time
+ld = Load_date
+indc = Indicators()
+my_plt = Plots
 
+
+
+import matplotlib.pyplot as plt
 
 ############################################################################################################
 ## Functions to load data
 ############################################################################################################
-
+pd.options.mode.chained_assignment = None # wprloing with copy warning disable
+# # so annoying cant figure out copy not 
 class Backtester():
-    def __init__(self,load_parms):
+    def __init__(self,output_dict):
+        top_gap_by_date,file_path, flt_database = ld.loadmaindata(self,output_dict)
         
+        super().__init__()
+        
+        
+        self.top_gap_by_date = top_gap_by_date
+        self.file_path = file_path
+        self.flt_database = flt_database
+        
+        print('test self flt',self.flt_database)
         """
         :load_parms dic that contains all settings
 
         """
-        super().__init__()
-        self.load_parms = load_parms
+        # super().__init__()
+        # self.load_parms = load_parms
         
+    def backtester(self,active_value):
+        start = time.time()
         
-    def loadmaindata(self,load_parms):
-        mac = load_parms['mac']
-        main_or_all = load_parms['main_or_all']
-        filter_by_dates_on = load_parms['filter_by_dates_on']
-        start_date = load_parms['start_date']
-        end_date = load_parms['end_date']
-        insample_per_on = load_parms['insample_per_on']
-        split_per = load_parms['split_per']
-        return_start = load_parms['return_start']
-        random_insample_on = load_parms['random_insample_on']
-        random_insample_per = load_parms['random_insample_per']
-        random_insample_start = load_parms['random_insample_start']
-        volume_min = load_parms['volume_min']
-        pm_vol_set = load_parms['pm_vol_set']
-        yclose_to_open_percent_filter = load_parms['yclose_to_open_percent_filter']
-        if mac == 0:
-            if main_or_all == 'all': 
-                file_path = r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_database\download_all_main.csv'
-            if main_or_all == 'main':
-                file_path = r'C:\Users\brian\Desktop\PythonProgram\MainTickerDataBase\2021DataBase.csv'
-        if mac == 1:
-            if main_or_all == 'all':
-                file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_database/download_all_main.csv"
-            if main_or_all == 'main':
-                file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/2021DataBase.csv"   
-        # Load file of tickers and date
-        print('Using filepath', file_path)
-        df = pd.read_csv(file_path,
-                          parse_dates=[1], dayfirst=True,index_col=0)# Puts year first
-        df['Date'] = pd.to_datetime(df.Date)#Change time object to datetime
-        print('Ticker Database no filter',df)
-        
-        #Filter by dates
-        if filter_by_dates_on == 1:
-            print('Flitering by dates -----------------------------------------------------------------------------------------------')
-            date_filter = (df['Date'] >= start_date) & (df['Date'] <= end_date )
-            df = df.loc[date_filter]
-            print('DF filtered by Date', df)
-        # Split insample and out of sample
-        if insample_per_on == 1: 
-            print('Spliting insample and out of smaple -----------------------------------------------------------------',split_per)
-            num_rows = len(df)
-            split_index = int(num_rows * split_per)
-            if return_start == 1:
-                df = df[:split_index]
-                print('start --- split')
-            else:
-                df = df[split_index:]
-                print('start --- split')
-            print('Split Percent ', split_per)
-            print('In sample df ',df)
-            
-        #Random OOS not for training for test afterwards
-        if random_insample_on == 1:
-            print('Random insample is on -----------------------------------------------------------------------------------------')
-            pos = ((df.index[-1])* random_insample_per)
-            pos1 = round(pos)
-            start_df = df.iloc[:pos1,:]
-            end_df = df.iloc[pos1:,:]
-            if random_insample_start ==1:
-                df = start_df
-                print('Random insample start')
-                print(df)
-            else:
-                df = end_df
-                print('Random insample end')
-                print(df)        
-        
-        # if main_or_all == 'all':                  
-        #     df2 = df.loc[(df['open_to_high_percent'] > change_from_open) & 
-        #                  (df['Yclose_to_hod'] > Yclose_to_hod) &
-        #                  (df['Pre-market Volume'] > all_pm_vol_filter) &
-        #                  ((df['Pre-market Gap %'] > all_pm_gap_filter) | (df['Pre-market Change'] > all_pm_gap_filter))]
-        #     #            (df['Shares Float'] > sharesfloat_min) &
-        #     #            (df['Shares Float'] < sharesfloat_max) &
-        #     #            (df['Market Capitalization'] > market_cap_min) & 
-        #     #            (df['Market Capitalization'] < market_cap_max))
-        if main_or_all == 'all':     
-            condition2 = df['Yclose_to_open_percent'] > yclose_to_open_percent_filter
-            df = df.loc[condition2 ]#& condition2]
-    
-            #            (df['Shares Float'] > sharesfloat_min) &
-            #            (df['Shares Float'] < sharesfloat_max) &
-            #            (df['Market Capitalization'] > market_cap_min) & 
-            #            (df['Market Capitalization'] < market_cap_max))
-        if main_or_all == 'main':                                    
-             df = df.loc[(df['Volume'] > volume_min) &
-                               (df['Pre-market Volume'] >= pm_vol_set)] # &
-                               # (df['Shares Float'] > sharesfloat_min) &
-                               # (df['Shares Float'] < sharesfloat_max) &
-                               # (df['Market Capitalization'] > market_cap_min) & 
-                               # (df['Market Capitalization'] < market_cap_max))
-         
-        
-        df1 = df.set_index('Date')
-        print('Ticker database after filters',df1)     
-        if main_or_all == 'all':
-        # Dictionary for storing Date Ticker yesterdaysclose          
-         top_gap_by_date ={top_gap_by_date: dict(zip(sub_df['Ticker'], sub_df['last_close_price']))
-               for top_gap_by_date, sub_df in df1.groupby(df1.index)}
-            
-        if main_or_all == 'main': 
-           # Dictionary for storing Date Ticker yesterdaysclose          
-            top_gap_by_date ={top_gap_by_date: dict(zip(sub_df['Ticker'], sub_df['Yesterdays Close']))
-                  for top_gap_by_date, sub_df in df1.groupby(df1.index)}
-            
-        return top_gap_by_date, file_path, df
-    
-    # function to load interday data
-    def load_interday(self, date, ticker, mac, flt_database):
-        """
-        Parameters
-        ----------
-        date : TYPE
-            symbol date.
-        ticker : TYPE
-            filter by symbol.
-        mac : TYPE
-           mac or win.
-        flt_database : TYPE
-            main database, already filtered .
-    
-        Returns
-        -------
-        data : TYPE
-            DESCRIPTION.
-    
-        """
-        # take filtered database from loadmaindata and retreave float and market cap 
-        filter_criteria = ((flt_database['Date'] == date) & (flt_database['Ticker'] == ticker)) 
-        today_symbol_data = flt_database[ filter_criteria ] 
-        sf = today_symbol_data.iloc[0,10]#shares float
-        mc = today_symbol_data.iloc[0,28]# market cap 
-         
-        year = date.strftime("%Y") 
-        
-        if mac == 0:
-            date = date.strftime("\%Y-%m-%d")# convert datetime to string
-            dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
-            data = pd.read_csv(r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_%s'% dateticker )
-        if mac == 1:
-            date = date.strftime("/%Y-%m-%d")# convert datetime to string
-            dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
-            data = pd.read_csv('/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_%s'% dateticker )
-        
-        data.columns = ['timestamp','open','high','low','close','volume','vwap']
-        data['shares_float'] = sf
-        data['market_cap'] = mc 
-        data['timestamp'] = pd.to_datetime(data['timestamp'])# change column to datetime
-        data.set_index('timestamp', inplace=True)# set datetime as index s i can filter time
 
-        return data 
-    
-    def backtester(self,active_value,top_gap_by_date):
+        ohlc_intraday = {}
         mac = active_value['mac']
         longshort = active_value["longshort"]
         plot = active_value["plot"]
@@ -274,10 +144,10 @@ class Backtester():
         date_stats_2 = {} # stores the returns
         #Data Frame to store data
         results_store = pd.DataFrame()
-        for date in top_gap_by_date:
+        for date in self.top_gap_by_date:
             date_stats[date] = {} #store the day return of eash ticker
             date_stats_2[date] = {} #store the day return of eash ticker
-            for ticker in top_gap_by_date[date]:# the key is date
+            for ticker in self.top_gap_by_date[date]:# the key is date
                 #print('Loading data and applying indicator for ',date,ticker)
                 try:
                     print()
@@ -288,9 +158,10 @@ class Backtester():
                         risk_per_trade = max_risk
                         print('Compounding off ')
                     print('risk_per_trade',risk_per_trade)
-                    df = bt.load_interday(date,ticker,mac,flt_database)# load interday files ??? does this need to be moved to the top of fucntion
+                    # flt_database = self.flt_database
+                    df = ld.load_interday(self,date,ticker,mac,self.flt_database)# load interday files ??? does this need to be moved to the top of fucntion
                     # get last close price
-                    last_close = top_gap_by_date[date][ticker]
+                    last_close = self.top_gap_by_date[date][ticker]
 
                     # apply super trend always for chart
                     df['st'], df['s_upt'], df['st_dt'] = indc.get_supertrend(df['high'], df['low'], df['close'], lookback, multiplier)
@@ -935,17 +806,28 @@ class Backtester():
                     results_store = results_store.append(results,ignore_index=True) 
                     results_store.reset_index(drop=True)        
                     
+                    # print("**********Strategy Performance Statistics**********")
+                    # print("total cumulative return = {}".format(round(abs_return(date_stats),4)))
+                    # print("total win rate = {}".format(round(win_rate(date_stats),2)))
+                    # print("mean return per win trade = {}".format(round(mean_ret_winner(date_stats),4)))
+                    # print("mean return per loss trade = {}".format(round(mean_ret_loser(date_stats),4)))
                     
+                    # btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward,trail_stop_per ,num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
+                    #                         columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','trail_stop_per','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
+
                         
                         
         ###########################################################################################################
         ###################################  Plot    ##############################################################
         ###########################################################################################################
                     if plot == 1 and trade_count > plot_trades_only:
-                        my_plt.plot_fips(gains, gains_2)
-                        my_plt.plt_chart(longshort ,date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2)
+                        my_plt.plot_fips(self,gains, gains_2)
+                        my_plt.plt_chart(self,longshort ,date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2)
                     else:
                         pass
+                
+                
+                
                 except (FileNotFoundError,IndexError ) as e:
                     print(e)
                     print('Interday file not found for ----------------------------------------------', date, ticker)  
@@ -959,3 +841,186 @@ class Backtester():
                     # missingdf.to_csv(r'B:\2T_Quant\Intraday_Ticker_Database_2T\download_all_2022_2T\%s'% dateticker ) 
                     # print('Missin data retrived')
                     # pass
+                
+        #####################################################################################################################
+        ######  Calculating results ##
+        #####################################################################################################################
+        print('Starting calculating returns-----------------------------------------------------------')
+        #dictionarys to store data
+        profit_trade_dic = {}
+        
+        if len(results_store) == 0:
+            print('Results dataframe empty')
+        else:
+            # First trade
+            results_store['stop_p_one'] = results_store['open_price'] - results_store['stop_price']
+            results_store['loss_if_stop'] = results_store['stop_p_one'].abs() * results_store['max_shares']
+            results_store['profit_1'] =   results_store['ticker_return'] * results_store['max_shares']
+            
+            results_store['profit_win'] = np.nan
+            results_store['loss'] = np.nan 
+            results_store['total_win_1'] = np.nan
+                    
+            # Second trade
+            results_store['stop_p_one_2'] = results_store['open_price_2'] - results_store['stop_price_2']
+            results_store['loss_if_stop_2'] = results_store['stop_p_one_2'].abs() * results_store['max_shares_2']
+            results_store['profit_2'] =   results_store['ticker_return_2'] * results_store['max_shares_2']
+            
+            results_store['profit_win_2'] = np.nan
+            results_store['loss_2'] = np.nan 
+            results_store['total_win_2'] = np.nan
+            
+            # Total commission
+            results_store['commission'] = results_store['trade_count'] * trip_comm
+            
+            
+            for i in range(len(results_store)):
+                profit_trade_dic[i] = []
+                #print(results_store['ticker'][i])
+                #if results_store['trade_count'][i] > 0:??? NEED TO COME UP WITH SOMETHING HERE
+                results_store['locate_fee'] = results_store['locate'] * locate_fee
+                profit_trade_dic[i].append(results_store['locate'] * locate_fee)
+        
+            
+            
+            
+            results_store['total_1'] =  results_store['profit_1'] - (results_store['locate_fee'] + results_store['commission'])
+            results_store['R'] = results_store['total_1'] /  results_store['loss_if_stop']##????????????????????????? this might be wrong!! 
+            # Create the new columns based on the values in 'R'
+            results_store['R_losser'] = results_store[results_store['R'] < 0]['R']
+            results_store['R_winner'] = results_store[results_store['R'] >= 0]['R']
+            
+            #Second trade no locate or commisions all covered in first trade
+            results_store['total_2'] =  results_store['profit_2']
+            results_store['R_2'] = results_store['total_2'] /  results_store['loss_if_stop_2']
+            # Create the new columns based on the values in 'R'
+            results_store['R_losser_2'] = results_store[results_store['R_2'] < 0]['R_2']
+            results_store['R_winner_2'] = results_store[results_store['R_2'] >= 0]['R_2']
+            
+            # New Total 
+            results_store['profit'] = results_store['profit_1'] + results_store['profit_2']
+            results_store['total'] = results_store['total_1'] + results_store['total_2']
+           
+            # First trade
+            results_store['profit_win'] = 0
+            results_store['loss'] = 0
+            results_store['total_win_1'] = 0
+            # assign 'qualitative_rating' based on 'grade' with .loc
+            results_store.loc[results_store.profit > 0, 'profit_win'] = 1
+            results_store.loc[results_store.profit < 0, 'loss'] = 1
+            results_store.loc[results_store.total > 0, 'total_win'] = 1
+            
+            # Second trade
+            results_store['profit_win_2'] = 0
+            results_store['loss_2'] = 0
+            results_store['total_win_2'] = 0
+            # assign 'qualitative_rating' based on 'grade' with .loc
+            results_store.loc[results_store.profit_2 > 0, 'profit_win_2'] = 1
+            results_store.loc[results_store.profit_2 < 0, 'loss_2'] = 1
+            results_store.loc[results_store.total_2 > 0, 'total_win_2'] = 1
+            
+            # Exposed Capital
+            results_store ['exposed'] = (results_store['max_shares'] * results_store['open_price'])#.cumsum()
+              
+            # Cal balance
+            results_store['start_bal'] = start_balance
+            results_store['cum_profit'] =  results_store['profit'].cumsum()
+            results_store['balance_no_fee'] = results_store['start_bal'] + results_store['cum_profit']
+            results_store['cum_total'] = results_store['total'].cumsum()
+            results_store['balance'] = results_store['start_bal'] + results_store['cum_total']
+            
+            
+            
+            
+            
+            #-----------------------------------------------------------------------------------
+           
+            total_win = results_store['total_win'].sum()
+            num_of_trades = results_store['trade_count'].sum()
+            if total_win > 0:
+                win_per = total_win / num_of_trades
+            else:
+                win_per = 0 
+            # Calculate the averages
+            losser_average = round(results_store['R_losser'].mean(),3)
+            winner_average = round(results_store['R_winner'].mean(),3)
+            gross_profit = round(results_store['profit'].sum(),3)
+            total_locate_fee = results_store['locate_fee'].sum()
+            total_comm = results_store['commission'].sum()
+            total_profit = round(results_store['total'].sum(),2)
+            finish_bal = round(results_store['balance'].iloc[-1],2)
+            expectancy = round(results_store['R'].mean(),3)
+            
+            ax = plt.gca()
+        
+            #results_store.plot(kind='line',y='balance',x = 'date',ax=ax)
+            #Need a new column with balance without fees and plot thatn
+            # results_store.plot(kind='line', x='date', y=['balance', 'balance_no_fee'], color=['red', 'blue'], ax=ax)
+            fig, ax = plt.subplots(figsize=(15,10), dpi=150)#?
+            results_store.plot(x='date',  y=['balance', 'balance_no_fee'], color=['red', 'blue'],ax=ax,linewidth=0.25)
+            #results_store.plot(x='date', y='balance', kind='scatter',color=['red'], ax=ax, s=1 )
+            #plt.show()
+            #####################################################################################
+            fig, ax1 = plt.subplots()
+            color1 = 'tab:red'
+            color2 = 'tab:blue'
+            ax1.set_xlabel('Flips')
+            ax1.set_ylabel('gains', color=color1)
+            ax1.plot(gains, color=color1)
+            ax1.tick_params(axis='y', labelcolor=color1)
+            
+            ax2 = ax1.twinx()
+            ax2.set_ylabel('gains_2', color=color2)
+            ax2.plot(gains_2, color=color2)
+            ax2.tick_params(axis='y', labelcolor=color2)
+            
+            fig.tight_layout()
+            plt.show()
+            #####################################################################################
+
+            
+            #print('Maximum Drawdown ?????????????????????????', max_dd)
+            print('Starting balance',start_balance)
+            print('Number of trades taken', num_of_trades)
+            print('Number of trades won', total_win)
+            print('Winning %',win_per)
+            print('Total risk',total_risk)
+            print('Gross profit',gross_profit)
+            print('Total locate fees', total_locate_fee)
+            print('Total commission', total_comm)
+            print('Total Profits',total_profit)
+            print('Finishing balance',finish_bal)
+            print('expectancy',expectancy)
+            print('Loosing R',losser_average)
+            print('Winning R',winner_average)
+               
+        #########################################################################################################################################
+
+        #########################################################################################################################################
+        #########################################################################################################################################
+        
+        # Load file of tickers and date
+        print('Using filepath', self.file_path)
+        main_df = pd.read_csv(self.file_path , parse_dates=[1], dayfirst=True,index_col=0)# Puts year first
+
+        results_store.rename(columns = {'date' : 'Date', 'ticker' : 'Ticker'}, inplace = True)
+        #Get todays date
+        today_dt = datetime.now()
+        today = today_dt.strftime("%Y-%m-%d")
+        time_now = today_dt.strftime("_%H-%M")
+
+        joined = pd.merge(results_store, main_df, on=['Date', 'Ticker'], how='left')
+        winner_name = today + time_now +  '_winner_losers.csv' #
+        if mac == 1:
+            joined.to_csv("/Users/briansheehan/Documents/mac_quant/Backtesting/winners.csv", index=False)
+        if mac == 0:
+            joined.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% winner_name, index=False)
+
+        # mac = load_parms['mac']
+        if mac == 0:
+            telegram_send.send(messages=["Back test complete............"])
+            
+        print('It took', (time.time()-start)/60, 'minutes.')
+        print('Finished')
+
+        return results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2 
