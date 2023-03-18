@@ -5,85 +5,15 @@ max drawdown
 loaddata df3 need a good looking at
 """
 
-
-# Import libraries
-
-# import pandas as pd
-# import time
-# from copy import deepcopy
-# # import matplotlib.pyplot as plt
-# import numpy as np
-# from copy import deepcopy
-# from time import sleep
-# import time
-# import math
-# # import matplotlib as mpl
-# import random
-# from datetime import datetime, timedelta
-# import telegram_send
-# import pytz
-# import requests
-
 from main import Backtester
-# import main
-
-# indc = main.Indicators()
-# my_plt = main.Plots()
-# ld = main.Load_date()
-
-
-
-
-
-
-
-
-
-
-#start = time.time()
-# pd.options.mode.chained_assignment = None # wprloing with copy warning disable
-# # so annoying cant figure out copy not 
-
-# #Get todays date
-# today_dt = datetime.now()
-# today = today_dt.strftime("%Y-%m-%d")
-# time_now = today_dt.strftime("_%H-%M")
-
-
-                 
-##########################################################################################################################################################################################################################
-##########################################################################################################################################################################################################################
-load_parms = {
-    'mac': 1,
-    'main_or_all': 'all',
-    'filter_by_dates_on': 1,
-    'start_date': '2021-10-01',
-    'end_date': '2023-03-12',
-    
-    'insample_per_on': 0,
-    'split_per':.5,
-    'return_start':0,
-    
-    'random_insample_on' :0,
-    'random_insample_per':.5,
-    'random_insample_start':0,
-    #Scanner
-    'volume_min': -999999,
-    'yclose_to_open_percent_filter': 15,# all
-    'pm_vol_set': 0, # main
-
-}
-
-##########################################################################################################################################################################################################################
-# General Settings                                                  #????????????##############################
-#############################################################################################################
+import json
 
 default_parms = {
     'mac': 1,
     'main_or_all': 'all',
     'filter_by_dates_on': 1,
     'start_date': '2021-10-01',
-    'end_date': '2022-03-12',
+    'end_date': '2021-11-12',
     # Scanner Settings
     # Insample out of sample settings
     "insample_per_on": 1,
@@ -137,7 +67,7 @@ default_parms = {
 
     # Testing Settings
     # Commissions
-    "locate_fee": 0.05,  # per share
+    "locate_fee": 0.01,  # per share
     "trip_comm": 2,  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": 1,
@@ -198,14 +128,11 @@ default_parms = {
     "st_close_greaterthan_on": 0, # short
     "st_close_greaterthan_on_2": 0, # short 2
 }
-###########################################################################################################
-# Set up active parameters
+
 active_parms = {
-    "per_change_first_tick_on": 0,
-    "precent_greater": 0.5,
-    "per_change_open_on": 0,
-    "per_change_open_on_2": 0,
-    "open_greater": -0.1,
+    "close_stop": 0.1,
+    "min_between_price": 2.5,
+    "max_between_price": 20,
 }
 
 
@@ -215,14 +142,10 @@ for param_name, default_value in default_parms.items():
     active_value = active_parms.get(param_name, default_value)
     # use active_value here as the value of the parameter
     output_dict[param_name] = active_value
-    print(f"{param_name}: {active_value}")
-    print(output_dict)
-    
+    # print(f"{param_name}: {active_value}")
 
+print(json.dumps(output_dict, indent=4))   
 
-
-########################### Run code here   #############################################################################
-# create an instance of the Backtester class
 bt = Backtester(output_dict)
 
 

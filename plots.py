@@ -50,7 +50,8 @@ class Plots:
         return plt.show()
     
     def plot_fips(self, gains, gains_2):
-        fig, ax1 = plt.subplots()
+        
+        fig, ax1 = plt.subplots(figsize=(15,10), dpi=150)
         color1 = 'tab:red'
         color2 = 'tab:blue'
         ax1.set_xlabel('Flips')
@@ -64,4 +65,9 @@ class Plots:
         ax2.tick_params(axis='y', labelcolor=color2)
         
         fig.tight_layout()
+        return plt.show()
+    
+    def plot_results(self,results_store):
+        fig, ax = plt.subplots(figsize=(15,10), dpi=150)#?
+        results_store.plot(x='date',  y=['balance', 'balance_no_fee'], color=['red', 'blue'],ax=ax,linewidth=0.25)
         return plt.show()

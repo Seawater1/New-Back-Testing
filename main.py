@@ -950,32 +950,9 @@ class Backtester():
             total_profit = round(results_store['total'].sum(),2)
             finish_bal = round(results_store['balance'].iloc[-1],2)
             expectancy = round(results_store['R'].mean(),3)
+
             
-            ax = plt.gca()
-        
-            #results_store.plot(kind='line',y='balance',x = 'date',ax=ax)
-            #Need a new column with balance without fees and plot thatn
-            # results_store.plot(kind='line', x='date', y=['balance', 'balance_no_fee'], color=['red', 'blue'], ax=ax)
-            fig, ax = plt.subplots(figsize=(15,10), dpi=150)#?
-            results_store.plot(x='date',  y=['balance', 'balance_no_fee'], color=['red', 'blue'],ax=ax,linewidth=0.25)
-            #results_store.plot(x='date', y='balance', kind='scatter',color=['red'], ax=ax, s=1 )
-            #plt.show()
-            #####################################################################################
-            fig, ax1 = plt.subplots()
-            color1 = 'tab:red'
-            color2 = 'tab:blue'
-            ax1.set_xlabel('Flips')
-            ax1.set_ylabel('gains', color=color1)
-            ax1.plot(gains, color=color1)
-            ax1.tick_params(axis='y', labelcolor=color1)
-            
-            ax2 = ax1.twinx()
-            ax2.set_ylabel('gains_2', color=color2)
-            ax2.plot(gains_2, color=color2)
-            ax2.tick_params(axis='y', labelcolor=color2)
-            
-            fig.tight_layout()
-            plt.show()
+            my_plt.plot_results(self,results_store)
             #####################################################################################
 
             
