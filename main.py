@@ -12,6 +12,7 @@ from load_data import Load_date
 from plots import Plots
 from datetime import datetime, timedelta
 import time
+import telegram_send
 ld = Load_date
 indc = Indicators()
 my_plt = Plots
@@ -150,14 +151,13 @@ class Backtester():
             for ticker in self.top_gap_by_date[date]:# the key is date
                 #print('Loading data and applying indicator for ',date,ticker)
                 try:
-                    print()
                     total_risk = start_balance * risk_acc
                     risk_per_trade = imaginary_account * bet_percentage
                     
                     if risk_per_trade > max_risk:
                         risk_per_trade = max_risk
-                        print('Compounding off ')
-                    print('risk_per_trade',risk_per_trade)
+                        # print('Compounding off ')
+                    # print('risk_per_trade',risk_per_trade)
                     # flt_database = self.flt_database
                     df = ld.load_interday(self,date,ticker,mac,self.flt_database)# load interday files ??? does this need to be moved to the top of fucntion
                     # get last close price
@@ -416,13 +416,13 @@ class Backtester():
                                 trade_count += 1    
                                 direction = 'short'
                                 open_price = ohlc_intraday[date,ticker]["open"][i+1]# ["low"][i+1] +1 is the next candle. Need to work in slipage here  
-                                print('open_price',open_price)
-                                print('close_stop',close_stop)
-                                print('reward',reward)
+                                # print('open_price',open_price)
+                                # print('close_stop',close_stop)
+                                # print('reward',reward)  
                                 reward_price = open_price - ((open_price * close_stop) * reward)
-                                print('reward_price',reward_price)
+                                # print('reward_price',reward_price)
                                 ohlc_intraday[date,ticker]["trade_sig"][i+1] = open_price# ["trade_sig"][i+1]            
-                                print('close_stop',close_stop)
+                                # print('close_stop',close_stop)
                                 if close_stop_on == 1:
                                     stop_price = (open_price * close_stop) + open_price
                                 if pre_market_h_stop_on == 1:
@@ -439,10 +439,10 @@ class Backtester():
                                 else:
                                     locate =  round(max_shares, -2)
                                     max_shares = locate
-                                print('Max Shares',max_shares)
-                                print('Locates',locate)   
-                                print('Going Short ', ticker, ' open_price',open_price)
-                                print('Stop price ', stop_price)
+                                # print('Max Shares',max_shares)
+                                # print('Locates',locate)   
+                                # print('Going Short ', ticker, ' open_price',open_price)
+                                # print('Stop price ', stop_price)
                         #########################################################
                         ######## Conditions to open second short trade ###############
                         #########################################################   
@@ -610,11 +610,11 @@ class Backtester():
                                 ohlc_intraday[date,ticker]["high"][i] <  reward_price): # is 3 times the risk price to get 3R
                                 take_profit_count += 1
                                 last_low = ohlc_intraday[date,ticker]["high"][i] # keeps track of the lowest price
-                                print('last_low',last_low)
+                                # print('last_low',last_low)
                                 trail_stop_price_short = ohlc_intraday[date,ticker]["high"][i] * (1 + .02) # adds a percentage above so dont get stopped stright away
-                                print('Tight stop here of 2 %')
-                                print(reward,'R, Price target hit. New stop price',trail_stop_price_short)
-                                print('Last high price',last_low)
+                                # print('Tight stop here of 2 %')
+                                # print(reward,'R, Price target hit. New stop price',trail_stop_price_short)
+                                # print('Last high price',last_low)
                             
                             # trail stop continues after take profit 3 r     
                             elif(
@@ -638,9 +638,9 @@ class Backtester():
                                 ticker_return = open_price - close_price
                                 date_stats[date][ticker] = ticker_return
                                 outcome = 'trailing_stop_hit'
-                                print('Trail stop hit')
-                                print('min_r_trail_stop_hit',ticker, ' Price',close_price)
-                                print('Ticker return', ticker_return)
+                                # print('Trail stop hit')
+                                # print('min_r_trail_stop_hit',ticker, ' Price',close_price)
+                                # print('Ticker return', ticker_return)
                         
                               
                             ##################
@@ -670,8 +670,8 @@ class Backtester():
                                       ticker_return = open_price - stop_price 
                                       date_stats[date][ticker] = ticker_return
                                       outcome = 'stopped_out'
-                                      print('Stopped out',ticker, ' Price',stop_price)
-                                      print('Ticker return', ticker_return)
+                                      # print('Stopped out',ticker, ' Price',stop_price)
+                                      # print('Ticker return', ticker_return)
                             ###############
                             # Time stop
                             ###############  
@@ -683,8 +683,8 @@ class Backtester():
                                         ticker_return = open_price - close_price
                                         date_stats[date][ticker] = ticker_return
                                         outcome = 'time_stop'
-                                        print('Sell time hit',ticker, ' Price',close_price)
-                                        print('Ticker return', ticker_return)          
+                                        # print('Sell time hit',ticker, ' Price',close_price)
+                                        # print('Ticker return', ticker_return)          
                                     
                             
                             
@@ -773,10 +773,10 @@ class Backtester():
                         
                         # print('tot_slip',tot_slip)
                         # print('open_price',open_price)
-                        print('max_shares',max_shares)
+                        # print('max_shares',max_shares)
                         locate_cost_ps = open_price * max_locate_per_price
                         locate_cost = locate_cost_ps * max_shares
-                        print('locate_cost',locate_cost)
+                        # print('locate_cost',locate_cost)
                         # print("new_commission",new_commission)
                         #locate_cost =  locate * locate_fee
                         # print('locate_cost',locate_cost)
