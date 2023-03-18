@@ -21,8 +21,7 @@ from skopt.utils import use_named_args
 # Define the objective function that takes in the settings and returns the finish_bal value
 @use_named_args([
     Real(0.01, 1.0, name='close_stop'),
-    Real(0.5, 10.0, name='min_between_price'),
-    Real(5.0, 50.0, name='max_between_price')
+    Real(0.01, 1.0, name= "open_greater")
 ])
 def objective(**params):
     output_dict = {k: v for k, v in params.items()}
@@ -31,9 +30,8 @@ def objective(**params):
 
 # Define the search space for each of the settings
 search_space = [
-    Real(0.01, .5, name='close_stop'),
-    Real(0.5, 5.0, name='min_between_price'),
-    Real(5.0, 20.0, name='max_between_price')
+    Real(0.01, 1.0, name='close_stop'),
+    Real(0.01, 1.0, name='open_greater')
 ]
 
 # Run Bayesian optimization

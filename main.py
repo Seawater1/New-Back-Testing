@@ -803,7 +803,9 @@ class Backtester():
                     results = pd.DataFrame([[date, ticker ,  open_price, close_price,   stop_price,  ticker_return,  outcome,  max_shares,  locate, open_price_2,  close_price_2,  stop_price_2,  ticker_return_2,  outcome_2,  trade_count,  max_shares_2,  locate_2]],
                                    columns=['date','ticker','open_price','close_price','stop_price','ticker_return','outcome','max_shares','locate','open_price_2','close_price_2','stop_price_2','ticker_return_2','outcome_2','trade_count','max_shares_2','locate_2'] )  
                     #Adds new line to dic each loop 
-                    results_store = results_store.append(results,ignore_index=True) 
+                    # results_store = results_store.append(results,ignore_index=True) 
+                    results_store = pd.concat([results_store, results], ignore_index=True)
+
                     results_store.reset_index(drop=True)        
                     
                     # print("**********Strategy Performance Statistics**********")

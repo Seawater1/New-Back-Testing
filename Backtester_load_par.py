@@ -10,7 +10,7 @@ import json
 
 def backtester_load_par(active_parms):
     default_parms = {
-        'mac': 1,
+        'mac': 0,
         'main_or_all': 'all',
         'filter_by_dates_on': 1,
         'start_date': '2021-10-01',
