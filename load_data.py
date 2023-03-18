@@ -46,35 +46,35 @@ class Load_date():
             if main_or_all == 'main':
                 file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/2021DataBase.csv"   
         # Load file of tickers and date
-        print('Using filepath', file_path)
+        # print('Using filepath', file_path)
         df = pd.read_csv(file_path,
                           parse_dates=[1], dayfirst=True,index_col=0)# Puts year first
         df['Date'] = pd.to_datetime(df.Date)#Change time object to datetime
-        print('Ticker Database no filter',df)
+        # print('Ticker Database no filter',df)
         
         #Filter by dates
         if filter_by_dates_on == 1:
-            print('Flitering by dates -----------------------------------------------------------------------------------------------')
+            # print('Flitering by dates -----------------------------------------------------------------------------------------------')
             date_filter = (df['Date'] >= start_date) & (df['Date'] <= end_date )
             df = df.loc[date_filter]
-            print('DF filtered by Date', df)
+            # print('DF filtered by Date', df)
         # Split insample and out of sample
         if insample_per_on == 1: 
-            print('Spliting insample and out of smaple -----------------------------------------------------------------',split_per)
+            # print('Spliting insample and out of smaple -----------------------------------------------------------------',split_per)
             num_rows = len(df)
             split_index = int(num_rows * split_per)
             if return_start == 1:
                 df = df[:split_index]
-                print('start --- split')
+                # print('start --- split')
             else:
                 df = df[split_index:]
-                print('start --- split')
-            print('Split Percent ', split_per)
-            print('In sample df ',df)
+                # print('start --- split')
+            # print('Split Percent ', split_per)
+            # print('In sample df ',df)
             
         #Random OOS not for training for test afterwards
         if random_insample_on == 1:
-            print('Random insample is on -----------------------------------------------------------------------------------------')
+            # print('Random insample is on -----------------------------------------------------------------------------------------')
             pos = ((df.index[-1])* random_insample_per)
             pos1 = round(pos)
             start_df = df.iloc[:pos1,:]
@@ -115,7 +115,7 @@ class Load_date():
          
         
         df1 = df.set_index('Date')
-        print('Ticker database after filters',df1)     
+        # print('Ticker database after filters',df1)     
         if main_or_all == 'all':
         # Dictionary for storing Date Ticker yesterdaysclose          
          top_gap_by_date ={top_gap_by_date: dict(zip(sub_df['Ticker'], sub_df['last_close_price']))

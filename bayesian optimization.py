@@ -6,7 +6,6 @@ Created on Sat Mar 18 07:08:52 2023
 @author: briansheehan
 """
 
-import itertools
 
 
 from Backtester_load_par import backtester_load_par

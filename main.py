@@ -135,7 +135,7 @@ class Backtester():
 
         
         print('------  Starting Testing strategy  ---------------------------------------------------------')      
-        print('Going ', longshort)
+        # print('Going ', longshort)
         #dictionarys to store data
         gains = [] 
         gains_2 = []

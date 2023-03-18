@@ -14,7 +14,7 @@ def backtester_load_par(active_parms):
         'main_or_all': 'all',
         'filter_by_dates_on': 1,
         'start_date': '2021-10-01',
-        'end_date': '2021-11-12',
+        'end_date': '2023-03-18',
         # Scanner Settings
         # Insample out of sample settings
         "insample_per_on": 1,
