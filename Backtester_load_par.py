@@ -99,9 +99,11 @@ def backtester_load_par(active_parms):
         "buy_time": "09:30:00",
         "selltime_on": 1,
         "sell_time": "15:58:00",
+        
         "buy_between_time_on": 1,
         "buy_after": "09:29:00",
         "buy_before": "09:35:00",
+        
         "buy_between_time_on_2": 1,
         "buy_after_2": "09:33:00",
         "buy_before_2": "10:35:00",
