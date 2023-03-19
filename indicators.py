@@ -101,16 +101,21 @@ class Indicators:
     
     # % Change from Open
     def per_change_open(self, df,date,open_greater):
-        "change from the open. open bar to each open bar"
-        str_date = date.strftime("%Y-%m-%d")#convert datetime to string
-        Date0930 = str_date + ' 09:30:00'
-        Date1600 = str_date + ' 16:00:00'
-        day = df.loc[Date0930:Date1600]
-        open_price = day.iloc[0,0]# get open price
-        df['open_change'] = ((df['open'] - open_price) / open_price)
-        test = df['open_change'] >= open_greater
-        df['open_greater'] = test
-        return df
+        try:
+            "change from the open. open bar to each open bar"
+            str_date = date.strftime("%Y-%m-%d")#convert datetime to string
+            Date0930 = str_date + ' 09:30:00'
+            Date1600 = str_date + ' 16:00:00'
+            day = df.loc[Date0930:Date1600]
+            open_price = day.iloc[0,0]# get open price
+            df['open_change'] = ((df['open'] - open_price) / open_price)
+            test = df['open_change'] >= open_greater
+            df['open_greater'] = test
+            return df
+        except :
+            df['open_greater'] = False
+            print('Error in per_change_open indicator')
+            return df
     
     # Pre market gap PMG
     def pm_gap(self, df,date,last_close, pmg_greater):

@@ -35,10 +35,10 @@ search_space = [
 ]
 
 # Run Bayesian optimization
-result = gp_minimize(objective, search_space, n_calls=50, random_state=0)
+result = gp_minimize(objective, search_space, n_calls=100, random_state=0)
 
 # Print the optimal settings and finish_bal value
-print("Optimal settings: {}".format(dict(zip(['close_stop', 'min_between_price', 'max_between_price'], result.x))))
+print("Optimal settings: {}".format(dict(zip(['close_stop', 'open_greater'], result.x))))
 print("Optimal finish_bal: {}".format(-result.fun))
 
 

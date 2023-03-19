@@ -111,11 +111,14 @@ def backtester_load_par(active_parms):
         "pm_volume_sum_greaterthat": 1000000,
         "pm_gap_on": 0,
         "pmg_greater": 0.4,
+        
         "per_change_first_tick_on": 0,
         "precent_greater": 0.5,
+        
         "per_change_open_on": 0,
-        "per_change_open_on_2": 0,
+        "per_change_open_on_2": 1,
         "open_greater": -0.1,
+        
         "vwap_above_on": 0,
         "vwap_below_on": 0,
         "last_close_change_on": 1,

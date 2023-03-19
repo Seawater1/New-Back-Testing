@@ -150,7 +150,7 @@ class Backtester():
             date_stats_2[date] = {} #store the day return of eash ticker
             for ticker in self.top_gap_by_date[date]:# the key is date
                 #print('Loading data and applying indicator for ',date,ticker)
-                try:
+                # try:
                     total_risk = start_balance * risk_acc
                     risk_per_trade = imaginary_account * bet_percentage
                     
@@ -159,7 +159,11 @@ class Backtester():
                         # print('Compounding off ')
                     # print('risk_per_trade',risk_per_trade)
                     # flt_database = self.flt_database
-                    df = ld.load_interday(self,date,ticker,mac,self.flt_database)# load interday files ??? does this need to be moved to the top of fucntion
+                    try:
+                        df = ld.load_interday(self,date,ticker,mac,self.flt_database)# load interday files ??? does this need to be moved to the top of fucntion
+                    except:
+                        print('Interday file not found for ----------------------------------------------', date, ticker)  
+                        continue
                     # get last close price
                     last_close = self.top_gap_by_date[date][ticker]
 
@@ -830,9 +834,9 @@ class Backtester():
                 
                 
                 
-                except (FileNotFoundError,IndexError ) as e:
-                    print(e)
-                    print('Interday file not found for ----------------------------------------------', date, ticker)  
+                # except (FileNotFoundError,IndexError ) as e:
+                #     print(e)
+                #     print('Interday file not found for ----------------------------------------------', date, ticker)  
                     # date1 = date.strftime("%Y-%m-%d")
                     # print('Getting interday data for',ticker,date1)
                     # missingdf = polygon_interday(ticker,date1)
