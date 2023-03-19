@@ -37,7 +37,6 @@ class Backtester():
         self.file_path = file_path
         self.flt_database = flt_database
         
-        print('test self flt',self.flt_database)
         """
         :load_parms dic that contains all settings
 
