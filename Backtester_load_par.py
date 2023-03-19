@@ -31,7 +31,6 @@ def backtester_load_par(active_parms):
         'yclose_to_open_percent_filter': 15,# all
     
         # System settings
-    
         "longshort": "short",  # 'long' or 'short'
     
         "plot": 0,  # 1 to plot on
@@ -72,7 +71,7 @@ def backtester_load_par(active_parms):
         "trip_comm": 2,  # round trip commission
         # Stop loss percent from trade price
         "close_stop_on": 1,
-        "close_stop": 0.10,  # percent percent away from open pricee/ .001 is to small dont get even r
+        "close_stop": 0.04,  # percent percent away from open pricee/ .001 is to small dont get even r
     
         # Pre-market high stop
         "pre_market_h_stop_on": 0,
@@ -119,7 +118,7 @@ def backtester_load_par(active_parms):
         
         "per_change_open_on": 0,
         "per_change_open_on_2": 1,
-        "open_greater": -0.1,
+        "open_greater": 0.01,
         
         "vwap_above_on": 0,
         "vwap_below_on": 0,

@@ -35,7 +35,7 @@ search_space = [
 ]
 
 # Run Bayesian optimization
-result = gp_minimize(objective, search_space, n_calls=100, random_state=0)
+result = gp_minimize(objective, search_space, n_calls=100, random_state=0, n_jobs=-1)
 
 # Print the optimal settings and finish_bal value
 print("Optimal settings: {}".format(dict(zip(['close_stop', 'open_greater'], result.x))))

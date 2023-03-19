@@ -58,6 +58,7 @@ class Backtester():
         risk_acc = active_value["risk_acc"]
         full_balance = active_value["full_balance"]
         imaginary_account = active_value["imaginary_account"]
+        
         full_balance_2 = active_value["full_balance_2"]
         imaginary_account_2 = active_value["imaginary_account_2"]
         bet_percentage = active_value["bet_percentage"]
@@ -452,7 +453,6 @@ class Backtester():
                         
                         if (
                             longshort == 'short' and
-                            1 == 2 and
                             # one == True and
                             # two == True and
                             # three == False and
@@ -476,7 +476,7 @@ class Backtester():
                             open_price_2 == 0 and
                             ticker_return != 0 and
                             trade_count == 1):
-                                print('-------------Starting second trade')
+                                # print('-------------Starting second trade')
                                 # trade_count += 1
                                 trade_count_2 += 1
                                 direction = 'short'
@@ -501,10 +501,10 @@ class Backtester():
                                 else:
                                     locate_2 =  round(max_shares_2, -2)
                                     max_shares_2 = locate_2
-                                print('2Max Shares',max_shares_2)
-                                print('2Locates',locate_2)   
-                                print('Going Short ', ticker, ' Price',open_price_2)
-                                print('Stop price ', stop_price_2)
+                                # print('2Max Shares',max_shares_2)
+                                # print('2Locates',locate_2)   
+                                # print('Going Short ', ticker, ' Price',open_price_2)
+                                # print('Stop price ', stop_price_2)
                         
                         ###################################################
                         ####### If long trade is open  ###################        
@@ -706,9 +706,9 @@ class Backtester():
                                 last_low_2 = ohlc_intraday[date,ticker]["high"][i] # keeps track of the lowest price
                                 
                                 trail_stop_price_short_2 = ohlc_intraday[date,ticker]["high"][i] * (1 + .02) # adds a percentage above so dont get stopped stright away
-                                print('Tight stop here of 2 %')
-                                print(reward,'R, Price target hit. New stop price',trail_stop_price_short_2)
-                                print('Last high price',last_low_2)
+                                # print('Tight stop here of 2 %')
+                                # print(reward,'R, Price target hit. New stop price',trail_stop_price_short_2)
+                                # print('Last high price',last_low_2)
                             # trail stop continues after take profit 3 r     
                             elif(
                                 min_reward_then_let_it_run_2 == 1 and
@@ -730,9 +730,9 @@ class Backtester():
                                 ticker_return_2 = open_price_2 - close_price_2
                                 date_stats[date][ticker] = ticker_return_2
                                 outcome_2 = 'trailing_stop_hit'
-                                print('Trail stop hit')
-                                print('min_r_trail_stop_hit',ticker, ' Price',close_price_2)
-                                print('Ticker return', ticker_return_2)
+                                # print('Trail stop hit')
+                                # print('min_r_trail_stop_hit',ticker, ' Price',close_price_2)
+                                # print('Ticker return', ticker_return_2)
                             # Calculate trailing stop price  
                             ###############
                             # Second Time stop
