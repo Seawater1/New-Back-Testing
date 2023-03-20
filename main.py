@@ -77,9 +77,11 @@ class Backtester():
         aq_value = active_value["aq_value"]
         locate_fee = active_value["locate_fee"]
         trip_comm = active_value["trip_comm"]
+        
         close_stop_on = active_value["close_stop_on"]
         close_stop = active_value["close_stop"]
-
+        close_stop_on_2 = active_value["close_stop_on_2"]
+        close_stop_2 = active_value["close_stop_2"]
 
         pre_market_h_stop_on = active_value["pre_market_h_stop_on"]
         pre_market_h_stop_on = active_value["pre_market_h_stop_on"]
@@ -482,10 +484,10 @@ class Backtester():
                                 direction = 'short'
                                 open_price_2 = ohlc_intraday[date,ticker]["open"][i+1] # ["low"][i+1] +1 is the next candle. Need to work in slipage here  
                                 
-                                reward_price_2 = open_price_2 - ((open_price_2 * close_stop) * reward)
+                                reward_price_2 = open_price_2 - ((open_price_2 * close_stop_2) * reward)
                                 ohlc_intraday[date,ticker]["trade_sig_2"][i+1] =  open_price_2  # ["trade_sig"][i+1]            
-                                if close_stop_on == 1:
-                                    stop_price_2 = (open_price_2 * close_stop) + open_price_2    
+                                if close_stop_on_2 == 1:
+                                    stop_price_2 = (open_price_2 * close_stop_2) + open_price_2    
                                 elif pre_market_h_stop_on == 1:
                                     pmh_price_2 = indc.get_pmh_price(df,date)
                                     #print('PMH price',pmh_price,ticker,date)
@@ -1004,5 +1006,18 @@ class Backtester():
             
         print('It took', (time.time()-start)/60, 'minutes.')
         print('Finished')
+        btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
+                                 columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
+                                                #Adds new line to dic each loop 
+                                                
+        # btresults_store = btresults_store.append(btresults,ignore_index=True) 
+        # btresults_store.reset_index(drop=True)
 
+        results_name = today + time_now +  '_backtest_results.csv' #
+        if mac == 1:
+            btresults.to_csv("/Users/Brian11inch/Documents/Day Trading/mac/%s"% results_name, index=False)
+            
+        if mac == 0:
+            btresults.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% results_name, index=False)
         return results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2 
+    
