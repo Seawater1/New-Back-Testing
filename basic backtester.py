@@ -27,7 +27,7 @@ default_parms = {
     #Scanner
     'volume_min': -999999,
     'pm_vol_set': 0, # main
-    'yclose_to_open_percent_filter': 15,# all
+    'yclose_to_open_percent_filter': 15,# # only working filter for All file 
 
     # System settings
     "longshort": "short",  # 'long' or 'short'
@@ -68,10 +68,13 @@ default_parms = {
     # Commissions
     "locate_fee": 0.01,  # per share
     "trip_comm": 2,  # round trip commission
+    
     # Stop loss percent from trade price
     "close_stop_on": 1,
     "close_stop": 0.04,  # percent percent away from open pricee/ .001 is to small dont get even r
-
+    "close_stop_on_2": 1,
+    "close_stop_2": 0.04,
+    
     # Pre-market high stop
     "pre_market_h_stop_on": 0,
     #Trailing stop
