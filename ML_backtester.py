@@ -48,7 +48,7 @@ def ml_backtester(active_parms):
         "full_balance_2": 0,
         "imaginary_account_2": 5000,
         "bet_percentage": 0.01,  # risk per trade of imaginary account
-        "max_locate_per_price": 0.02,
+        "max_locate_per_price": 0.01,
         "max_risk": 999999,  # set low to prevent compounding
         "open_slippage": 0,
         "close_slippage": 0,
@@ -72,8 +72,8 @@ def ml_backtester(active_parms):
         # Stop loss percent from trade price
         # Stop loss percent from trade price
         "close_stop_on": 1,
-        "close_stop": 0.04,  # percent percent away from open pricee/ .001 is to small dont get even r
-        "close_stop_on_2": 1,
+        "close_stop": 0.03,  # percent percent away from open pricee/ .001 is to small dont get even r
+        "close_stop_on_2": 0,
         "close_stop_2": 0.04,
     
         # Pre-market high stop
@@ -87,10 +87,10 @@ def ml_backtester(active_parms):
         "trail_stop_per": 0,#.03,.06,.1 if this is greater than close_stop it affects R
     
         # Both Main and All
-        "sharesfloat_on": 0,
+        "sharesfloat_on": 1,
         "sharesfloat_min": -9999999,
         "sharesfloat_max": 9999999999,
-        "market_cap_on": 0,
+        "market_cap_on": 1,
         "market_cap_min": -999,
         "market_cap_max": 9999999999999999,
     
@@ -111,6 +111,7 @@ def ml_backtester(active_parms):
         "buy_before_2": "10:35:00",
         "volume_sum_cal_on": 0,
         "vol_sum_greaterthan": 1000000,
+        
         "pm_volume_sum_cal_on": 0,
         "pm_volume_sum_greaterthat": 1000000,
         "pm_gap_on": 0,
@@ -120,7 +121,7 @@ def ml_backtester(active_parms):
         "precent_greater": 0.5,
         
         "per_change_open_on": 0,
-        "per_change_open_on_2": 1,
+        "per_change_open_on_2": 0,
         "open_greater": 0.01,
         
         "vwap_above_on": 0,

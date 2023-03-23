@@ -47,6 +47,7 @@ class Backtester():
     def backtester(self,active_value):
         start = time.time()
         
+        
 
         ohlc_intraday = {}
         mac = active_value['mac']
@@ -1001,8 +1002,8 @@ class Backtester():
             joined.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% winner_name, index=False)
 
         # mac = load_parms['mac']
-        if mac == 0:
-            telegram_send.send(messages=["Back test complete............"])
+        # if mac == 0:
+        #     telegram_send.send(messages=["Back test complete............"])
             
         print('It took', (time.time()-start)/60, 'minutes.')
         print('Finished')

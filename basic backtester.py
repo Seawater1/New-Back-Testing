@@ -71,8 +71,8 @@ default_parms = {
     
     # Stop loss percent from trade price
     "close_stop_on": 1,
-    "close_stop": 0.04,  # percent percent away from open pricee/ .001 is to small dont get even r
-    "close_stop_on_2": 1,
+    "close_stop": 0.1,  # percent percent away from open pricee/ .001 is to small dont get even r
+    "close_stop_on_2": 0,
     "close_stop_2": 0.04,
     
     # Pre-market high stop
@@ -103,7 +103,7 @@ default_parms = {
     
     "buy_between_time_on": 1,
     "buy_after": "09:29:00",
-    "buy_before": "09:35:00",
+    "buy_before": "09:31:00",
     
     "buy_between_time_on_2": 1,
     "buy_after_2": "09:33:00",
@@ -119,7 +119,7 @@ default_parms = {
     "precent_greater": 0.5,
     
     "per_change_open_on": 0,
-    "per_change_open_on_2": 1,
+    "per_change_open_on_2": 0,
     "open_greater": 0.06,
     
     "vwap_above_on": 0,
@@ -139,7 +139,7 @@ default_parms = {
 }
 
 
-
+print(json.dumps(default_parms, indent=4))   
 bt = Backtester(default_parms)
 
 
