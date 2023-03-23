@@ -32,7 +32,7 @@ def ml_backtester(active_parms):
     
         # System settings
         "longshort": "short",  # 'long' or 'short'
-    
+        "take_second_trade" : False,    
         "plot": 0,  # 1 to plot on
         "plot_trades_only": 0,  # 0 or -1
         "save_winners_df": 1,

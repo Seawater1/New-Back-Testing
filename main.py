@@ -52,6 +52,7 @@ class Backtester():
         ohlc_intraday = {}
         mac = active_value['mac']
         longshort = active_value["longshort"]
+        take_second_trade = active_value["take_second_trade"]
         plot = active_value["plot"]
         plot_trades_only = active_value["plot_trades_only"]
         save_winners_df = active_value["save_winners_df"]
@@ -456,6 +457,7 @@ class Backtester():
                         
                         if (
                             longshort == 'short' and
+                            take_second_trade == 'take_second_trade' and
                             # one == True and
                             # two == True and
                             # three == False and
