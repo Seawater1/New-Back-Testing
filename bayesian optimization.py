@@ -19,10 +19,8 @@ from skopt.utils import use_named_args
 
 # Define the objective function that takes in the settings and returns the finish_bal value
 @use_named_args([
-    Real(0, 200000000000, name='sharesfloat_min'),
-    Real(0, 200000000000, name= "sharesfloat_max"),
-    Real(0, 200000000000, name='market_cap_min'),
-    Real(0, 200000000000, name='market_cap_max')
+    Real(0.01, 1.0, name='close_stop'),
+    Real(0.01, 1.0, name= "last_close_per"),
 ])
 def objective(**params):
     output_dict = {k: v for k, v in params.items()}
@@ -31,17 +29,15 @@ def objective(**params):
 
 # Define the search space for each of the settings
 search_space = [
-    Real(0, 200000000000, name='sharesfloat_min'),
-    Real(0, 200000000000, name= "sharesfloat_max"),
-    Real(0, 200000000000, name='market_cap_min'),
-    Real(0, 200000000000, name='market_cap_max')
+    Real(0.01, 1.0, name='close_stop'),
+    Real(0.01, 1.0, name= "last_close_per"),
 ]
 
 # Run Bayesian optimization
-result = gp_minimize(objective, search_space, n_calls=500, random_state=0, n_jobs=-1)
+result = gp_minimize(objective, search_space, n_calls=100, random_state=0, n_jobs=-1)
 
 # Print the optimal settings and finish_bal value
-print("Optimal settings: {}".format(dict(zip(['sharesfloat_min', 'sharesfloat_max','market_cap_min','market_cap_max'], result.x))))
+print("Optimal settings: {}".format(dict(zip(['close_stop', 'last_close_per'], result.x))))
 print("Optimal finish_bal: {}".format(-result.fun))
 telegram_send.send(messages=["Bayesian optimization back test complete............"])
 
