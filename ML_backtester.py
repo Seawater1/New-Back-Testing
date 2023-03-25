@@ -14,7 +14,7 @@ def ml_backtester(active_parms):
     'main_or_all': 'all',
     'filter_by_dates_on': 1,
     'start_date': '2021-10-01',
-    'end_date': '2023-3-19',
+    'end_date': '2023-3-25',
     # Scanner Settings
     # Insample out of sample settings
     "insample_per_on": 1,
@@ -51,8 +51,9 @@ def ml_backtester(active_parms):
     "bet_percentage": 0.01,  # risk per trade of imaginary account
     "max_locate_per_price": 0.01,
     "max_risk": 999999,  # set low to prevent compounding
-    "open_slippage": 0,
-    "close_slippage": 0,
+    
+    "open_slippage": 0.01,
+    "close_slippage": 0.01,
 
     # Indicator Settings
     # Super T setting

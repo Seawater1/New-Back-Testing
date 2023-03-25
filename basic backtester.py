@@ -9,7 +9,7 @@ from main import Backtester
 import json
 
 default_parms = {
-    'mac': 0,
+    'mac': 1,
     'main_or_all': 'all',
     'filter_by_dates_on': 1,
     'start_date': '2021-10-01',
@@ -33,7 +33,7 @@ default_parms = {
     "longshort": "short",  # 'long' or 'short'
     "take_second_trade" : False,
     
-    "plot": 1,  # 1 to plot on
+    "plot": 0,  # 1 to plot on
     "plot_trades_only": 0,  # 0 or -1
     "save_winners_df": 1,
 
@@ -50,6 +50,7 @@ default_parms = {
     "bet_percentage": 0.01,  # risk per trade of imaginary account
     "max_locate_per_price": 0.01,
     "max_risk": 999999,  # set low to prevent compounding
+    
     "open_slippage": .01,
     "close_slippage": .01,
 
