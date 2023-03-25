@@ -27,7 +27,7 @@ default_parms = {
     #Scanner
     'volume_min': -999999,
     'pm_vol_set': 0, # main
-    'yclose_to_open_percent_filter': 15,# # only working filter for All file 
+    'yclose_to_open_percent_filter': 20,# # only working filter for All file 
 
     # System settings
     "longshort": "short",  # 'long' or 'short'
@@ -50,8 +50,8 @@ default_parms = {
     "bet_percentage": 0.01,  # risk per trade of imaginary account
     "max_locate_per_price": 0.01,
     "max_risk": 999999,  # set low to prevent compounding
-    "open_slippage": 0,
-    "close_slippage": 0,
+    "open_slippage": .01,
+    "close_slippage": .01,
 
     # Indicator Settings
     # Super T setting

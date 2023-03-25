@@ -17,6 +17,10 @@ ld = Load_date
 indc = Indicators()
 my_plt = Plots
 
+from slippage_model import SlippageCalculator
+# Create an instance of the SlippageCalculator class
+sc = SlippageCalculator()
+
 
 
 import matplotlib.pyplot as plt
@@ -224,17 +228,19 @@ class Backtester():
                     df['cover_sig_2'] = np.nan
                     df['trade_count'] = np.nan
                     df['trade_count_2'] = np.nan
-                    open_price = '' # price you open a trade
-                    open_price_2 = '' 
                     direction = '' # Long short
                     date_stats[date][ticker] = (0) # Setting the return to zero to start
                     date_stats_2[date][ticker] = (0)
                     ohlc_intraday[date,ticker] = df # stores interday data in dictionary
                     #Testing
                     open_price = 0
+                    open_price_slippage = 0
                     open_price_2 = 0
+                    open_price_slippage_2 = 0
                     close_price = 0
+                    close_price_slippage  = 0
                     close_price_2 = 0
+                    close_price_slippage_2  = 0
                     #sell_price  = 0
                     max_shares  = 0
                     max_shares_2  = 0
@@ -378,7 +384,9 @@ class Backtester():
                                 trade_count += 1    
                                 direction = 'long'
                                 open_price = ohlc_intraday[date,ticker]["open"][i+1] # ["high"][i+1] +1 is the next candle. Need to work in slipage here  
-                                ohlc_intraday[date,ticker]["trade_sig"][i+1] = open_price #  ["trade_sig"][i+1]          
+                                # Calculate entry price with slippage
+                                open_price_slippage = sc.calculate_open_slippage(direction, open_price, open_slippage)
+                                ohlc_intraday[date,ticker]["trade_sig"][i+1] = open_price_slippage #  ["trade_sig"][i+1]          
                                 if close_stop_on == 1:
                                     stop_price = open_price - (open_price * close_stop)  
                                 elif pre_market_h_stop_on ==1 :
@@ -424,12 +432,14 @@ class Backtester():
                                 trade_count += 1    
                                 direction = 'short'
                                 open_price = ohlc_intraday[date,ticker]["open"][i+1]# ["low"][i+1] +1 is the next candle. Need to work in slipage here  
+                                open_price_slippage = sc.calculate_open_slippage(direction, open_price, open_slippage)
+                                ohlc_intraday[date,ticker]["trade_sig"][i+1] = open_price_slippage# ["trade_sig"][i+1] 
                                 # print('open_price',open_price)
                                 # print('close_stop',close_stop)
                                 # print('reward',reward)  
                                 reward_price = open_price - ((open_price * close_stop) * reward)
                                 # print('reward_price',reward_price)
-                                ohlc_intraday[date,ticker]["trade_sig"][i+1] = open_price# ["trade_sig"][i+1]            
+                                          
                                 # print('close_stop',close_stop)
                                 if close_stop_on == 1:
                                     stop_price = (open_price * close_stop) + open_price
@@ -486,9 +496,10 @@ class Backtester():
                                 trade_count_2 += 1
                                 direction = 'short'
                                 open_price_2 = ohlc_intraday[date,ticker]["open"][i+1] # ["low"][i+1] +1 is the next candle. Need to work in slipage here  
-                                
+                                open_price_slippage_2 = sc.calculate_open_slippage(direction, open_price_2, open_slippage)
+                                ohlc_intraday[date,ticker]["trade_sig_2"][i+1] =  open_price_slippage_2  # ["trade_sig"][i+1]  
                                 reward_price_2 = open_price_2 - ((open_price_2 * close_stop_2) * reward)
-                                ohlc_intraday[date,ticker]["trade_sig_2"][i+1] =  open_price_2  # ["trade_sig"][i+1]            
+                                          
                                 if close_stop_on_2 == 1:
                                     stop_price_2 = (open_price_2 * close_stop_2) + open_price_2    
                                 elif pre_market_h_stop_on == 1:
@@ -530,8 +541,9 @@ class Backtester():
                                 close_price == 0 and 
                                 ohlc_intraday[date,ticker]["open"][i] > ((open_price * close_stop) * reward) + open_price) :
                                 close_price = ohlc_intraday[date,ticker]["open"][i] #["low"][i+1]
-                                ohlc_intraday[date,ticker]["cover_sig"][i] = close_price#["cover_sig"][i+1] = close_price
-                                ticker_return = close_price - open_price  
+                                close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
+                                ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage#["cover_sig"][i+1] = close_price
+                                ticker_return = close_price_slippage - open_price_slippage  
                                 date_stats[date][ticker] = ticker_return
                                 outcome = 'take_profit'
                                 #print('Taking profit',ticker, ' Price',close_price)
@@ -545,8 +557,9 @@ class Backtester():
                                     close_price == 0 and 
                                     ohlc_intraday[date,ticker]["open"][i] < trail_stop_price_long ) :
                                         close_price = ohlc_intraday[date,ticker]["open"][i]# ["low"][i+1]
-                                        ohlc_intraday[date,ticker]["cover_sig"][i] = close_price
-                                        ticker_return = close_price - open_price 
+                                        close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
+                                        ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage
+                                        ticker_return = close_price_slippage - open_price_slippage 
                                         date_stats[date][ticker] = ticker_return
                                         outcome = 'trailing_stop_hit'
                                         #print('trailing_stop_hit',ticker, ' Price',close_price)
@@ -559,25 +572,14 @@ class Backtester():
                                     close_price == 0 and 
                                     ohlc_intraday[date,ticker]["open"][i] < stop_price ) :# stop loss
                                         close_price = ohlc_intraday[date,ticker]["open"][i]
-                                        ohlc_intraday[date,ticker]["cover_sig"][i] = close_price
-                                        ticker_return = close_price - open_price 
+                                        close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
+                                        ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage
+                                        ticker_return = close_price_slippage - open_price_slippage 
                                         date_stats[date][ticker] = ticker_return
                                         outcome = 'stopped_out'
                                         #print('Stopped out',ticker, ' Price',close_price)
                                         #print('Ticker return', ticker_return)
-                            ####################
-                            #Second Stop Loss ##
-                            ####################
-                            elif (
-                                    close_price_2 == 0 and 
-                                    ohlc_intraday[date,ticker]["open"][i] < stop_price ) :# stop loss
-                                        close_price_2 = ohlc_intraday[date,ticker]["open"][i]
-                                        ohlc_intraday[date,ticker]["cover_sig_2"][i] = close_price_2
-                                        ticker_return = close_price_2 - open_price 
-                                        date_stats[date][ticker] = ticker_return
-                                        outcome = 'stopped_out_2'
-                                        #print('Stopped out',ticker, ' Price',close_price)
-                                        #print('Ticker return', ticker_return)
+                           
                             ###############
                             # VWAP above ###
                             ###############
@@ -599,8 +601,9 @@ class Backtester():
                                     close_price == 0 and  
                                     ohlc_intraday[date,ticker]["sell_time"][i] == True):
                                         close_price = ohlc_intraday[date,ticker]["open"][i]
-                                        ohlc_intraday[date,ticker]["cover_sig"][i] = close_price
-                                        ticker_return = close_price - open_price 
+                                        close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
+                                        ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage
+                                        ticker_return = close_price_slippage - open_price_slippage 
                                         date_stats[date][ticker] = ticker_return
                                         outcome = 'time_stop'
                                         #print('Sell time hit',ticker, ' Price',close_price)
@@ -642,8 +645,9 @@ class Backtester():
                                 ohlc_intraday[date,ticker]["high"][i] > trail_stop_price_short):# stopped out
                                 #close_price = ohlc_intraday[date,ticker]["open"][i]#slipage
                                 close_price = trail_stop_price_short
-                                ohlc_intraday[date,ticker]["cover_sig"][i] = close_price
-                                ticker_return = open_price - close_price
+                                close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
+                                ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage
+                                ticker_return = open_price_slippage - close_price_slippage
                                 date_stats[date][ticker] = ticker_return
                                 outcome = 'trailing_stop_hit'
                                 # print('Trail stop hit')
@@ -660,8 +664,9 @@ class Backtester():
                                   ohlc_intraday[date,ticker]["high"][i] > trail_stop_price_short ) :# stop loss
                                       #close_price = ohlc_intraday[date,ticker]["open"][i]#slipage
                                       close_price = trail_stop_price_short 
-                                      ohlc_intraday[date,ticker]["cover_sig"][i] = close_price
-                                      ticker_return = open_price - close_price
+                                      close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
+                                      ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage
+                                      ticker_return = open_price_slippage - close_price_slippage
                                       date_stats[date][ticker] = ticker_return
                                       outcome = 'trailing_stop_hit'
                                       print('trailing_stop_hit',ticker, ' Price',close_price)
@@ -674,8 +679,9 @@ class Backtester():
                                   close_price == 0 and 
                                   ohlc_intraday[date,ticker]["high"][i] > stop_price) :# stop loss
                                       close_price = stop_price
-                                      ohlc_intraday[date,ticker]["cover_sig"][i] = stop_price 
-                                      ticker_return = open_price - stop_price 
+                                      close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
+                                      ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage 
+                                      ticker_return = open_price_slippage - close_price_slippage 
                                       date_stats[date][ticker] = ticker_return
                                       outcome = 'stopped_out'
                                       # print('Stopped out',ticker, ' Price',stop_price)
@@ -687,8 +693,9 @@ class Backtester():
                                     close_price == 0 and  
                                     ohlc_intraday[date,ticker]["sell_time"][i+1] == True):
                                         close_price = ohlc_intraday[date,ticker]["open"][i]
-                                        ohlc_intraday[date,ticker]["cover_sig"][i] = close_price
-                                        ticker_return = open_price - close_price
+                                        close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
+                                        ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage
+                                        ticker_return = open_price_slippage - close_price_slippage
                                         date_stats[date][ticker] = ticker_return
                                         outcome = 'time_stop'
                                         # print('Sell time hit',ticker, ' Price',close_price)
@@ -731,10 +738,11 @@ class Backtester():
                                 ohlc_intraday[date,ticker]["high"][i] > trail_stop_price_short_2):# stopped out
                                 #close_price_2 = ohlc_intraday[date,ticker]["open"][i]#slipage
                                 close_price_2 = trail_stop_price_short_2
-                                ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_2
-                                ticker_return_2 = open_price_2 - close_price_2
+                                close_price_slippage_2 = sc.calculate_close_slippage(direction, close_price_2, close_slippage)
+                                ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage
+                                ticker_return_2 = open_price_slippage_2 - close_price_slippage_2
                                 date_stats[date][ticker] = ticker_return_2
-                                outcome_2 = 'trailing_stop_hit'
+                                outcome_2 = 'trailing_stop_hit_2'
                                 # print('Trail stop hit')
                                 # print('min_r_trail_stop_hit',ticker, ' Price',close_price_2)
                                 # print('Ticker return', ticker_return_2)
@@ -747,8 +755,9 @@ class Backtester():
                                     direction == 'short' and
                                     ohlc_intraday[date,ticker]["sell_time"][i] == True):
                                         close_price_2 = ohlc_intraday[date,ticker]["open"][i]  
-                                        ohlc_intraday[date,ticker]["cover_sig_2"][i] = close_price_2
-                                        ticker_return_2 = open_price_2 - close_price_2
+                                        close_price_slippage_2 = sc.calculate_close_slippage(direction, close_price_2, close_slippage)
+                                        ohlc_intraday[date,ticker]["cover_sig_2"][i] = close_price_slippage_2
+                                        ticker_return_2 = open_price_slippage_2 - close_price_slippage_2
                                         date_stats_2[date][ticker] = ticker_return_2
                                         outcome_2 = 'time_stop_2'
                                         #print('Sell time hit',ticker, ' Price',close_price)
@@ -761,9 +770,10 @@ class Backtester():
                                   ohlc_intraday[date,ticker]["high"][i+1] > stop_price_2) :# stop loss
                                       #close_price_2 = ohlc_intraday[date,ticker]["open"][i+1]
                                       close_price_2 = stop_price_2 
-                                      ohlc_intraday[date,ticker]["cover_sig_2"][i] = close_price_2 
-                                      ticker_return_2 = open_price_2 - close_price_2
-                                      date_stats_2[date][ticker] = close_price_2
+                                      close_price_slippage_2 = sc.calculate_close_slippage(direction, close_price_2, close_slippage)
+                                      ohlc_intraday[date,ticker]["cover_sig_2"][i] = close_price_slippage_2 
+                                      ticker_return_2 = open_price_slippage_2 - close_price_slippage_2
+                                      date_stats_2[date][ticker] = ticker_return_2
                                       outcome_2 = 'stopped_out_2'
                                       # print('Stopped out',ticker, ' Price',close_price)
                                       # print('Ticker return', ticker_return)  
@@ -790,7 +800,6 @@ class Backtester():
                         # print('locate_cost',locate_cost)
                         #gain = payout - (new_commission + locate_cost)
                         #first is percentage for locate fee second is slippage
-                        total_payout = payout + payout_2
                         gain = payout - (new_commission + locate_cost)
                         gain_2 = gain + (payout_2 - (new_commission_2))
                         
@@ -808,8 +817,8 @@ class Backtester():
                     
                     
                     #print('Adding this ticker to Results df        ',date,ticker)
-                    results = pd.DataFrame([[date, ticker ,  open_price, close_price,   stop_price,  ticker_return,  outcome,  max_shares,  locate, open_price_2,  close_price_2,  stop_price_2,  ticker_return_2,  outcome_2,  trade_count,  max_shares_2,  locate_2]],
-                                   columns=['date','ticker','open_price','close_price','stop_price','ticker_return','outcome','max_shares','locate','open_price_2','close_price_2','stop_price_2','ticker_return_2','outcome_2','trade_count','max_shares_2','locate_2'] )  
+                    results = pd.DataFrame([[date, ticker ,  open_price_slippage, close_price_slippage,   stop_price,  ticker_return,  outcome,  max_shares,  locate,   open_price_slippage_2, close_price_slippage_2,   stop_price_2,  ticker_return_2,  outcome_2,  trade_count,  max_shares_2,  locate_2]],
+                                   columns=['date','ticker','open_price',         'close_price',          'stop_price','ticker_return','outcome','max_shares','locate','open_price_2',         'close_price_2',        'stop_price_2','ticker_return_2','outcome_2','trade_count','max_shares_2','locate_2'] )  
                     #Adds new line to dic each loop 
                     # results_store = results_store.append(results,ignore_index=True) 
                     results_store = pd.concat([results_store, results], ignore_index=True)
@@ -1023,4 +1032,15 @@ class Backtester():
         if mac == 0:
             btresults.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% results_name, index=False)
         return results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2 
-    
+"""
+slippage = 0.01  # 1% slippage
+
+# Entry price with slippage
+entry_price_slippage = entry_price * (1 + slippage) if side == 'buy' else entry_price * (1 - slippage)
+
+# Exit price with slippage
+exit_price_slippage = exit_price * (1 - slippage) if side == 'buy' else exit_price * (1 + slippage)
+
+# Profit and loss calculation with slippage
+pnl = (exit_price_slippage - entry_price_slippage) * qty * multiplier
+"""
