@@ -6,9 +6,9 @@ loaddata df3 need a good looking at
 """
 
 from main import Backtester
-import json
 
 def ml_backtester(active_parms):
+
     default_parms = {
     'mac': 0,
     'main_or_all': 'all',
@@ -28,7 +28,7 @@ def ml_backtester(active_parms):
     #Scanner
     'volume_min': -999999,
     'pm_vol_set': 0, # main
-    'yclose_to_open_percent_filter': 5,# # only working filter for All file 
+    'yclose_to_open_percent_filter': 40,# # only working filter for All file 
 
     # System settings
     "longshort": "short",  # 'long' or 'short'
@@ -74,7 +74,7 @@ def ml_backtester(active_parms):
     
     # Stop loss percent from trade price
     "close_stop_on": 1,
-    "close_stop": 0.1,  # percent percent away from open pricee/ .001 is to small dont get even r
+    "close_stop": 0.052,  # percent percent away from open pricee/ .001 is to small dont get even r
     "close_stop_on_2": 0,
     "close_stop_2": 0.04,
     
@@ -106,7 +106,7 @@ def ml_backtester(active_parms):
     
     "buy_between_time_on": 1,
     "buy_after": "09:29:00",
-    "buy_before": "09:31:00",
+    "buy_before": "11:31:00",
     
     "buy_between_time_on_2": 0,
     "buy_after_2": "09:33:00",
@@ -121,16 +121,16 @@ def ml_backtester(active_parms):
     "per_change_first_tick_on": 0,
     "precent_greater": 0.5,
     
-    "per_change_open_on": 0,
+    "per_change_open_on": 1,
     "per_change_open_on_2": 0,
-    "open_greater": 0.06,
+    "open_greater": 0.1,
     
     "vwap_above_on": 0,
     "vwap_below_on": 0,
     
     "last_close_change_on": 1,
     "last_close_change_on_2": 0,
-    "last_close_per": 0.05,
+    "last_close_per": 0.49,
     
     "percent_from_pmh_on": 0,
     "per_pmh_val": 0.3,
@@ -140,6 +140,7 @@ def ml_backtester(active_parms):
     "st_close_greaterthan_on": 0, # short
     "st_close_greaterthan_on_2": 0, # short 2
     }
+    
     
 
     
@@ -151,13 +152,13 @@ def ml_backtester(active_parms):
         output_dict[param_name] = active_value
         # print(f"{param_name}: {active_value}")
     
-    print(json.dumps(active_parms, indent=4))   
+
     
     bt = Backtester(output_dict)
     
     
     
-    results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = bt.backtester(output_dict)
+    ohlc_intraday, results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = bt.backtester(output_dict)
     return finish_bal
 
 

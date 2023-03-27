@@ -13,6 +13,7 @@ from plots import Plots
 from datetime import datetime, timedelta
 import time
 import telegram_send
+import json
 ld = Load_date
 indc = Indicators()
 my_plt = Plots
@@ -49,6 +50,7 @@ class Backtester():
         # self.load_parms = load_parms
         
     def backtester(self,active_value):
+        print(json.dumps(active_value, indent=4))   
         start = time.time()
         
         
@@ -1031,7 +1033,7 @@ class Backtester():
             
         if mac == 0:
             btresults.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% results_name, index=False)
-        return results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2 
+        return ohlc_intraday, results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2 
 """
 slippage = 0.01  # 1% slippage
 
