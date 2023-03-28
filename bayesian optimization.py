@@ -37,7 +37,7 @@ start_time = time.time()
 #     Real(0.01, 1.0, name= "last_close_per"),
 # ]
 @use_named_args([
-    Real(0.01, 1.0, name='open_greater')
+    Real(0.01, .1, name='open_greater')
 ])
 def objective(**params):
     output_dict = {k: v for k, v in params.items()}
@@ -46,7 +46,7 @@ def objective(**params):
 
 # Define the search space for each of the settings
 search_space = [
-    Real(0.01, .5, name='open_greater')
+    Real(0.01, .1, name='open_greater')
 ]
 
 # Run Bayesian optimization
