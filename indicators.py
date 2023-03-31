@@ -109,8 +109,7 @@ class Indicators:
             day = df.loc[Date0930:Date1600]
             open_price = day.iloc[0,0]# get open price
             df['open_change'] = ((df['open'] - open_price) / open_price)
-            test = df['open_change'] >= open_greater
-            df['open_greater'] = test
+            df['open_greater'] = df['open_change'] >= open_greater# returns true false
             return df
         except :
             df['open_greater'] = False
