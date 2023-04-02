@@ -13,12 +13,12 @@ default_parms = {
     'mac': 0,
     'main_or_all': 'all',
     'filter_by_dates_on': 1,
-    'start_date': '2021-10-01',
-    'end_date': '2023-4-01',
+    'start_date': '2021-10-01', # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
+    'end_date': '2023-4-02',
     # Scanner Settings
     # Insample out of sample settings
-    "insample_per_on": 0,
-    "split_per": 0.60,
+    "insample_per_on": 1,
+    "split_per": 0.6,
     "return_start": 1,  # True
     # Random insample out of sample testing
     "random_insample_on": 0,  # Turn on randon insample
@@ -28,13 +28,13 @@ default_parms = {
     #Scanner
     'volume_min': -999999,
     'pm_vol_set': 0, # main
-    'yclose_to_open_percent_filter': 35,# # only working filter for All file 
+    'yclose_to_open_percent_filter': 25,# # only working filter for All file 
 
     # System settings
     "longshort": "short",  # 'long' or 'short'
     "take_second_trade" : False,
     
-    "plot": 0,  # 1 to plot on
+    "plot": 1,  # 1 to plot on
     "plot_trades_only": 0,  # 0 or -1
     "save_winners_df": 1,
 
@@ -74,17 +74,15 @@ default_parms = {
     
     # Stop loss percent from trade price
     "close_stop_on": 1,
-    "close_stop": 0.10,  # percent percent away from open pricee/ .001 is to small dont get even r
-    "close_stop_on_2": 0,
-    "close_stop_2": 0.05,
-    
+    "close_stop": 0.1,  # percent percent away from open pricee/ .001 is to small dont get even r
+
     # Pre-market high stop
     "pre_market_h_stop_on": 0,
     #Trailing stop
     "pre_market_h_stop_on": 0,
     "trail_stop_on": 0,
     "min_reward_then_let_it_run": 0,
-    "min_reward_then_let_it_run_2": 0,
+    
     "reward": 4,# times the close_stop - 1 R for trailstop
     "trail_stop_per": 0,#.03,.06,.1 if this is greater than close_stop it affects R
 
@@ -108,9 +106,7 @@ default_parms = {
     "buy_after": "09:29:00",
     "buy_before": "09:30:00",
     
-    "buy_between_time_on_2": 0,
-    "buy_after_2": "09:33:00",
-    "buy_before_2": "09:45:00",
+
     
     "volume_sum_cal_on": 0,
     "vol_sum_greaterthan": 1000000,
@@ -138,7 +134,16 @@ default_parms = {
     "pm_greater_than_day_on": 0,
     "st_close_lessthan_on": 0,# Long
     "st_close_greaterthan_on": 0, # short
-    "st_close_greaterthan_on_2": 0, # short 2
+    "st_close_greaterthan_on_2": 1, # short 2
+    
+    "close_stop_on_2": 1,
+    "close_stop_2": 0.04,
+    "min_reward_then_let_it_run_2": 0,
+    "buy_between_time_on_2": 1,
+    "buy_after_2": "09:32:00",
+    "buy_before_2": "10:00:00",
+    
+    
     }
     
 

@@ -57,7 +57,7 @@ class Load_date():
             # print('Flitering by dates -----------------------------------------------------------------------------------------------')
             date_filter = (df['Date'] >= start_date) & (df['Date'] <= end_date )
             df = df.loc[date_filter]
-            # print('DF filtered by Date', df)
+            print('DF filtered by Date', df)
         # Split insample and out of sample
         if insample_per_on == 1: 
             # print('Spliting insample and out of smaple -----------------------------------------------------------------',split_per)

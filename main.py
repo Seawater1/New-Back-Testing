@@ -266,122 +266,122 @@ class Backtester():
                     take_profit_count_2 = 0
                     for i in range(len(ohlc_intraday[date,ticker])):# he skips the first bar (1,len) do i need to do this 
                         if price_between_on == 1:
-                            one = ohlc_intraday[date,ticker]['price_between'][i]
+                            is_price_between  = ohlc_intraday[date,ticker]['price_between'][i]
                         else:
-                            one = True
+                            is_price_between = True
                         if buytime_on == 1:
-                            two = ohlc_intraday[date,ticker]['buy_time'][i]
+                            is_buy_time  = ohlc_intraday[date,ticker]['buy_time'][i]
                         else:
-                            two = True
+                            is_buy_time  = True
                         if selltime_on == 1:
-                            three = ohlc_intraday[date,ticker]["sell_time"][i]
+                            is_sell_time  = ohlc_intraday[date,ticker]["sell_time"][i]
                         else:
-                            three = False
+                            is_sell_time  = False
                         if buy_between_time_on ==1:
-                            four = ohlc_intraday[date,ticker]["buy_between_time"][i]
+                            is_buy_between_time  = ohlc_intraday[date,ticker]["buy_between_time"][i]
                         else:
-                            four = False
+                            is_buy_between_time  = True
                         if buy_between_time_on_2 ==1:
-                            four_2 = ohlc_intraday[date,ticker]["buy_between_time_2"][i]
+                            is_buy_between_time_2 = ohlc_intraday[date,ticker]["buy_between_time_2"][i]
                         else:
-                            four_2 = False
+                            is_buy_between_time_2 = False
                         if volume_sum_cal_on == 1:
-                            five = ohlc_intraday[date,ticker]["vol_sum_greater"][i]
+                            is_volume_sum_greater  = ohlc_intraday[date,ticker]["vol_sum_greater"][i]
                         else:
-                            five = True
+                            is_volume_sum_greater  = True
                         if pm_volume_sum_cal_on == 1:
-                            six = ohlc_intraday[date,ticker]["pm_vol_sum_greater"][i]
+                            is_pm_volume_sum_greater  = ohlc_intraday[date,ticker]["pm_vol_sum_greater"][i]
                         else:
-                            six = True
+                            is_pm_volume_sum_greater  = True
                         if pm_gap_on == 1:
-                            seven = ohlc_intraday[date,ticker]["pm_gap_greater"][i] 
+                            is_pm_gap_greater  = ohlc_intraday[date,ticker]["pm_gap_greater"][i] 
                         else:
-                            seven = True
+                            is_pm_gap_greater  = True
                         if per_change_first_tick_on == 1:
-                            eight = ohlc_intraday[date,ticker]["first_tick_greater"][i]
+                            is_first_tick_greater  = ohlc_intraday[date,ticker]["first_tick_greater"][i]
                         else:
-                            eight = True
+                            is_first_tick_greater  = True
                         if per_change_open_on == 1:
-                            pcoo = ohlc_intraday[date,ticker]["open_greater"][i]
+                            is_open_greater  = ohlc_intraday[date,ticker]["open_greater"][i]
                         else:
-                            pcoo = True
+                            is_open_greater  = True
                         if per_change_open_on_2 == 1:
-                            pcoo_2 = ohlc_intraday[date,ticker]["open_greater"][i]
+                            is_open_greater_2  = ohlc_intraday[date,ticker]["open_greater"][i]
                         else:
-                            pcoo_2 = True
+                            is_open_greater_2 = True
                         if vwap_above_on == 1:
-                            nine = ohlc_intraday[date,ticker]["vwap_above"][i]
+                            is_vwap_above  = ohlc_intraday[date,ticker]["vwap_above"][i]
                         else:
-                            nine = True
+                            is_vwap_above  = True
                         if vwap_below_on == 1:
-                            ten = ohlc_intraday[date,ticker]["vwap_below"][i]
+                            is_vwap_below  = ohlc_intraday[date,ticker]["vwap_below"][i]
                         else:
-                            ten = True
+                            is_vwap_below  = True
                         if last_close_change_on == 1:
-                            eleven = ohlc_intraday[date,ticker]["last_close_change_test"][i] 
+                            is_last_close_change  = ohlc_intraday[date,ticker]["last_close_change_test"][i] 
                         else:
-                            eleven = True
+                            is_last_close_change  = True
                         if day_greater_than_pm_on ==1:   
-                            twelve = ohlc_intraday[date,ticker]['dh>pmh'][i]
+                            is_dh_greater_than_pmh  = ohlc_intraday[date,ticker]['dh>pmh'][i]
                         else:
-                            twelve = True 
+                            is_dh_greater_than_pmh  = True 
                         if pm_greater_than_day_on ==1:   
-                            pm_g_t_d = ohlc_intraday[date,ticker]['pmg>dy'][i]
+                            is_pmg_greater_than_dy  = ohlc_intraday[date,ticker]['pmg>dy'][i]
                         else:
-                            pm_g_t_d = True 
+                            is_pmg_greater_than_dy  = True 
                         if st_close_lessthan_on == 1:
-                            thirteen = ohlc_intraday[date,ticker]["st_long"][i]
+                            is_st_long  = ohlc_intraday[date,ticker]["st_long"][i]
                         else:
-                            thirteen = True 
+                            is_st_long  = True 
                         if st_close_greaterthan_on == 1:
-                            fourteen = ohlc_intraday[date,ticker]["st_short"][i]
+                            is_st_short  = ohlc_intraday[date,ticker]["st_short"][i]
                         else:
-                            fourteen = True
+                            is_st_short  = True
                         if st_close_greaterthan_on_2 == 1:
-                            fourteen_2 = ohlc_intraday[date,ticker]["st_short"][i]
+                            is_st_short_2  = ohlc_intraday[date,ticker]["st_short"][i]
                         else:
-                            fourteen_2 = True
+                            is_st_short_2  = True
                         if sharesfloat_on == 1:
-                            s_f_test = ohlc_intraday[date,ticker]["shares_float_test"][i]                        
+                            is_shares_float_test  = ohlc_intraday[date,ticker]["shares_float_test"][i]                        
                         else:
-                            s_f_test = True
+                            is_shares_float_test  = True
                         if market_cap_on == 1:
-                            m_c_test = ohlc_intraday[date,ticker]["market_cap_test"][i]                        
+                            is_market_cap_test  = ohlc_intraday[date,ticker]["market_cap_test"][i]                        
                         else:
-                            m_c_test = True
+                            is_market_cap_test  = True
                         if drop_acquistions_on ==1:
-                            dacq = ohlc_intraday[date,ticker]["acq_test"][i]
+                            is_drop_acquistions  = ohlc_intraday[date,ticker]["acq_test"][i]
                         else:
-                            dacq = True
+                            is_drop_acquistions  = True
                         if percent_from_pmh_on ==1:
-                            pmh_t = ohlc_intraday[date,ticker]["from_pmh_test"][i]
+                            is_from_pmh_test  = ohlc_intraday[date,ticker]["from_pmh_test"][i]
                         else:
-                            pmh_t = True
+                            is_from_pmh_test  = True
                         ########################################################
                         ######## Conditions to open a long trade ###############
                         ########################################################    
                         if (
                             longshort == 'long' and
-                            one == True and
-                            two == True and
-                            three == False and
-                            four == True and
-                            five == True and
-                            six == True and
-                            seven == True and
-                            eight == True and 
-                            pcoo == True and 
-                            nine == True and
-                            ten == True and
-                            eleven == True and
-                            twelve == True and
-                            pm_g_t_d  == True and
-                            thirteen == True and
-                            fourteen == True and
-                            s_f_test == True and
-                            m_c_test == True and
-                            dacq == True and
-                            pmh_t == True and
+                            is_price_between == True and
+                            is_buy_time == True and
+                            is_sell_time == False and
+                            is_buy_between_time == True and
+                            is_volume_sum_greater  == True and
+                            is_pm_volume_sum_greater  == True and
+                            is_pm_gap_greater  == True and
+                            is_first_tick_greater  == True and 
+                            is_open_greater  == True and 
+                            is_vwap_above == True and
+                            is_vwap_below  == True and
+                            is_last_close_change  == True and
+                            is_dh_greater_than_pmh  == True and
+                            is_pmg_greater_than_dy   == True and
+                            is_st_long  == True and
+                            is_st_short  == True and
+                            is_shares_float_test  == True and
+                            is_market_cap_test  == True and
+                            is_drop_acquistions  == True and
+                            is_from_pmh_test  == True and
                             open_price == 0 ):
                                 trade_count += 1    
                                 direction = 'long'
@@ -410,26 +410,26 @@ class Backtester():
                         
                         if (
                             longshort == 'short' and
-                            one == True and
-                            two == True and
-                            three == False and
-                            four == True and
-                            five == True and
-                            six == True and
-                            seven == True and
-                            eight == True and
-                            pcoo == True and
-                            nine == True and
-                            ten == True and
-                            eleven == True and
-                            twelve == True and
-                            pm_g_t_d  == True and
-                            thirteen == True and
-                            fourteen == True and
-                            s_f_test == True and
-                            m_c_test == True and
-                            dacq == True and
-                            pmh_t == True and
+                            is_price_between == True and
+                            is_buy_time == True and
+                            is_sell_time == False and
+                            is_buy_between_time == True and
+                            is_volume_sum_greater  == True and
+                            is_pm_volume_sum_greater  == True and
+                            is_pm_gap_greater  == True and
+                            is_first_tick_greater  == True and 
+                            is_open_greater  == True and 
+                            is_vwap_above == True and
+                            is_vwap_below  == True and
+                            is_last_close_change  == True and
+                            is_dh_greater_than_pmh  == True and
+                            is_pmg_greater_than_dy   == True and
+                            is_st_long  == True and
+                            is_st_short  == True and
+                            is_shares_float_test  == True and
+                            is_market_cap_test  == True and
+                            is_drop_acquistions  == True and
+                            is_from_pmh_test  == True and
                             open_price == 0 ):
                                 trade_count += 1    
                                 direction = 'short'
@@ -469,23 +469,23 @@ class Backtester():
                         
                         if (
                             longshort == 'short' and
-                            take_second_trade == 'take_second_trade' and
+                            take_second_trade == True and
                             # one == True and
                             # two == True and
-                            # three == False and
-                            four_2 == True and
+                            is_sell_time == False and
+                            is_buy_between_time_2 == True and
                             # five == True and
                             # six == True and
                             # seven == True and
                             # eight == True and
-                            pcoo_2 == True and
+                            is_open_greater_2 == True and
                             # nine == True and
                             # ten == True and
-                            eleven == True and
+                            is_last_close_change == True and#??????
                             # twelve == True and
                             # pm_g_t_d  == True and
                             # thirteen == True and
-                            fourteen_2 == True and
+                            is_st_short_2  == True and
                             # s_f_test == True and
                             # m_c_test == True and
                             # dacq == True and
