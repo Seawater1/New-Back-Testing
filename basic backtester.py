@@ -14,10 +14,10 @@ default_parms = {
     'main_or_all': 'all',
     'filter_by_dates_on': 1,
     'start_date': '2021-10-01',
-    'end_date': '2023-3-25',
+    'end_date': '2023-4-01',
     # Scanner Settings
     # Insample out of sample settings
-    "insample_per_on": 1,
+    "insample_per_on": 0,
     "split_per": 0.60,
     "return_start": 1,  # True
     # Random insample out of sample testing
@@ -28,13 +28,13 @@ default_parms = {
     #Scanner
     'volume_min': -999999,
     'pm_vol_set': 0, # main
-    'yclose_to_open_percent_filter': 15,# # only working filter for All file 
+    'yclose_to_open_percent_filter': 35,# # only working filter for All file 
 
     # System settings
     "longshort": "short",  # 'long' or 'short'
-    "take_second_trade" : True,
+    "take_second_trade" : False,
     
-    "plot": 1,  # 1 to plot on
+    "plot": 0,  # 1 to plot on
     "plot_trades_only": 0,  # 0 or -1
     "save_winners_df": 1,
 
@@ -74,8 +74,8 @@ default_parms = {
     
     # Stop loss percent from trade price
     "close_stop_on": 1,
-    "close_stop": 0.05,  # percent percent away from open pricee/ .001 is to small dont get even r
-    "close_stop_on_2": 1,
+    "close_stop": 0.10,  # percent percent away from open pricee/ .001 is to small dont get even r
+    "close_stop_on_2": 0,
     "close_stop_2": 0.05,
     
     # Pre-market high stop
@@ -108,7 +108,7 @@ default_parms = {
     "buy_after": "09:29:00",
     "buy_before": "09:30:00",
     
-    "buy_between_time_on_2": 1,
+    "buy_between_time_on_2": 0,
     "buy_after_2": "09:33:00",
     "buy_before_2": "09:45:00",
     
