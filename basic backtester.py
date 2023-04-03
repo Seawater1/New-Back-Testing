@@ -34,7 +34,7 @@ default_parms = {
     "longshort": "short",  # 'long' or 'short'
     "take_second_trade" : False,
     
-    "plot": 1,  # 1 to plot on
+    "plot": 0,  # 1 to plot on
     "plot_trades_only": 0,  # 0 or -1
     "save_winners_df": 1,
 
@@ -88,7 +88,7 @@ default_parms = {
 
     # Both Main and All
     "sharesfloat_on": 0,
-    "sharesfloat_min": -9999999,
+    "sharesfloat_min": -999999999,
     "sharesfloat_max": 9999999999,
     "market_cap_on": 0,
     "market_cap_min": -999,
