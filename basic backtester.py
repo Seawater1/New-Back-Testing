@@ -10,7 +10,7 @@ import json
 
 
 default_parms = {
-    'mac': 0,
+    'mac': 1,
     'main_or_all': 'all',
     'filter_by_dates_on': 1,
     'start_date': '2021-10-01', # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
@@ -34,7 +34,7 @@ default_parms = {
     "longshort": "short",  # 'long' or 'short'
     "take_second_trade" : False,
     
-    "plot": 0,  # 1 to plot on
+    "plot": 1,  # 1 to plot on
     "plot_trades_only": 0,  # 0 or -1
     "save_winners_df": 1,
 
@@ -97,8 +97,14 @@ default_parms = {
     "price_between_on": 1,
     "min_between_price": 2.5,
     "max_between_price": 20,
+    
     "buytime_on": 0,
     "buy_time": "09:30:00",
+    
+    "buylocatetime_on": 1,
+    "buy_locate_time":"09:25:00", 
+    "other_condition":"last_close_change_test",
+    
     "selltime_on": 1,
     "sell_time": "15:58:00",
     
@@ -115,7 +121,7 @@ default_parms = {
     "pm_gap_on": 0,
     "pmg_greater": 0.4,
     "per_change_first_tick_on": 0,
-    "precent_greater": 0.5,
+    "precent_greater": 0.3,
     
     "per_change_open_on": 0,
     "per_change_open_on_2": 0,

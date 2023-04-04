@@ -43,6 +43,18 @@ class Indicators:
         df.set_index('timestamp', inplace=True)   
         return df
     
+    def buylocatetime(self, df,date,buy_locate_time,other_condition):
+        date = date.strftime("%Y-%m-%d")
+        datetest = date + ' ' + buy_locate_time
+        df.reset_index(inplace = True, drop = False)
+        df['buy_locate_time'] = df['timestamp'] >= datetest
+        df.loc[(df['buy_locate_time'] == True) & (df[other_condition] == True), 'buy_locate_condition'] = True
+
+        df.set_index('timestamp', inplace=True)   
+        return df
+    
+    
+    
     def selltime(self, df,date, sell_time):
         date = date.strftime("%Y-%m-%d")
         datetest = date + ' ' + sell_time
@@ -91,13 +103,13 @@ class Indicators:
         test = df['start_change'] >= precent_greater
         df['first_tick_greater'] = test
         return df
-    
-    # % Change from last close???
+
     def last_close_change(self, df,last_close,last_close_per):
+        'is the percent from yesterdays close greater than set amount'
         df['last_close_change'] = ((df['close'] - last_close) / last_close) 
-        test = df['last_close_change'] >= last_close_per
-        df['last_close_change_test'] = test   
+        df['last_close_change_test'] = df['last_close_change'] >= last_close_per   
         return df
+    
     
     # % Change from Open
     def per_change_open(self, df,date,open_greater):
