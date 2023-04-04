@@ -229,7 +229,7 @@ class Backtester():
                     if percent_from_pmh_on ==1:
                         df = indc.percent_from_pmh(df,date,per_pmh_val)
                     if buylocatetime_on == 1:#2
-                        df = indc.buylocatetime(df,date,buy_locate_time,other_condition)# Time Greater than
+                        df = indc.buylocatetime(df,date,buy_locate_time,last_close,last_close_per)# Time Greater than
                     
                     
                     df['trade_sig'] = np.nan

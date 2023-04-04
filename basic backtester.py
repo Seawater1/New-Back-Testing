@@ -34,7 +34,7 @@ default_parms = {
     "longshort": "short",  # 'long' or 'short'
     "take_second_trade" : False,
     
-    "plot": 1,  # 1 to plot on
+    "plot": 0,  # 1 to plot on
     "plot_trades_only": 0,  # 0 or -1
     "save_winners_df": 1,
 
@@ -154,7 +154,7 @@ default_parms = {
     
 
 
-print(json.dumps(default_parms, indent=4))   
+# print(json.dumps(default_parms, indent=4))   
 bt = Backtester(default_parms)
 
 

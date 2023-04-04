@@ -43,15 +43,18 @@ class Indicators:
         df.set_index('timestamp', inplace=True)   
         return df
     
-    def buylocatetime(self, df,date,buy_locate_time,other_condition):
+    def buylocatetime(self, df, date, buy_locate_time, last_close, last_close_per):
+        df['last_close_change'] = ((df['close'] - last_close) / last_close) 
+        df['last_close_change_locate'] = df['last_close_change'] >= last_close_per 
         date = date.strftime("%Y-%m-%d")
         datetest = date + ' ' + buy_locate_time
-        df.reset_index(inplace = True, drop = False)
+        df.reset_index(inplace=True, drop=False)
         df['buy_locate_time'] = df['timestamp'] >= datetest
-        df.loc[(df['buy_locate_time'] == True) & (df[other_condition] == True), 'buy_locate_condition'] = True
-
-        df.set_index('timestamp', inplace=True)   
+        df.loc[(df['buy_locate_time'] == True) & (df['last_close_change_locate'] == True), 'buy_locate_condition'] = True
+        df.set_index('timestamp', inplace=True)
+        df.loc[df['buy_locate_condition'].astype(int).idxmax():, 'buy_locate_condition'] = True
         return df
+
     
     
     
@@ -75,6 +78,7 @@ class Indicators:
         return df
     
     def buy_between_time_2(self, df,date, buy_after_2 ,buy_before_2):
+        
         date = date.strftime("%Y-%m-%d")
         datebuy = date + ' ' + buy_after_2
         datesell = date + ' ' + buy_before_2
