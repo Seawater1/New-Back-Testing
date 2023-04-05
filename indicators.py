@@ -43,9 +43,9 @@ class Indicators:
         df.set_index('timestamp', inplace=True)   
         return df
     
-    def buylocatetime(self, df, date, buy_locate_time, last_close, last_close_per):
+    def buylocatecondition(self, df, date, buy_locate_time, last_close, last_close_per_locate):
         df['last_close_change'] = ((df['close'] - last_close) / last_close) 
-        df['last_close_change_locate'] = df['last_close_change'] >= last_close_per 
+        df['last_close_change_locate'] = df['last_close_change'] >= last_close_per_locate 
         date = date.strftime("%Y-%m-%d")
         datetest = date + ' ' + buy_locate_time
         df.reset_index(inplace=True, drop=False)

@@ -85,7 +85,6 @@ class Backtester():
         shift = active_value["shift"]
         drop_acquistions_on = active_value["drop_acquistions_on"]
         aq_value = active_value["aq_value"]
-        locate_fee = active_value["locate_fee"]
         trip_comm = active_value["trip_comm"]
         
         close_stop_on = active_value["close_stop_on"]
@@ -113,9 +112,9 @@ class Backtester():
         max_between_price = active_value["max_between_price"]
         buytime_on = active_value["buytime_on"]
         buy_time = active_value["buy_time"]
-        buylocatetime_on = active_value["buylocatetime_on"]
+        buylocatecondition_on = active_value["buylocatecondition_on"]
         buy_locate_time = active_value["buy_locate_time"]
-        other_condition = active_value["other_condition"]
+        last_close_per_locate = active_value["last_close_per_locate"]
         selltime_on = active_value["selltime_on"]
         sell_time = active_value["sell_time"]
         buy_between_time_on = active_value["buy_between_time_on"]
@@ -147,7 +146,52 @@ class Backtester():
         st_close_lessthan_on = active_value["st_close_lessthan_on"]
         st_close_greaterthan_on = active_value["st_close_greaterthan_on"]
         st_close_greaterthan_on_2 = active_value["st_close_greaterthan_on_2"]
-
+        if sharesfloat_on == 1:
+            print('float_share_between:', sharesfloat_min, sharesfloat_max)
+        if market_cap_on == 1:
+            print('market_cap_between:', market_cap_min, market_cap_max)
+        if price_between_on == 1:
+            print('price_between:', min_between_price, max_between_price)
+        if buytime_on == 1:
+            print('buytime:', buy_time)
+        if selltime_on == 1:
+            print('selltime:', sell_time)
+        if buy_between_time_on == 1:
+            print('buy_between_time:', buy_after, buy_before)
+        if buy_between_time_on_2 == 1:
+            print('buy_between_time_2:', buy_after_2, buy_before_2)
+        if volume_sum_cal_on == 1:
+            print('volume_sum_cal:', vol_sum_greaterthan)
+        if pm_volume_sum_cal_on == 1:
+            print('pm_volume_sum_cal:', pm_volume_sum_greaterthat)
+        if pm_gap_on == 1:
+            print('pm_gap:', pmg_greater)
+        if per_change_first_tick_on == 1:
+            print('per_change_first_tick:', precent_greater)
+        if per_change_open_on == 1 or per_change_open_on_2 == 1:
+            print('per_change_open 1 or two is on?:', open_greater)
+        if vwap_above_on == 1:
+            print('vwap_above_on')
+        if vwap_below_on == 1:
+            print('vwap_below_on')
+        if last_close_change_on ==1 or last_close_change_on_2 ==1:
+            print('last_close_change 1 or 2 is on?:',last_close_per)
+        if day_greater_than_pm_on ==1:
+            print('day_greater_than_pm:')
+        if pm_greater_than_day_on ==1: 
+            print('pm_greater_than_day:')
+        if st_close_lessthan_on == 1:
+            print('st_close_lessthan_on')
+        if st_close_greaterthan_on == 1 or st_close_greaterthan_on_2 == 1:
+            print('st_close_greaterthan_on')
+        if drop_acquistions_on ==1:
+            print('drop_acquistions_on:',aq_value)
+        if percent_from_pmh_on ==1:
+            print('percent_from_pmh_on',per_pmh_val) 
+        if buylocatecondition_on == 1:#2
+            print('buylocatecondition_on','buy_locate_time:',buy_locate_time,'last_close_per_locate',last_close_per_locate)
+        
+        
         
         print('------  Starting Testing strategy  ---------------------------------------------------------')      
         # print('Going ', longshort)
@@ -184,54 +228,50 @@ class Backtester():
 
                     # apply super trend always for chart
                     df['st'], df['s_upt'], df['st_dt'] = indc.get_supertrend(df['high'], df['low'], df['close'], lookback, multiplier)
-                    
                     if sharesfloat_on == 1:
                         df = indc.float_share_between(df,sharesfloat_min,sharesfloat_max)
                     if market_cap_on == 1:
                         df = indc.market_cap_between(df, market_cap_min, market_cap_max)
-                    if price_between_on == 1:#1
+                    if price_between_on == 1:
                         df = indc.price_between(df,min_between_price, max_between_price )
-                    if buytime_on == 1:#2
-                        df = indc.buytime(df,date,buy_time)# Time Greater than
-                    
-                    if selltime_on == 1:#3
+                    if buytime_on == 1:
+                        df = indc.buytime(df,date,buy_time)
+                    if selltime_on == 1:
                         df = indc.selltime(df,date,sell_time)
-                    if buy_between_time_on == 1:#4
+                    if buy_between_time_on == 1:
                         df = indc.buy_between_time(df, date, buy_after, buy_before)
-                    if buy_between_time_on_2 == 1:#4
+                    if buy_between_time_on_2 == 1:
                         df = indc.buy_between_time_2(df, date, buy_after_2, buy_before_2)
-                    if volume_sum_cal_on == 1:#5
+                    if volume_sum_cal_on == 1:
                         df = indc.volume_sum_cal(df,vol_sum_greaterthan)
-                    if pm_volume_sum_cal_on == 1:#6
+                    if pm_volume_sum_cal_on == 1:
                         df = indc.pm_volume_sum_cal(df,date, pm_volume_sum_greaterthat)
-                    if pm_gap_on == 1:#7
+                    if pm_gap_on == 1:
                         df = indc.pm_gap(df,date,last_close, pmg_greater) 
-                    if per_change_first_tick_on == 1:#8
+                    if per_change_first_tick_on == 1:
                         df = indc.per_change_first_tick(df, precent_greater)
                     if per_change_open_on == 1 or per_change_open_on_2 == 1:
-                        df = indc.per_change_open(df,date, open_greater)                    
-                    if vwap_above_on == 1:#9
+                        df = indc.per_change_open(df,date, open_greater)  
+                    if vwap_above_on == 1:
                         df = indc.vwap_above(df)# Close below VWAP
-                    if vwap_below_on == 1:#10
+                    if vwap_below_on == 1:
                         df = indc.vwap_below(df)
-                    if last_close_change_on ==1 or last_close_change_on_2 ==1:#11
+                    if last_close_change_on ==1 or last_close_change_on_2 ==1:
                         df = indc.last_close_change(df,last_close,last_close_per)
-                    if day_greater_than_pm_on ==1:#12  
+                    if day_greater_than_pm_on ==1:
                         df = indc.day_greater_than_pm(df,date)
                     if pm_greater_than_day_on ==1: 
                         df = indc.pm_greater_than_day(df,date)
-                    if st_close_lessthan_on == 1:#13
+                    if st_close_lessthan_on == 1:
                         df = indc.st_close_lessthan(df)#Supertrend lessthan
-                    if st_close_greaterthan_on == 1 or st_close_greaterthan_on_2 == 1:#14
+                    if st_close_greaterthan_on == 1 or st_close_greaterthan_on_2 == 1:
                         df = indc.st_close_greaterthan(df)#Supertrend greather than
                     if drop_acquistions_on ==1:
                         df = indc.drop_acquistions(df,date,aq_value)
                     if percent_from_pmh_on ==1:
                         df = indc.percent_from_pmh(df,date,per_pmh_val)
-                    if buylocatetime_on == 1:#2
-                        df = indc.buylocatetime(df,date,buy_locate_time,last_close,last_close_per)# Time Greater than
-                    
-                    
+                    if buylocatecondition_on == 1:#2
+                        df = indc.buylocatecondition(df,date,buy_locate_time,last_close,last_close_per_locate)# Time Greater than
                     df['trade_sig'] = np.nan
                     df['trade_sig_2'] = np.nan
                     df['cover_sig'] = np.nan
@@ -366,10 +406,10 @@ class Backtester():
                             is_from_pmh_test  = ohlc_intraday[date,ticker]["from_pmh_test"][i]
                         else:
                             is_from_pmh_test  = True
-                        if buylocatetime_on == 1:
-                            is_buy_locate_time  = ohlc_intraday[date,ticker]['buy_locate_condition'][i]
+                        if buylocatecondition_on == 1:
+                            is_buy_locate_condition  = ohlc_intraday[date,ticker]['buy_locate_condition'][i]
                         else:
-                            is_buy_locate_time  = True
+                            is_buy_locate_condition  = True
                         ########################################################
                         ######## Conditions to open a long trade ###############
                         ########################################################    
@@ -377,7 +417,6 @@ class Backtester():
                             longshort == 'long' and
                             is_price_between == True and
                             is_buy_time == True and
-                            is_buy_locate_time == True and
                             is_sell_time == False and
                             is_buy_between_time == True and
                             is_volume_sum_greater  == True and
@@ -396,6 +435,7 @@ class Backtester():
                             is_market_cap_test  == True and
                             is_drop_acquistions  == True and
                             is_from_pmh_test  == True and
+                            is_buy_locate_condition == True and
                             open_price == 0 ):
                                 trade_count += 1    
                                 direction = 'long'
@@ -426,7 +466,6 @@ class Backtester():
                             longshort == 'short' and
                             is_price_between == True and
                             is_buy_time == True and
-                            is_buy_locate_time == True and
                             is_sell_time == False and
                             is_buy_between_time == True and
                             is_volume_sum_greater  == True and
@@ -445,6 +484,7 @@ class Backtester():
                             is_market_cap_test  == True and
                             is_drop_acquistions  == True and
                             is_from_pmh_test  == True and
+                            is_buy_locate_condition == True and
                             open_price == 0 ):
                                 trade_count += 1    
                                 direction = 'short'

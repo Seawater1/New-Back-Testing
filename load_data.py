@@ -38,13 +38,17 @@ class Load_date():
         if mac == 0:
             if main_or_all == 'all': 
                 file_path = r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_database\download_all_main.csv'
+                print('win: all file')
             if main_or_all == 'main':
                 file_path = r'C:\Users\brian\Desktop\PythonProgram\MainTickerDataBase\2021DataBase.csv'
+                print('win: main file')
         if mac == 1:
             if main_or_all == 'all':
                 file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_database/download_all_main.csv"
+                print('mac: all file')
             if main_or_all == 'main':
                 file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/2021DataBase.csv"   
+                print('mac: main file')
         # Load file of tickers and date
         # print('Using filepath', file_path)
         df = pd.read_csv(file_path,
@@ -60,6 +64,7 @@ class Load_date():
             print('DF filtered by Date', df)
         # Split insample and out of sample
         if insample_per_on == 1: 
+            print('split %',split_per)
             # print('Spliting insample and out of smaple -----------------------------------------------------------------',split_per)
             num_rows = len(df)
             split_index = int(num_rows * split_per)

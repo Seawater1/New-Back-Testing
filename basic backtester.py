@@ -18,7 +18,7 @@ default_parms = {
     # Scanner Settings
     # Insample out of sample settings
     "insample_per_on": 1,
-    "split_per": 0.01,
+    "split_per": 0.6,
     "return_start": 1,  # True
     # Random insample out of sample testing
     "random_insample_on": 0,  # Turn on randon insample
@@ -101,9 +101,9 @@ default_parms = {
     "buytime_on": 0,
     "buy_time": "09:30:00",
     
-    "buylocatetime_on": 1,
+    "buylocatecondition_on": 0,
     "buy_locate_time":"09:25:00", 
-    "other_condition":"last_close_change_test",
+    "last_close_per_locate":.50,
     
     "selltime_on": 1,
     "sell_time": "15:58:00",
@@ -130,7 +130,7 @@ default_parms = {
     "vwap_above_on": 0,
     "vwap_below_on": 0,
     
-    "last_close_change_on": 0,
+    "last_close_change_on": 1,
     "last_close_change_on_2": 0,
     "last_close_per": 0.5,
     
@@ -140,12 +140,12 @@ default_parms = {
     "pm_greater_than_day_on": 0,
     "st_close_lessthan_on": 0,# Long
     "st_close_greaterthan_on": 0, # short
-    "st_close_greaterthan_on_2": 1, # short 2
+    "st_close_greaterthan_on_2": 0, # short 2
     
-    "close_stop_on_2": 1,
+    "close_stop_on_2": 0,
     "close_stop_2": 0.04,
     "min_reward_then_let_it_run_2": 0,
-    "buy_between_time_on_2": 1,
+    "buy_between_time_on_2": 0,
     "buy_after_2": "09:32:00",
     "buy_before_2": "10:00:00",
     
