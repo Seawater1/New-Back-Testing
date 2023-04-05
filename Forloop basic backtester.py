@@ -142,7 +142,7 @@ default_parms = {
     
     "last_close_change_on": 1,
     "last_close_change_on_2": 0,
-    "last_close_per": 0.5,
+    "last_close_per": [round(0.05 + i*0.05, 2) for i in range(math.ceil((0.50-0.05)/0.05))],
     
     "percent_from_pmh_on": 0,
     "per_pmh_val": 0.3,
@@ -193,3 +193,18 @@ for close_stop in close_stop_range:
 # print results
 for result in results:
     print(result)
+
+
+d = {
+    'ANIMAL': ['CAT', 'DOG', 'FISH', 'HEDGEHOG'],
+    'FRUIT': ['APPLE', 'BANANA', 'ORANGE', 'STRAWBERRY'],
+    'COLOR': ['RED', 'GREEN', 'BLUE', 'YELLOW']
+}
+
+for key, value in default_parms.items():
+    print(f"{key}:")
+    if isinstance(value, list):
+        for item in value:
+            print(f"\t{item}")
+    else:
+        print(f"\t{value}")
