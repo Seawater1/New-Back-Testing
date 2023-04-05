@@ -18,7 +18,7 @@ default_parms = {
     # Scanner Settings
     # Insample out of sample settings
     "insample_per_on": 1,
-    "split_per": 0.6,
+    "split_per": 0.01,
     "return_start": 1,  # True
     # Random insample out of sample testing
     "random_insample_on": 0,  # Turn on randon insample
@@ -49,7 +49,7 @@ default_parms = {
     "full_balance_2": 0,
     "imaginary_account_2": 5000,
     "bet_percentage": 0.01,  # risk per trade of imaginary account
-    "max_locate_per_price": 0.01,
+    "max_locate_per_price": 0.02,
     "max_risk": 999999,  # set low to prevent compounding
     
     "open_slippage": 0.01,
@@ -130,7 +130,7 @@ default_parms = {
     "vwap_above_on": 0,
     "vwap_below_on": 0,
     
-    "last_close_change_on": 1,
+    "last_close_change_on": 0,
     "last_close_change_on_2": 0,
     "last_close_per": 0.5,
     

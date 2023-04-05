@@ -367,7 +367,7 @@ class Backtester():
                         else:
                             is_from_pmh_test  = True
                         if buylocatetime_on == 1:
-                            is_buy_locate_time  = ohlc_intraday[date,ticker]['buy_locate_time'][i]
+                            is_buy_locate_time  = ohlc_intraday[date,ticker]['buy_locate_condition'][i]
                         else:
                             is_buy_locate_time  = True
                         ########################################################
@@ -472,8 +472,7 @@ class Backtester():
                                 if max_shares < 100:
                                     locate = 100   
                                 else:
-                                    locate =  round(max_shares, -2)
-                                    max_shares = locate
+                                    max_shares =  round(max_shares, -2)
                                 # print('Max Shares',max_shares)
                                 # print('Locates',locate)   
                                 # print('Going Short ', ticker, ' open_price',open_price)
@@ -532,8 +531,7 @@ class Backtester():
                                     #print('1 Max Shares',max_shares)
                                     #print('1 Locates',locate)
                                 else:
-                                    locate_2 =  round(max_shares_2, -2)
-                                    max_shares_2 = locate_2
+                                    max_shares_2 =  round(max_shares_2, -2)
                                 # print('2Max Shares',max_shares_2)
                                 # print('2Locates',locate_2)   
                                 # print('Going Short ', ticker, ' Price',open_price_2)

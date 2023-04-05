@@ -50,9 +50,16 @@ class Indicators:
         datetest = date + ' ' + buy_locate_time
         df.reset_index(inplace=True, drop=False)
         df['buy_locate_time'] = df['timestamp'] >= datetest
-        df.loc[(df['buy_locate_time'] == True) & (df['last_close_change_locate'] == True), 'buy_locate_condition'] = True
+        # df.loc[(df['buy_locate_time'] == True) & (df['last_close_change_locate'] == True), 'buy_locate_condition'] = Truedf.loc[(df['buy_locate_time'] == True) & (df['last_close_change_locate'] == True), 'buy_locate_condition'] = True
+        df['buy_locate_condition'] = df.apply(lambda x: True if x['buy_locate_time'] and x['last_close_change_locate'] else False, axis=1)
+
         df.set_index('timestamp', inplace=True)
-        df.loc[df['buy_locate_condition'].astype(int).idxmax():, 'buy_locate_condition'] = True
+        # create binary mask for start of each group
+        mask = df['buy_locate_condition'].cumsum() != 0
+
+        # set all rows in each group to True
+        df['buy_locate_condition'] = mask.cumsum().astype(bool)
+
         return df
 
     
