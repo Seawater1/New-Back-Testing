@@ -174,25 +174,25 @@ results = []  # list to store parameter values and finish_bal for each iteration
 
 # loop over each combination of parameter values
 
-for close_stop in close_stop_range:
-    print(close_stop)
-    for last_close_per in last_close_per_range:
-        print(last_close_per)
-        params = {
-            "close_stop": close_stop,
-            "last_close_per": last_close_per,
-            # ... add other parameters here
-        }
-        params.update(default_params)  # update params with default parameters
-        print(params)
-        bt = Backtester(params)
-        finish_bal = bt.backtester(params)
-        results.append(params.copy())  # add a copy of the dictionary to the results
-        results[-1]["finish_bal"] = finish_bal  # add the finish_bal to the latest dictionary in results
+# for close_stop in close_stop_range:
+#     print(close_stop)
+#     for last_close_per in last_close_per_range:
+#         print(last_close_per)
+#         params = {
+#             "close_stop": close_stop,
+#             "last_close_per": last_close_per,
+#             # ... add other parameters here
+#         }
+#         params.update(default_params)  # update params with default parameters
+#         print(params)
+#         bt = Backtester(params)
+#         finish_bal = bt.backtester(params)
+#         results.append(params.copy())  # add a copy of the dictionary to the results
+#         results[-1]["finish_bal"] = finish_bal  # add the finish_bal to the latest dictionary in results
 
-# print results
-for result in results:
-    print(result)
+# # print results
+# for result in results:
+#     print(result)
 
 
 d = {

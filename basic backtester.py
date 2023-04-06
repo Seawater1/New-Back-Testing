@@ -10,7 +10,7 @@ import json
 
 
 default_parms = {
-    'mac': 1,
+    'mac': 0,
     'main_or_all': 'all',
     'filter_by_dates_on': 1,
     'start_date': '2021-10-01', # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
@@ -110,7 +110,7 @@ default_parms = {
     
     "buy_between_time_on": 1,
     "buy_after": "09:29:00",
-    "buy_before": "09:30:00",
+    "buy_before": "10:30:00",
     
 
     
@@ -123,16 +123,16 @@ default_parms = {
     "per_change_first_tick_on": 0,
     "precent_greater": 0.3,
     
-    "per_change_open_on": 0,
+    "per_change_open_on": 1,
     "per_change_open_on_2": 0,
-    "open_greater": 0.05,
+    "open_greater": 0.1,
     
     "vwap_above_on": 0,
     "vwap_below_on": 0,
     
     "last_close_change_on": 1,
     "last_close_change_on_2": 0,
-    "last_close_per": 0.5,
+    "last_close_per": 0.4,
     
     "percent_from_pmh_on": 0,
     "per_pmh_val": 0.3,
