@@ -8,6 +8,10 @@ Created on Thu Mar 16 14:15:34 2023
 
 import pandas as pd
 from indicators import Indicators
+# from polygon import The_money_maker.PolygonData
+# create an instance of the Polygon class
+# polygon = PolygonData()
+
 from plots import Plots
 
 
@@ -21,7 +25,12 @@ class Load_date():
         
         
     def loadmaindata(self,load_parms):
+        # mac = load_parms[0]['mac'][0]
+        # mac = load_parms['mac']
+        # print('test',load_parms[0]['mac'])
         mac = load_parms['mac']
+
+        print('mac',mac)
         main_or_all = load_parms['main_or_all']
         filter_by_dates_on = load_parms['filter_by_dates_on']
         start_date = load_parms['start_date']
@@ -35,13 +44,6 @@ class Load_date():
         volume_min = load_parms['volume_min']
         pm_vol_set = load_parms['pm_vol_set']
         yclose_to_open_percent_filter = load_parms['yclose_to_open_percent_filter']
-        if mac == 0:
-            if main_or_all == 'all': 
-                file_path = r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_database\download_all_main.csv'
-                print('win: all file')
-            if main_or_all == 'main':
-                file_path = r'C:\Users\brian\Desktop\PythonProgram\MainTickerDataBase\2021DataBase.csv'
-                print('win: main file')
         if mac == 1:
             if main_or_all == 'all':
                 file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_database/download_all_main.csv"
@@ -49,6 +51,16 @@ class Load_date():
             if main_or_all == 'main':
                 file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/2021DataBase.csv"   
                 print('mac: main file')
+            
+            
+        if mac == 0:
+            if main_or_all == 'all': 
+                file_path = r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_database\download_all_main.csv'
+                print('win: all file')
+            if main_or_all == 'main':
+                file_path = r'C:\Users\brian\Desktop\PythonProgram\MainTickerDataBase\2021DataBase.csv'
+                print('win: main file')
+            
         # Load file of tickers and date
         # print('Using filepath', file_path)
         df = pd.read_csv(file_path,
@@ -153,27 +165,41 @@ class Load_date():
             DESCRIPTION.
     
         """
-        # take filtered database from loadmaindata and retreave float and market cap 
-        filter_criteria = ((flt_database['Date'] == date) & (flt_database['Ticker'] == ticker)) 
-        today_symbol_data = flt_database[ filter_criteria ] 
-        sf = today_symbol_data.iloc[0,10]#shares float
-        mc = today_symbol_data.iloc[0,28]# market cap 
-         
-        year = date.strftime("%Y") 
-        
-        if mac == 0:
-            date = date.strftime("\%Y-%m-%d")# convert datetime to string
-            dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
-            data = pd.read_csv(r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_%s'% dateticker )
-        if mac == 1:
-            date = date.strftime("/%Y-%m-%d")# convert datetime to string
-            dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
-            data = pd.read_csv('/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_%s'% dateticker )
-        
-        data.columns = ['timestamp','open','high','low','close','volume','vwap']
-        data['shares_float'] = sf
-        data['market_cap'] = mc 
-        data['timestamp'] = pd.to_datetime(data['timestamp'])# change column to datetime
-        data.set_index('timestamp', inplace=True)# set datetime as index s i can filter time
-
+        try:
+            # take filtered database from loadmaindata and retreave float and market cap 
+            filter_criteria = ((flt_database['Date'] == date) & (flt_database['Ticker'] == ticker)) 
+            today_symbol_data = flt_database[ filter_criteria ] 
+            sf = today_symbol_data.iloc[0,10]#shares float
+            mc = today_symbol_data.iloc[0,28]# market cap 
+             
+            year = date.strftime("%Y") 
+            
+            if mac == 1:
+                date = date.strftime("/%Y-%m-%d")# convert datetime to string
+                dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
+                data = pd.read_csv('/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_%s'% dateticker )
+            
+            if mac == 0:
+                date = date.strftime("\%Y-%m-%d")# convert datetime to string
+                dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
+                data = pd.read_csv(r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_%s'% dateticker )
+                
+            data.columns = ['timestamp','open','high','low','close','volume','vwap']
+            data['shares_float'] = sf
+            data['market_cap'] = mc 
+            data['timestamp'] = pd.to_datetime(data['timestamp'])# change column to datetime
+            data.set_index('timestamp', inplace=True)# set datetime as index s i can filter time
+        except:
+            print('Interday file not found will i get polygon to get it for you?', date, ticker)  
+            # df = polygon.interday(self,ticker, date)
+            # if mac == 0:
+            #     date = date.strftime("\%Y-%m-%d")# convert datetime to string
+            #     dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
+            #     data = pd.to_csv(r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_%s'% dateticker )
+            # if mac == 1:
+            #     date = date.strftime("/%Y-%m-%d")# convert datetime to string
+            #     dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
+            #     data = pd.to_csv('/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_%s'% dateticker )
+            
+       
         return data 

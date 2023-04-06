@@ -5,21 +5,22 @@ Created on Tue Mar 14 06:27:52 2023
 
 @author: briansheehan
 """
+import time
+import telegram_send
+import json
 import pandas as pd
 import numpy as np
 from indicators import Indicators
 from load_data import Load_date
 from plots import Plots
 from datetime import datetime, timedelta
-import time
-import telegram_send
-import json
+from slippage_model import SlippageCalculator
+from results import Results
 ld = Load_date
 indc = Indicators()
 my_plt = Plots
 
-from slippage_model import SlippageCalculator
-from results import Results
+
 # Create an instance of the SlippageCalculator class
 sc = SlippageCalculator()
 
@@ -190,7 +191,8 @@ class Backtester():
             print('percent_from_pmh_on',per_pmh_val) 
         if buylocatecondition_on == 1:#2
             print('buylocatecondition_on','buy_locate_time:',buy_locate_time,'last_close_per_locate',last_close_per_locate)
-        
+        # if close_stop_on == 1:
+            
         
         
         print('------  Starting Testing strategy  ---------------------------------------------------------')      
@@ -222,6 +224,7 @@ class Backtester():
                         df = ld.load_interday(self,date,ticker,mac,self.flt_database)# load interday files ??? does this need to be moved to the top of fucntion
                     except:
                         print('Interday file not found for ----------------------------------------------', date, ticker)  
+                        # df = polygon.interday(ticker, date)
                         continue
                     # get last close price
                     last_close = self.top_gap_by_date[date][ticker]
