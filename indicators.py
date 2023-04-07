@@ -227,6 +227,22 @@ class Indicators:
             df['from_pmh_test'] = False
             print('Getting PMH fail')
         return df
+    def percent_from_pmh_2(self, df,date,per_pmh_val_2):
+        try:
+            'if price is percentage from pmh'
+            str_date = date.strftime("%Y-%m-%d")#convert datetime to string
+            Date0400 = str_date + ' 04:00:00'
+            Date0929 = str_date + ' 09:29:00'
+            premarket1 = df.loc[Date0400:Date0929]#get pre-market date only
+            pmh_time = premarket1['high'].idxmax()#get pmh time 
+            pmh_price = df.loc[pmh_time]['high']# get pmh price
+            df['%_from_pmh'] = pmh_price  - (per_pmh_val_2 * pmh_price) 
+            val = df.high >= df['%_from_pmh']# true false test
+            df['from_pmh_test_2'] = val# add new tst column
+        except :
+            df['from_pmh_test_2'] = False
+            print('Getting PMH fail')
+        return df
         
     
     def drop_acquistions(self, df,date,aq_value):    

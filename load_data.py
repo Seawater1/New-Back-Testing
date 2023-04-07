@@ -8,6 +8,7 @@ Created on Thu Mar 16 14:15:34 2023
 
 import pandas as pd
 from indicators import Indicators
+import pytz
 # from polygon  import PolygonData
 # create an instance of the Polygon class
 # polygon = PolygonData()
@@ -187,7 +188,10 @@ class Load_date():
             data.columns = ['timestamp','open','high','low','close','volume','vwap']
             data['shares_float'] = sf
             data['market_cap'] = mc 
+            
             data['timestamp'] = pd.to_datetime(data['timestamp'])# change column to datetime
+            # Remove the time offset
+            data['timestamp'] = data['timestamp'].apply(lambda x: x.replace(tzinfo=None))
             data.set_index('timestamp', inplace=True)# set datetime as index s i can filter time
         except:
             print('Interday file not found will i get polygon to get it for you?', date, ticker)  

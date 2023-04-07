@@ -7,18 +7,20 @@ Created on Tue Apr  4 12:53:50 2023
 """
 import pandas as pd
 import numpy as np
-from datetime import datetime, timedelta
 import time
 from plots import Plots
+from datetime import datetime, timedelta
 my_plt = Plots
+
+
 class Results:
     def __init__(self):
         pass
+    
     def cal_results(self,active_value,results_store,total_risk):
         print('Starting calculating returns-----------------------------------------------------------')
         mac = active_value['mac']
         trip_comm = active_value["trip_comm"]
-        locate_fee = active_value["locate_fee"]
         start_balance = active_value["start_balance"]
         #dictionarys to store data
         profit_trade_dic = {}
@@ -27,8 +29,10 @@ class Results:
             print('Results dataframe empty')
         else:
             # First trade
+            # loss if stop hit
             results_store['stop_p_one'] = results_store['open_price'] - results_store['stop_price']
             results_store['loss_if_stop'] = results_store['stop_p_one'].abs() * results_store['max_shares']
+            # profit
             results_store['profit_1'] =   results_store['ticker_return'] * results_store['max_shares']
             
             results_store['profit_win'] = np.nan
@@ -36,8 +40,10 @@ class Results:
             results_store['total_win_1'] = np.nan
                     
             # Second trade
+            # loss if stop hit
             results_store['stop_p_one_2'] = results_store['open_price_2'] - results_store['stop_price_2']
             results_store['loss_if_stop_2'] = results_store['stop_p_one_2'].abs() * results_store['max_shares_2']
+            # profit_2
             results_store['profit_2'] =   results_store['ticker_return_2'] * results_store['max_shares_2']
             
             results_store['profit_win_2'] = np.nan
@@ -45,15 +51,14 @@ class Results:
             results_store['total_win_2'] = np.nan
             
             # Total commission
-            results_store['commission'] = results_store['trade_count'] * trip_comm
+            results_store['commission'] = (results_store['trade_count'] + results_store['trade_count_2'] )* trip_comm
             
             
             for i in range(len(results_store)):
                 profit_trade_dic[i] = []
                 #print(results_store['ticker'][i])
-                #if results_store['trade_count'][i] > 0:??? NEED TO COME UP WITH SOMETHING HERE
-                results_store['locate_fee'] = results_store['locate'] * locate_fee
-                profit_trade_dic[i].append(results_store['locate'] * locate_fee)
+                results_store['locate_fee'] = results_store['locates_acq'] * results_store['locate_cost_ps']#????
+                profit_trade_dic[i].append(results_store['locates_acq'] * results_store['locate_cost_ps'])
         
             
             

@@ -73,17 +73,21 @@ class Backtester():
         full_balance_2 = active_value["full_balance_2"]
         imaginary_account_2 = active_value["imaginary_account_2"]
         bet_percentage = active_value["bet_percentage"]
-        max_locate_per_price = active_value["max_locate_per_price"]
+        
         max_risk = active_value["max_risk"]
+        
+        locate_fee = active_value['locate_fee']
+        locate_cost_per_on = active_value['locate_cost_per_on']
+        max_locate_per_price = active_value["max_locate_per_price"]
+        
+        
         open_slippage = active_value["open_slippage"]
         close_slippage = active_value["close_slippage"]
         
 
         lookback = active_value["lookback"]
         multiplier = active_value["multiplier"]
-        lenth = active_value["lenth"]
-        lessthan = active_value["lessthan"]
-        shift = active_value["shift"]
+
         drop_acquistions_on = active_value["drop_acquistions_on"]
         aq_value = active_value["aq_value"]
         trip_comm = active_value["trip_comm"]
@@ -147,6 +151,14 @@ class Backtester():
         st_close_lessthan_on = active_value["st_close_lessthan_on"]
         st_close_greaterthan_on = active_value["st_close_greaterthan_on"]
         st_close_greaterthan_on_2 = active_value["st_close_greaterthan_on_2"]
+        
+        
+        percent_from_pmh_on_2 = active_value["percent_from_pmh_on_2"]
+        per_pmh_val_2 = active_value["per_pmh_val_2"]
+        
+        
+        
+        
         if sharesfloat_on == 1:
             print('float_share_between:', sharesfloat_min, sharesfloat_max)
         if market_cap_on == 1:
@@ -193,6 +205,9 @@ class Backtester():
             print('buylocatecondition_on','buy_locate_time:',buy_locate_time,'last_close_per_locate',last_close_per_locate)
         # if close_stop_on == 1:
             
+        if percent_from_pmh_on_2 ==1:
+            print('percent_from_pmh_on_2:',per_pmh_val_2)
+            
         
         
         print('------  Starting Testing strategy  ---------------------------------------------------------')      
@@ -200,8 +215,10 @@ class Backtester():
         #dictionarys to store data
         gains = [] 
         gains_2 = []
+        new_new_gain = []
         total_win = 0
         total_loss = 0
+        locate_cost_ps = 0
         date_stats = {} # stores the returns 
         date_stats_2 = {} # stores the returns
         #Data Frame to store data
@@ -275,6 +292,8 @@ class Backtester():
                         df = indc.percent_from_pmh(df,date,per_pmh_val)
                     if buylocatecondition_on == 1:#2
                         df = indc.buylocatecondition(df,date,buy_locate_time,last_close,last_close_per_locate)# Time Greater than
+                    if percent_from_pmh_on_2 ==1:
+                        df = indc.percent_from_pmh_2(df,date,per_pmh_val_2)
                     df['trade_sig'] = np.nan
                     df['trade_sig_2'] = np.nan
                     df['cover_sig'] = np.nan
@@ -299,8 +318,8 @@ class Backtester():
                     max_shares_2  = 0
                     stop_price  = 0
                     stop_price_2 = 0
-                    locate = 0
-                    locate_2 = 0
+                    locates_acq = 0
+                    locates_acq_2 = 0
                     ticker_return = 0
                     ticker_return_2 = 0
                     trade_count = 0
@@ -308,6 +327,7 @@ class Backtester():
                     outcome = 'no_trade'
                     outcome_2 = 'no_trade_2'
                     last_high = 0
+                    system_1_not_trade = True
                     
                     last_low = 99999999
                     last_low_2 = 99999999
@@ -413,6 +433,10 @@ class Backtester():
                             is_buy_locate_condition  = ohlc_intraday[date,ticker]['buy_locate_condition'][i]
                         else:
                             is_buy_locate_condition  = True
+                        if percent_from_pmh_on_2 == 1:
+                            is_from_pmh_test_2  = ohlc_intraday[date,ticker]["from_pmh_test_2"][i]
+                        else:
+                            is_from_pmh_test_2  = True
                         ########################################################
                         ######## Conditions to open a long trade ###############
                         ########################################################    
@@ -489,6 +513,7 @@ class Backtester():
                             is_from_pmh_test  == True and
                             is_buy_locate_condition == True and
                             open_price == 0 ):
+                                system_1_not_trade = False
                                 trade_count += 1    
                                 direction = 'short'
                                 open_price = ohlc_intraday[date,ticker]["open"][i+1]# ["low"][i+1] +1 is the next candle. Need to work in slipage here  
@@ -513,11 +538,16 @@ class Backtester():
                                 max_shares = round((risk_per_trade / loss_per_share),0)
                                
                                 if max_shares < 100:
-                                    locate = 100   
+                                    locates_acq = 100   
                                 else:
-                                    max_shares =  round(max_shares, -2)
-                                # print('Max Shares',max_shares)
-                                # print('Locates',locate)   
+                                    locates_acq =  round(max_shares, -2) # rounds to the nearest 100
+                                    max_shares = locates_acq
+                                print('Max Shares',max_shares)
+                                print('locates_acq',locates_acq)  
+                                if locate_cost_per_on == 1:
+                                    locate_cost_ps = open_price * max_locate_per_price
+                                else:
+                                    locate_cost_ps = locate_fee # fixed fee
                                 # print('Going Short ', ticker, ' open_price',open_price)
                                 # print('Stop price ', stop_price)
                         #########################################################
@@ -546,10 +576,10 @@ class Backtester():
                             # s_f_test == True and
                             # m_c_test == True and
                             # dacq == True and
-                            # pmh_t == True and
+                            is_from_pmh_test  == True and
                             open_price_2 == 0 and
-                            ticker_return != 0 and
-                            trade_count == 1):
+                            system_1_not_trade == True and
+                            trade_count_2 == 0):
                                 # print('-------------Starting second trade')
                                 # trade_count += 1
                                 trade_count_2 += 1
@@ -570,11 +600,12 @@ class Backtester():
                                 #print('loss_per_share_2', loss_per_share_2)
                                 max_shares_2 = round((total_risk / loss_per_share_2),0)
                                 if max_shares_2 < 100:
-                                    locate_2 = 100 
+                                    locates_acq_2 = 100 
                                     #print('1 Max Shares',max_shares)
                                     #print('1 Locates',locate)
                                 else:
-                                    max_shares_2 =  round(max_shares_2, -2)
+                                    locates_acq_2 =  round(max_shares_2, -2)
+                                    max_shares_2 = locates_acq_2
                                 # print('2Max Shares',max_shares_2)
                                 # print('2Locates',locate_2)   
                                 # print('Going Short ', ticker, ' Price',open_price_2)
@@ -702,6 +733,7 @@ class Backtester():
                                 take_profit_count > 0 and
                                 ohlc_intraday[date,ticker]["high"][i] > trail_stop_price_short):# stopped out
                                 #close_price = ohlc_intraday[date,ticker]["open"][i]#slipage
+                                system_1_not_trade = True
                                 close_price = trail_stop_price_short
                                 close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
                                 ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage
@@ -721,6 +753,7 @@ class Backtester():
                                   close_price == 0 and 
                                   ohlc_intraday[date,ticker]["high"][i] > trail_stop_price_short ) :# stop loss
                                       #close_price = ohlc_intraday[date,ticker]["open"][i]#slipage
+                                      system_1_not_trade = True
                                       close_price = trail_stop_price_short 
                                       close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
                                       ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage
@@ -736,6 +769,7 @@ class Backtester():
                             elif (
                                   close_price == 0 and 
                                   ohlc_intraday[date,ticker]["high"][i] > stop_price) :# stop loss
+                                      system_1_not_trade = True
                                       close_price = stop_price
                                       close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
                                       ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage 
@@ -750,6 +784,7 @@ class Backtester():
                             if ( 
                                     close_price == 0 and  
                                     ohlc_intraday[date,ticker]["sell_time"][i+1] == True):
+                                        system_1_not_trade = True
                                         close_price = ohlc_intraday[date,ticker]["open"][i]
                                         close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
                                         ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage
@@ -841,42 +876,37 @@ class Backtester():
                     # I have the max_shares per trade
                     if ticker_return != 0:
                         payout =  ticker_return * max_shares
-                        payout_2 =  ticker_return_2 * max_shares_2
-                        
-                        new_commission = trip_comm * trade_count
-                        new_commission_2 = trip_comm * trade_count_2
-                       
-                        
-                        # print('tot_slip',tot_slip)
-                        # print('open_price',open_price)
-                        # print('max_shares',max_shares)
-                        locate_cost_ps = open_price * max_locate_per_price
+                        if locate_cost_per_on == 1:
+                            locate_cost_ps = open_price * max_locate_per_price
+                        else:
+                            locate_cost_ps = locate_fee # fixed fee
                         locate_cost = locate_cost_ps * max_shares
-                        # print('locate_cost',locate_cost)
-                        # print("new_commission",new_commission)
-                        #locate_cost =  locate * locate_fee
-                        # print('locate_cost',locate_cost)
-                        #gain = payout - (new_commission + locate_cost)
-                        #first is percentage for locate fee second is slippage
-                        gain = payout - (new_commission + locate_cost)
-                        gain_2 = gain + (payout_2 - (new_commission_2))
                         
-                        imaginary_account += gain
-                        imaginary_account_2 += gain_2
+                        new_commission = (trip_comm * trade_count)+locate_cost
+                        imaginary_account += payout - new_commission
+                        
+                    
+                    if ticker_return_2 != 0:
+                        payout_2 =  ticker_return_2 * max_shares_2
+                        new_commission_2 = trip_comm * trade_count_2
+                        imaginary_account_2 += payout_2 - new_commission_2
                         
                         #gain_no_fee = payout
                         #imaginary_account_no_fee += gain_no_fee
                         
                     total_Gain = imaginary_account + full_balance
                     gains.append(total_Gain)
+                    
                     total_Gain_2 = imaginary_account_2 + full_balance_2
                     gains_2.append(total_Gain_2)
+                    
+                    new_new_gain.append(total_Gain+total_Gain_2)
                     
                     
                     
                     #print('Adding this ticker to Results df        ',date,ticker)
-                    results = pd.DataFrame([[date, ticker ,  open_price_slippage, close_price_slippage,   stop_price,  ticker_return,  outcome,  max_shares,  locate,   open_price_slippage_2, close_price_slippage_2,   stop_price_2,  ticker_return_2,  outcome_2,  trade_count,  max_shares_2,  locate_2]],
-                                   columns=['date','ticker','open_price',         'close_price',          'stop_price','ticker_return','outcome','max_shares','locate','open_price_2',         'close_price_2',        'stop_price_2','ticker_return_2','outcome_2','trade_count','max_shares_2','locate_2'] )  
+                    results = pd.DataFrame([[date, ticker ,  open_price_slippage, close_price_slippage,   stop_price,  ticker_return,  outcome,  max_shares,  locates_acq, locate_cost_ps,  open_price_slippage_2, close_price_slippage_2,   stop_price_2,  ticker_return_2,  outcome_2,  trade_count, trade_count_2,  max_shares_2,  locates_acq_2]],
+                                   columns=['date','ticker',  'open_price',       'close_price',          'stop_price','ticker_return','outcome','max_shares','locates_acq','locate_cost_ps','open_price_2',        'close_price_2',          'stop_price_2','ticker_return_2','outcome_2','trade_count','trade_count_2','max_shares_2','locates_acq_2'] )  
                     #Adds new line to dic each loop 
                     # results_store = results_store.append(results,ignore_index=True) 
                     results_store = pd.concat([results_store, results], ignore_index=True)
@@ -898,7 +928,7 @@ class Backtester():
         ###################################  Plot    ##############################################################
         ###########################################################################################################
                     if plot == 1 and trade_count > plot_trades_only:
-                        my_plt.plot_fips(self,gains, gains_2)
+                        my_plt.plot_fips(self,gains, gains_2,new_new_gain)
                         my_plt.plt_chart(self,longshort ,date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2)
                     else:
                         pass

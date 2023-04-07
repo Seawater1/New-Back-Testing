@@ -13,7 +13,7 @@ start_time = time.time()
 
 
 default_parms = {
-    'mac': [0],
+    'mac': [1],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
     'start_date': ['2021-10-01'], # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
@@ -21,7 +21,7 @@ default_parms = {
     # Scanner Settings
     # Insample out of sample settings
     "insample_per_on": [1],
-    "split_per": [0.6],
+    "split_per": [0.1],
     "return_start": [1],  # True
     # Random insample out of sample testing
     "random_insample_on": [0],  # Turn on randon insample
@@ -31,14 +31,14 @@ default_parms = {
     #Scanner
     'volume_min': [-999999],
     'pm_vol_set': [0], # main
-    'yclose_to_open_percent_filter': [15],# # only working filter for All file 
+    'yclose_to_open_percent_filter': [30],# # only working filter for All file 
 
     # System settings
-    "longshort": ["long"],  # 'long' or 'short'
-    "take_second_trade" : [False],
+    "longshort": ["short"],  # 'long' or 'short'
+
     
-    "plot": [0],  # 1 to plot on
-    "plot_trades_only": [0],  # 0 or -1
+    "plot": [1],  # 1 to plot on
+    "plot_trades_only": [-1],  # 0 or -1
     "save_winners_df": [0],
 
     # Balance
@@ -52,9 +52,16 @@ default_parms = {
     "full_balance_2": [0],
     "imaginary_account_2": [5000],
     "bet_percentage": [0.01],  # risk per trade of imaginary account
-    "max_locate_per_price": [0.02],
+    
     "max_risk": [999999],  # set low to prevent compounding
     
+    # Locate fees
+    "locate_fee": [0.01],  # set locate fee %default
+    "locate_cost_per_on": [1],
+    "max_locate_per_price": [0.01], # variable depending on share price % if above on
+    
+    
+    # Slippage
     "open_slippage": [0.01],
     "close_slippage": [0.01],
 
@@ -72,12 +79,12 @@ default_parms = {
 
     # Testing Settings
     # Commissions
-    "locate_fee": [0.01],  # per share
+    
     "trip_comm": [2],  # round trip commission
     
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.01,.03,.05,.07,.10],  # percent percent away from open pricee/ .001 is to small dont get even r
+    "close_stop": [.10],  # percent percent away from open pricee/ .001 is to small dont get even r
 
     # Pre-market high stop
     "pre_market_h_stop_on": [0],
@@ -134,23 +141,29 @@ default_parms = {
     "vwap_below_on": [0],
     
     "last_close_change_on": [1],
-    "last_close_change_on_2": [0],
-    "last_close_per": [.2,.3,.4,.5],
+    "last_close_change_on_2": [1],
+    "last_close_per": [.5],
     
     "percent_from_pmh_on": [0],
     "per_pmh_val": [0.3],
+    
     "day_greater_than_pm_on": [0],
     "pm_greater_than_day_on": [0],
     "st_close_lessthan_on": [0],# Long
     "st_close_greaterthan_on": [0], # short
     "st_close_greaterthan_on_2": [0], # short 2
     
-    "close_stop_on_2": [0],
-    "close_stop_2": [0.04],
+    "take_second_trade" : [True],
+    
+    "percent_from_pmh_on_2": [1],
+    "per_pmh_val_2": [0.1],
+    
+    "close_stop_on_2": [1],
+    "close_stop_2": [0.1],
     "min_reward_then_let_it_run_2": [0],
-    "buy_between_time_on_2": [0],
+    "buy_between_time_on_2": [1],
     "buy_after_2": ["09:32:00"],
-    "buy_before_2": ["10:00:00"],
+    "buy_before_2": ["14:00:00"],
     
     
     }
@@ -183,12 +196,12 @@ def dict_combinations(default_parms):
         df = pd.concat([df, pd.DataFrame(my_dict, index=[0])], ignore_index=True)
         
         print('--------------finishing bal',finish_bal,'-------------------')
-    return df,my_dict
+    return df,my_dict,ohlc_intraday, results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2
     
     
 
 
-df, my_dict = dict_combinations(default_parms)
+df,my_dict,ohlc_intraday, results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = dict_combinations(default_parms)
 
 mac = my_dict['mac']
 print('mac',mac)
