@@ -9,7 +9,7 @@ from main import Backtester
 import json
 
 default_parms = {
-    'mac': 1,
+    'mac': 0,
     'main_or_all': 'all',
     'filter_by_dates_on': 1,
     'start_date': '2021-10-01', # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
@@ -33,7 +33,7 @@ default_parms = {
     "longshort": "short",  # 'long' or 'short'
     "take_second_trade" : False,
     
-    "plot": 0,  # 1 to plot on
+    "plot": 1,  # 1 to plot on
     "plot_trades_only": 0,  # 0 or -1
     "save_winners_df": 1,
 
@@ -172,7 +172,7 @@ bt = Backtester(output_dict)
 
 
 
-results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = bt.backtester(output_dict)
+ohlc_intraday, results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = bt.backtester(output_dict)
 
 
 

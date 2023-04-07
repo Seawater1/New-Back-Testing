@@ -4,24 +4,16 @@ from main import Backtester
 import time
 import math
 import itertools
+import pandas as pd
+from datetime import datetime
+
 
 # Start the timer
 start_time = time.time()
 
 
-# default_params = {
-#     "param1": [],
-#     "param2": [],
-#     "param3": [],
-#     # ... add other parameters here
-# }
-
-
-
-
-
 default_parms = {
-    'mac': [1],
+    'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
     'start_date': ['2021-10-01'], # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
@@ -39,15 +31,15 @@ default_parms = {
     #Scanner
     'volume_min': [-999999],
     'pm_vol_set': [0], # main
-    'yclose_to_open_percent_filter': [25],# # only working filter for All file 
+    'yclose_to_open_percent_filter': [15],# # only working filter for All file 
 
     # System settings
-    "longshort": ["short"],  # 'long' or 'short'
+    "longshort": ["long"],  # 'long' or 'short'
     "take_second_trade" : [False],
     
     "plot": [0],  # 1 to plot on
     "plot_trades_only": [0],  # 0 or -1
-    "save_winners_df": [1],
+    "save_winners_df": [0],
 
     # Balance
     "start_balance": [5000],
@@ -85,17 +77,16 @@ default_parms = {
     
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.08,.1,.12],  # percent percent away from open pricee/ .001 is to small dont get even r
+    "close_stop": [.01,.03,.05,.07,.10],  # percent percent away from open pricee/ .001 is to small dont get even r
 
     # Pre-market high stop
     "pre_market_h_stop_on": [0],
     #Trailing stop
-    "pre_market_h_stop_on": [0],
     "trail_stop_on": [0],
     "min_reward_then_let_it_run": [0],
     
     "reward": [4],# times the close_stop - 1 R for trailstop
-    "trail_stop_per": [0],#.03,.06,.1 if this is greater than close_stop it affects R
+    "trail_stop_per": [.03],#.03,.06,.1 if this is greater than close_stop it affects R
 
     # Both Main and All
     "sharesfloat_on": [0],
@@ -117,7 +108,8 @@ default_parms = {
     "last_close_per_locate":[.50],
     
     "selltime_on": [1],
-    "sell_time": ["15:58:00"],
+    "sell_time": ['15:30:00'],
+
     
     "buy_between_time_on": [1],
     "buy_after": ["09:29:00"],
@@ -143,7 +135,7 @@ default_parms = {
     
     "last_close_change_on": [1],
     "last_close_change_on_2": [0],
-    "last_close_per": [.5,.6],
+    "last_close_per": [.2,.3,.4,.5],
     
     "percent_from_pmh_on": [0],
     "per_pmh_val": [0.3],
@@ -170,14 +162,7 @@ default_parms = {
 # last_close_per_range  = [round(0.05 + i*0.05, 2) for i in range(math.ceil((0.50-0.05)/0.05))]
 # [i / 100 for i in range(1, 21, 2)] #generates a sequence of numbers starting from 1 and incrementing by 2 until it reaches 21 (exclusive).
 
-# default_parms = {
-#     "mac": [1],
-#     "b": [2, 3, 4],
-#     "c": [5,3],
-#     "e": [1,2],
-#     "x": [2, 3, 4],
-#     "t": [5,3],
-#     }
+
 def dict_combinations(default_parms):
     # Get the keys and values for the dictionary
     keys = list(default_parms.keys())
@@ -185,19 +170,37 @@ def dict_combinations(default_parms):
     # Use itertools.product to get all possible combinations of the values
     combinations = itertools.product(*values)
     # Loop through the combinations and print them out (or do whatever you need with them)
-    result = []
+
+    df = pd.DataFrame()
     for combination in combinations:
         # print(combination)
         my_dict = {}
         for i, value in enumerate(combination):
-            my_dict[keys[i]] = value
-            # print(my_dict)
-         # result.append((combination, my_dict))
-        print('my_dict',my_dict)
-        mac = my_dict['mac']
-        print(mac)
+            my_dict[keys[i]] = value 
         bt = Backtester(my_dict)
         ohlc_intraday, results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal,date_stats,date_stats_2 = bt.backtester(my_dict)
-        print('--------------finishbal',finish_bal,'-------------------')
+        my_dict['finish_bal'] = finish_bal
+        df = pd.concat([df, pd.DataFrame(my_dict, index=[0])], ignore_index=True)
+        
+        print('--------------finishing bal',finish_bal,'-------------------')
+    return df,my_dict
+    
+    
 
-my_dict = dict_combinations(default_parms)
+
+df, my_dict = dict_combinations(default_parms)
+
+mac = my_dict['mac']
+print('mac',mac)
+
+#Get todays date
+today_dt = datetime.now()
+today = today_dt.strftime("%Y-%m-%d")
+time_now = today_dt.strftime("_%H-%M")
+results_name = today + time_now +  '_for_loop_backtest_results.csv' #
+if mac == 1:
+    df.to_csv("/Users/briansheehan/Documents/mac_quant/Backtesting/Backtest_results/%s"% results_name, index=False)
+                         
+if mac == 0:
+    df.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% results_name, index=False)
+    print('got here')

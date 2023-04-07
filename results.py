@@ -172,4 +172,4 @@ class Results:
         #     telegram_send.send(messages=["Back test complete............"])
             
         
-        return num_of_trades, total_win,  gross_profit,total_locate_fee,total_comm,win_per,finish_bal 
+        return results_store, num_of_trades, total_win,  gross_profit,total_locate_fee,total_comm,win_per,finish_bal 

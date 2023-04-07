@@ -8,7 +8,7 @@ Created on Thu Mar 16 14:15:34 2023
 
 import pandas as pd
 from indicators import Indicators
-# from polygon import The_money_maker.PolygonData
+# from polygon  import PolygonData
 # create an instance of the Polygon class
 # polygon = PolygonData()
 
@@ -191,7 +191,7 @@ class Load_date():
             data.set_index('timestamp', inplace=True)# set datetime as index s i can filter time
         except:
             print('Interday file not found will i get polygon to get it for you?', date, ticker)  
-            # df = polygon.interday(self,ticker, date)
+            # df = polygon.interday(ticker, date)
             # if mac == 0:
             #     date = date.strftime("\%Y-%m-%d")# convert datetime to string
             #     dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
