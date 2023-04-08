@@ -73,7 +73,7 @@ class Results:
             
             # locate fees calculation
             results_store['locate_fee'] = results_store['locat_mult'] * (results_store['locates_acq'] * results_store['locate_cost_ps'])
-            results_store['locate_fee_2'] = results_store['locat_mult'] * (results_store['locates_acq_2'] * results_store['locate_cost_ps'])
+            results_store['locate_fee_2'] = results_store['locat_mult'] * (results_store['locates_acq_2'] * results_store['locate_cost_ps_2'])
             # results_store['locate_fee_total'] = results_store['locate_fee'] + results_store['locate_fee_2']
             
             # apply the formula using a vectorized approach
