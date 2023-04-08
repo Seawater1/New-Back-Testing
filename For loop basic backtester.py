@@ -37,8 +37,8 @@ default_parms = {
     "longshort": ["short"],  # 'long' or 'short'
 
     
-    "plot": [1],  # 1 to plot on
-    "plot_trades_only": [1], 
+    "plot": [0],  # 1 to plot on
+    "plot_trades_only": [0], 
     "save_winners_df": [0],
 
     # Starting balance

@@ -875,9 +875,8 @@ class Backtester():
                                       # print('Stopped out',ticker, ' Price',close_price)
                                       # print('Ticker return', ticker_return)  
                                       break      
-                    system_one_profit = []
-                    system_two_profit = []
-                    
+
+            
                     # Calculate returns for strategy one.
                     if ticker_return != 0:
                         payout =  ticker_return * max_shares
@@ -885,6 +884,7 @@ class Backtester():
                             locate_cost_ps = open_price * max_locate_per_price
                         else:
                             locate_cost_ps = locate_fee # fixed fee
+                            
                         locate_cost = locate_cost_ps * max_shares
                         
                         strategy1_comm = (trip_comm * trade_count)+locate_cost
@@ -907,13 +907,14 @@ class Backtester():
                     
                     # # Calculate the new account balance for each strategy 
                     # strategy1_balance = strategy1_equity + [strategy1_return]
-
+        
                     strategy1_balance = strategy1_equity + strategy1_return
-                    print('strategy1_balance',strategy1_balance)
+                    # print('strategy1_balance',strategy1_balance)
                     strategy2_balance = strategy2_equity + strategy2_return
-                    print('strategy2_balance',strategy2_balance)
-                    combined_balance = combined_equity + strategy1_return + strategy2_return
-                    print('combined_balance',combined_balance)
+                    # print('strategy2_balance',strategy2_balance)
+                    combined_balance = combined_equity + (strategy1_return + strategy2_return)
+                    print('combined_balance',combined_balance,'combined_equity',combined_equity,'strategy1_return',strategy1_return,'strategy2_return',strategy2_return)
+                    # print('combined_balance',combined_balance)
                     # # Append the new account balance to each equity curve list
                     strategy1_equity_gain.append(strategy1_balance)
                     strategy2_equity_gain.append(strategy2_balance)
@@ -922,8 +923,8 @@ class Backtester():
                     print(f'Strategy 1 final equity: {strategy1_equity_gain[-1]}')
                     print(f'Strategy 2 final equity: {strategy2_equity_gain[-1]}')
                     print(f'Combined strategy final equity: {combined_equity_gain[-1]}')
-
-
+        
+        
                     # new_gain =  (payout - new_commission)  + (payout_2 - new_commission_2)
                     # total_Gain = imaginary_account + full_balance
                     # gains.append(total_Gain)
@@ -942,7 +943,7 @@ class Backtester():
                     #Adds new line to dic each loop 
                     # results_store = results_store.append(results,ignore_index=True) 
                     results_store = pd.concat([results_store, results], ignore_index=True)
-
+        
                     results_store.reset_index(drop=True)        
                     
                     # print("**********Strategy Performance Statistics**********")
@@ -953,13 +954,13 @@ class Backtester():
                     
                     # btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward,trail_stop_per ,num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
                     #                         columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','trail_stop_per','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
-
-                        
-                        
-        ###########################################################################################################
-        ###################################  Plot    ##############################################################
-        ###########################################################################################################
-
+        
+                            
+                                
+                    ###########################################################################################################
+                    ###################################  Plot    ##############################################################
+                    ###########################################################################################################
+        
                     if plot == 1 and trade_count >= plot_trades_only or trade_count_2 >= plot_trades_only :
                         my_plt.plot_fips(self,strategy1_equity_gain, strategy2_equity_gain,combined_equity_gain)
                         my_plt.plt_chart(self,longshort ,date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2)
@@ -1006,5 +1007,5 @@ class Backtester():
             
         if mac == 0:
             btresults.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% results_name, index=False)
-        return ohlc_intraday, results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2 
-
+            return ohlc_intraday, results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2 
+    

@@ -28,7 +28,7 @@ class Results:
         if len(results_store) == 0:
             print('Results dataframe empty')
         else:
-            # First trade
+            # Strategy 1
             # loss if stop hit
             results_store['stop_p_one'] = results_store['open_price'] - results_store['stop_price']
             results_store['loss_if_stop'] = results_store['stop_p_one'].abs() * results_store['max_shares']
@@ -39,7 +39,7 @@ class Results:
             results_store['loss'] = np.nan 
             results_store['total_win_1'] = np.nan
                     
-            # Second trade
+            # Strategy 2
             # loss if stop hit
             results_store['stop_p_one_2'] = results_store['open_price_2'] - results_store['stop_price_2']
             results_store['loss_if_stop_2'] = results_store['stop_p_one_2'].abs() * results_store['max_shares_2']
@@ -50,27 +50,28 @@ class Results:
             results_store['loss_2'] = np.nan 
             results_store['total_win_2'] = np.nan
             
-            # Total commission
-            results_store['commission'] = (results_store['trade_count'] + results_store['trade_count_2'] )* trip_comm
+            # Strategy 1 Commisions and locate fees
+            results_store['commission_1'] = results_store['trade_count'] * trip_comm
             
+            # Strategy 2 Commisions and locate fees
+            results_store['commission_2'] = results_store['trade_count_2'] * trip_comm
             
-            for i in range(len(results_store)):
-                profit_trade_dic[i] = []
-                #print(results_store['ticker'][i])
-                results_store['locate_fee'] = results_store['locates_acq'] * results_store['locate_cost_ps']#????
-                profit_trade_dic[i].append(results_store['locates_acq'] * results_store['locate_cost_ps'])
-        
+            results_store['total_commission'] = results_store['commission_1'] + results_store['commission_2']
             
+            # Strategy 1 locate fees calculation
+            results_store['locate_fee'] = results_store['trade_count'] * (results_store['locates_acq'] * results_store['locate_cost_ps'])
+                                 
+            # Strategy 2 locate fees calculation
+            results_store['locate_fee_2'] = results_store['trade_count_2'] * (results_store['locates_acq_2'] * results_store['locate_cost_ps'])
             
-            
-            results_store['total_1'] =  results_store['profit_1'] - (results_store['locate_fee'] + results_store['commission'])
+            results_store['total_1'] =  results_store['profit_1'] - (results_store['locate_fee'] + results_store['commission_1'])
+            results_store['total_2'] =  results_store['profit_2'] - (results_store['locate_fee_2'] + results_store['commission_2'])
             results_store['R'] = results_store['total_1'] /  results_store['loss_if_stop']##????????????????????????? this might be wrong!! 
             # Create the new columns based on the values in 'R'
             results_store['R_losser'] = results_store[results_store['R'] < 0]['R']
             results_store['R_winner'] = results_store[results_store['R'] >= 0]['R']
             
-            #Second trade no locate or commisions all covered in first trade
-            results_store['total_2'] =  results_store['profit_2']
+            
             results_store['R_2'] = results_store['total_2'] /  results_store['loss_if_stop_2']
             # Create the new columns based on the values in 'R'
             results_store['R_losser_2'] = results_store[results_store['R_2'] < 0]['R_2']
@@ -125,7 +126,7 @@ class Results:
             winner_average = round(results_store['R_winner'].mean(),3)
             gross_profit = round(results_store['profit'].sum(),3)
             total_locate_fee = results_store['locate_fee'].sum()
-            total_comm = results_store['commission'].sum()
+            total_comm = results_store['total_commission'].sum()
             total_profit = round(results_store['total'].sum(),2)
             finish_bal = round(results_store['balance'].iloc[-1],2)
             expectancy = round(results_store['R'].mean(),3)
