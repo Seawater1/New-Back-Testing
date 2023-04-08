@@ -13,7 +13,7 @@ start_time = time.time()
 
 
 default_parms = {
-    'mac': [1],
+    'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
     'start_date': ['2021-10-01'], # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
@@ -21,7 +21,7 @@ default_parms = {
     # Scanner Settings
     # Insample out of sample settings
     "insample_per_on": [1],
-    "split_per": [0.6],
+    "split_per": [0.05],
     "return_start": [1],  # True
     # Random insample out of sample testing
     "random_insample_on": [0],  # Turn on randon insample
@@ -38,21 +38,16 @@ default_parms = {
 
     
     "plot": [1],  # 1 to plot on
-    "plot_trades_only": [0],  # 0 or -1
+    "plot_trades_only": [1], 
     "save_winners_df": [0],
 
-    # Balance
-    "start_balance": [5000],
-    # Percent of account to risk
-    "risk_acc": [0.02],  # 0.01
-
-    # New Balance for System
+    # Starting balance
     "full_balance": [0],
     "imaginary_account": [5000],
-    "full_balance_2": [0],
-    "imaginary_account_2": [5000],
-    "bet_percentage": [0.02],  # risk per trade of imaginary account
+    # Percent of account to risk
+    "risk_acc": [0.02],  # 0.01
     
+
     "max_risk": [999999],  # set low to prevent compounding
     
     # Locate fees
@@ -102,7 +97,8 @@ default_parms = {
     "market_cap_on": [0],
     "market_cap_min": [-999],
     "market_cap_max": [9999999999999999],
-
+    
+    # for both strategys
     "price_between_on": [1],
     "min_between_price": [2.5],
     "max_between_price": [20],
@@ -141,7 +137,7 @@ default_parms = {
     "vwap_below_on": [0],
     
     "last_close_change_on": [1],
-    "last_close_change_on_2": [1],
+    
     "last_close_per": [.5],
     
     "percent_from_pmh_on": [0],
@@ -151,9 +147,12 @@ default_parms = {
     "pm_greater_than_day_on": [0],
     "st_close_lessthan_on": [0],# Long
     "st_close_greaterthan_on": [0], # short
-    "st_close_greaterthan_on_2": [0], # short 2
     
+    # System 2 
     "take_second_trade" : [True],
+    
+    "last_close_change_on_2": [1],
+    "last_close_per_2": [.5],
     
     "percent_from_pmh_on_2": [1],
     "per_pmh_val_2": [0.1],
@@ -164,6 +163,8 @@ default_parms = {
     "buy_between_time_on_2": [1],
     "buy_after_2": ["09:32:00"],
     "buy_before_2": ["14:00:00"],
+    
+    "st_close_greaterthan_on_2": [0], # short 2
     
     
     }

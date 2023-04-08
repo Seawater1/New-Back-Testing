@@ -121,6 +121,12 @@ class Indicators:
         df['last_close_change_test'] = df['last_close_change'] >= last_close_per   
         return df
     
+    def last_close_change_2(self, df, last_close, last_close_per_2):
+        'is the percent from yesterdays close greater than set amount'
+        df['last_close_change_2'] = ((df['close'] - last_close) / last_close) 
+        df['last_close_change_test_2'] = df['last_close_change_2'] >= last_close_per_2   
+        return df    
+    
     
     # % Change from Open
     def per_change_open(self, df,date,open_greater):
@@ -236,9 +242,8 @@ class Indicators:
             premarket1 = df.loc[Date0400:Date0929]#get pre-market date only
             pmh_time = premarket1['high'].idxmax()#get pmh time 
             pmh_price = df.loc[pmh_time]['high']# get pmh price
-            df['%_from_pmh'] = pmh_price  - (per_pmh_val_2 * pmh_price) 
-            val = df.high >= df['%_from_pmh']# true false test
-            df['from_pmh_test_2'] = val# add new tst column
+            df['%_from_pmh_2'] = pmh_price  - (per_pmh_val_2 * pmh_price) 
+            df['from_pmh_test_2'] = df.high >= df['%_from_pmh_2']# true false test
         except :
             df['from_pmh_test_2'] = False
             print('Getting PMH fail')

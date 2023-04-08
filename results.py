@@ -17,11 +17,11 @@ class Results:
     def __init__(self):
         pass
     
-    def cal_results(self,active_value,results_store,total_risk):
+    def cal_results(self,active_value,results_store,risk_per_trade):
         print('Starting calculating returns-----------------------------------------------------------')
         mac = active_value['mac']
         trip_comm = active_value["trip_comm"]
-        start_balance = active_value["start_balance"]
+        imaginary_account = active_value["imaginary_account"]
         #dictionarys to store data
         profit_trade_dic = {}
         
@@ -102,7 +102,7 @@ class Results:
             results_store ['exposed'] = (results_store['max_shares'] * results_store['open_price'])#.cumsum()
               
             # Cal balance
-            results_store['start_bal'] = start_balance
+            results_store['start_bal'] = imaginary_account
             results_store['cum_profit'] =  results_store['profit'].cumsum()
             results_store['balance_no_fee'] = results_store['start_bal'] + results_store['cum_profit']
             results_store['cum_total'] = results_store['total'].cumsum()
@@ -136,11 +136,11 @@ class Results:
 
             
             #print('Maximum Drawdown ?????????????????????????', max_dd)
-            print('Starting balance',start_balance)
+            print('Starting balance',imaginary_account)
             print('Number of trades taken', num_of_trades)
             print('Number of trades won', total_win)
             print('Winning %',win_per)
-            print('Total risk',total_risk)
+            print('risk_per_trade',risk_per_trade)
             print('Gross profit',gross_profit)
             print('Total locate fees', total_locate_fee)
             print('Total commission', total_comm)
