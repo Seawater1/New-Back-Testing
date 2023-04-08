@@ -214,19 +214,20 @@ class Backtester():
         print('------  Starting Testing strategy  ---------------------------------------------------------')      
         # print('Going ', longshort)
         #dictionarys to store data
-        strategy1_equity = imaginary_account
-        strategy2_equity = imaginary_account
-        combined_equity = imaginary_account
+        strategy1_equity = imaginary_account  + full_balance
+        strategy2_equity = imaginary_account  + full_balance
+        combined_equity = imaginary_account  + full_balance
+        
         strategy1_equity_gain = []
         strategy2_equity_gain = []
         combined_equity_gain = []
         
-        strategy1_return = 0
-        strategy2_return = 0
-        gains = [] 
-        gains_2 = []
-        new_gain ={}
-        new_new_gain = []
+        # strategy1_return = 0
+        # strategy2_return = 0
+        # gains = [] 
+        # gains_2 = []
+        # new_gain ={}
+        # new_new_gain = []
         total_win = 0
         locate_cost_ps = 0
         date_stats = {} # stores the returns 
@@ -346,6 +347,7 @@ class Backtester():
                     trail_stop_price_short_2 = 999999999
                     take_profit_count = 0
                     take_profit_count_2 = 0
+                    locate_cost = 0
                     for i in range(len(ohlc_intraday[date,ticker])):# he skips the first bar (1,len) do i need to do this 
                         if price_between_on == 1:
                             is_price_between  = ohlc_intraday[date,ticker]['price_between'][i]
@@ -831,7 +833,7 @@ class Backtester():
                                 min_reward_then_let_it_run_2 == 1 and
                                 close_price_2 == 0 and
                                 take_profit_count_2 > 0 and
-                                ohlc_intraday[date,ticker]["high"][i] > trail_stop_price_short_2):# stopped out
+                                ohlc_intraday[date, ticker]["high"][i] > trail_stop_price_short_2):  # stopped out
                                 #close_price_2 = ohlc_intraday[date,ticker]["open"][i]#slipage
                                 close_price_2 = trail_stop_price_short_2
                                 close_price_slippage_2 = sc.calculate_close_slippage(direction, close_price_2, close_slippage)
@@ -886,39 +888,57 @@ class Backtester():
                             locate_cost_ps = locate_fee # fixed fee
                             
                         locate_cost = locate_cost_ps * max_shares
+                        print('shares located for ',ticker)
                         
                         strategy1_comm = (trip_comm * trade_count)+locate_cost
                         strategy1_return  = (payout - strategy1_comm)
-                        print('strategy1_return',strategy1_return )
+                        print('strategy1_return',strategy1_return)
+                        strategy1_equity += strategy1_return
+                        combined_equity += strategy1_return
+                        
+                    # else:
+                    #     strategy1_return = 0
+                    # print('strategy1_return',strategy1_return )
+                    
                     # Calculate returns for strategy two.
                     if ticker_return_2 != 0:
                         payout_2 =  ticker_return_2 * max_shares_2
                         # Check if shares have already been located
-                        if locate_cost != 0:
-                            if locate_cost_per_on == 1:
-                                locate_cost_ps_2 = open_price_2 * max_locate_per_price
-                            else:
-                                locate_cost_ps_2 = locate_fee # fixed fee
-                            locate_cost_2 = locate_cost_ps_2 * max_shares_2
+                        if locate_cost == 0:
+                            print('sno shares locates for ',ticker)
                             
+                            if locate_cost_per_on == 1:
+                                locate_cost_ps = open_price * max_locate_per_price
+                            else:
+                                locate_cost_ps = locate_fee # fixed fee
+                            locate_cost_2 = locate_cost_ps * max_shares_2
+                            print('locateing share at a price of ',locate_cost_2)
+                        else:#if theres valve in locte feee al
+                            print('shares already locates',ticker)
+                            locate_cost_2 = 0
                         strategy2_comm = (trip_comm * trade_count_2) + locate_cost_2
                         strategy2_return = (payout_2 - strategy2_comm)
                         print('strategy2_return',strategy2_return)
+                        strategy2_equity += strategy2_return
+                        combined_equity += strategy2_return
+                    # else:
+                    #     strategy2_return = 0
+                    # print('strategy2_return',strategy2_return)
                     
                     # # Calculate the new account balance for each strategy 
                     # strategy1_balance = strategy1_equity + [strategy1_return]
         
-                    strategy1_balance = strategy1_equity + strategy1_return
-                    # print('strategy1_balance',strategy1_balance)
-                    strategy2_balance = strategy2_equity + strategy2_return
-                    # print('strategy2_balance',strategy2_balance)
-                    combined_balance = combined_equity + (strategy1_return + strategy2_return)
-                    print('combined_balance',combined_balance,'combined_equity',combined_equity,'strategy1_return',strategy1_return,'strategy2_return',strategy2_return)
+                    # strategy1_balance = strategy1_equity + strategy1_return
+                    # # print('strategy1_balance',strategy1_balance)
+                    # strategy2_balance = strategy2_equity + strategy2_return
+                    # # print('strategy2_balance',strategy2_balance)
+                    # combined_balance = combined_equity + (strategy1_return + strategy2_return)
+                    # print('combined_balance',combined_balance,'combined_equity',combined_equity,'strategy1_return',strategy1_return,'strategy2_return',strategy2_return)
                     # print('combined_balance',combined_balance)
                     # # Append the new account balance to each equity curve list
-                    strategy1_equity_gain.append(strategy1_balance)
-                    strategy2_equity_gain.append(strategy2_balance)
-                    combined_equity_gain.append(combined_balance)
+                    strategy1_equity_gain.append(strategy1_equity)
+                    strategy2_equity_gain.append(strategy2_equity)
+                    combined_equity_gain.append(combined_equity)
                     
                     print(f'Strategy 1 final equity: {strategy1_equity_gain[-1]}')
                     print(f'Strategy 2 final equity: {strategy2_equity_gain[-1]}')
@@ -962,6 +982,8 @@ class Backtester():
                     ###########################################################################################################
         
                     if plot == 1 and trade_count >= plot_trades_only or trade_count_2 >= plot_trades_only :
+                        print('trade_count',trade_count)
+                        print('trade_count_2',trade_count_2)
                         my_plt.plot_fips(self,strategy1_equity_gain, strategy2_equity_gain,combined_equity_gain)
                         my_plt.plt_chart(self,longshort ,date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2)
                     else:
@@ -1007,5 +1029,5 @@ class Backtester():
             
         if mac == 0:
             btresults.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% results_name, index=False)
-            return ohlc_intraday, results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2 
+        return ohlc_intraday, results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2 
     

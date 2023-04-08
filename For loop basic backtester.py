@@ -13,7 +13,7 @@ start_time = time.time()
 
 
 default_parms = {
-    'mac': [0],
+    'mac': [1],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
     'start_date': ['2021-10-01'], # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
@@ -21,7 +21,7 @@ default_parms = {
     # Scanner Settings
     # Insample out of sample settings
     "insample_per_on": [1],
-    "split_per": [0.05],
+    "split_per": [0.04],
     "return_start": [1],  # True
     # Random insample out of sample testing
     "random_insample_on": [0],  # Turn on randon insample

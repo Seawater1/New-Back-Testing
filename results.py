@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Tue Apr  4 12:53:50 2023
-
+Maximum Adverse Excursion 
 @author: briansheehan
 """
 import pandas as pd
@@ -50,6 +50,8 @@ class Results:
             results_store['loss_2'] = np.nan 
             results_store['total_win_2'] = np.nan
             
+            results_store['profit'] = results_store['profit_1'] + results_store['profit_2']
+            
             # Strategy 1 Commisions and locate fees
             results_store['commission_1'] = results_store['trade_count'] * trip_comm
             
@@ -58,14 +60,31 @@ class Results:
             
             results_store['total_commission'] = results_store['commission_1'] + results_store['commission_2']
             
-            # Strategy 1 locate fees calculation
-            results_store['locate_fee'] = results_store['trade_count'] * (results_store['locates_acq'] * results_store['locate_cost_ps'])
-                                 
-            # Strategy 2 locate fees calculation
-            results_store['locate_fee_2'] = results_store['trade_count_2'] * (results_store['locates_acq_2'] * results_store['locate_cost_ps'])
+            results_store['total_1'] =  results_store['profit_1'] -  results_store['commission_1']
+            results_store['total_2'] =  results_store['profit_2'] -  results_store['commission_2']
             
-            results_store['total_1'] =  results_store['profit_1'] - (results_store['locate_fee'] + results_store['commission_1'])
-            results_store['total_2'] =  results_store['profit_2'] - (results_store['locate_fee_2'] + results_store['commission_2'])
+            
+            
+            # vectorized calculation for counting locate used one trade or two
+            mask1 = (results_store['trade_count'] == 1) & (results_store['trade_count_2'] == 0)
+            mask2 = (results_store['trade_count'] == 0) & (results_store['trade_count_2'] == 1)
+            mask3 = (results_store['trade_count'] == 1) & (results_store['trade_count_2'] == 1)
+            results_store['locat_mult'] = (mask1 | mask2 | mask3).astype(int)
+            
+            # locate fees calculation
+            results_store['locate_fee'] = results_store['locat_mult'] * (results_store['locates_acq'] * results_store['locate_cost_ps'])
+            results_store['locate_fee_2'] = results_store['locat_mult'] * (results_store['locates_acq_2'] * results_store['locate_cost_ps'])
+            # results_store['locate_fee_total'] = results_store['locate_fee'] + results_store['locate_fee_2']
+            
+            # apply the formula using a vectorized approach
+            results_store['locate_fee_total'] = np.where((results_store['locat_mult'] == 1) & (results_store['locate_fee'] != 0) & (results_store['locate_fee_2'] != 0),
+                                               results_store['locate_fee'], results_store['locate_fee'] + results_store['locate_fee_2'])
+
+            
+            
+            
+            # results_store['total_1'] =  results_store['profit_1'] - ((results_store['locate_fee_total']*results_store['trade_count']) + results_store['commission_1'])
+            # results_store['total_2'] =  results_store['profit_2'] - ((results_store['locate_fee_total']*results_store['trade_count_2']) + results_store['commission_2'])
             results_store['R'] = results_store['total_1'] /  results_store['loss_if_stop']##????????????????????????? this might be wrong!! 
             # Create the new columns based on the values in 'R'
             results_store['R_losser'] = results_store[results_store['R'] < 0]['R']
@@ -78,8 +97,8 @@ class Results:
             results_store['R_winner_2'] = results_store[results_store['R_2'] >= 0]['R_2']
             
             # New Total 
-            results_store['profit'] = results_store['profit_1'] + results_store['profit_2']
-            results_store['total'] = results_store['total_1'] + results_store['total_2']
+            
+            results_store['total'] = (results_store['total_1'] + results_store['total_2']) - results_store['locate_fee_total']
            
             # First trade
             results_store['profit_win'] = 0
@@ -125,7 +144,7 @@ class Results:
             losser_average = round(results_store['R_losser'].mean(),3)
             winner_average = round(results_store['R_winner'].mean(),3)
             gross_profit = round(results_store['profit'].sum(),3)
-            total_locate_fee = results_store['locate_fee'].sum()
+            total_locate_fee = results_store['locate_fee_total'].sum()
             total_comm = results_store['total_commission'].sum()
             total_profit = round(results_store['total'].sum(),2)
             finish_bal = round(results_store['balance'].iloc[-1],2)
