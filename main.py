@@ -239,7 +239,7 @@ class Backtester():
             date_stats[date] = {} #store the day return of eash ticker
             date_stats_2[date] = {} #store the day return of eash ticker
             for ticker in self.top_gap_by_date[date]:# the key is date
-                print('Loading data and applying indicator for ',date,ticker)
+                # print('Loading data and applying indicator for ',date,ticker)
                 # try:
                 risk_per_trade = imaginary_account * risk_acc
                     
@@ -894,15 +894,15 @@ class Backtester():
                         new_locate_cost_ps = locate_fee # fixed fee
                         
                     locate_cost = new_locate_cost_ps * locates_acq
-                    print('shares located for ',ticker)
+                    # print('shares located for ',ticker)
                     
                     strategy1_comm = (trip_comm * trade_count)+locate_cost
                     strategy1_return  = (payout - strategy1_comm)
-                    print('strategy1_return',strategy1_return)
+                    # print('strategy1_return',strategy1_return)
                     strategy1_equity += strategy1_return
-                    print('1combined_equity',combined_equity)
+                    # print('1combined_equity',combined_equity)
                     combined_equity += strategy1_return
-                    print('2combined_equity',combined_equity)
+                    # print('2combined_equity',combined_equity)
                 # else:
                 #     strategy1_return = 0
                 # print('strategy1_return',strategy1_return )                
@@ -911,26 +911,26 @@ class Backtester():
                     payout_2 =  ticker_return_2 * max_shares_2
                     # Check if shares have already been located
                     if locate_cost == 0:
-                        print('no shares locates for ',ticker)
+                        # print('no shares locates for ',ticker)
                         
                         if locate_cost_per_on == 1:
                             new_locate_cost_ps = open_price_2 * max_locate_per_price
                         else:
                             new_locate_cost_ps = locate_fee # fixed fee
                         locate_cost_2 = new_locate_cost_ps * locates_acq_2
-                        print('new_locate_cost_ps',new_locate_cost_ps)
-                        print('max_shares_2',max_shares_2)
-                        print('locateing share at a price of ',locate_cost_2)
+                        # print('new_locate_cost_ps',new_locate_cost_ps)
+                        # print('max_shares_2',max_shares_2)
+                        # print('locateing share at a price of ',locate_cost_2)
                     else:#if theres valve in locte feee al
-                        print('shares already locates',ticker)
+                        # print('shares already locates',ticker)
                         locate_cost_2 = 0
                     strategy2_comm = (trip_comm * trade_count_2) + locate_cost_2
                     strategy2_return = (payout_2 - strategy2_comm)
-                    print('strategy2_return',strategy2_return)
+                    # print('strategy2_return',strategy2_return)
                     strategy2_equity += strategy2_return
-                    print('3combined_equity',combined_equity)
+                    # print('3combined_equity',combined_equity)
                     combined_equity += strategy2_return
-                    print('4combined_equity',combined_equity)
+                    # print('4combined_equity',combined_equity)
                 # else:
                 #     strategy2_return = 0
                 # print('strategy2_return',strategy2_return)
@@ -939,9 +939,9 @@ class Backtester():
                 strategy2_equity_gain.append(strategy2_equity)
                 combined_equity_gain.append(combined_equity)
                 
-                print(f'Strategy 1 final equity: {strategy1_equity_gain[-1]}')
-                print(f'Strategy 2 final equity: {strategy2_equity_gain[-1]}')
-                print(f'Combined strategy final equity: {combined_equity_gain[-1]}')
+                # print(f'Strategy 1 final equity: {strategy1_equity_gain[-1]}')
+                # print(f'Strategy 2 final equity: {strategy2_equity_gain[-1]}')
+                
     
     
                 # new_gain =  (payout - new_commission)  + (payout_2 - new_commission_2)
@@ -1005,6 +1005,7 @@ class Backtester():
         #####################################################################################################################
         ######  Calculating results ##
         #####################################################################################################################
+        print(f'Combined strategy final equity: {combined_equity_gain[-1]}')
         # last_value = new_new_gain[-1]
         # print('new_new_gain------',last_value)
         results_store, num_of_trades, total_win,  gross_profit,total_locate_fee,total_comm,win_per,finish_bal  = Results.cal_results(self, active_value, results_store,risk_per_trade)
