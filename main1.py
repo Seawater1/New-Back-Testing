@@ -341,8 +341,6 @@ class Backtester():
                 outcome_2 = 'no_trade_2'
                 last_high = 0
                 system_1_not_trade = True
-                locate_cost = 0
-                locate_cost_2 = 0
                 
                 last_low = 99999999
                 last_low_2 = 99999999
@@ -885,41 +883,18 @@ class Backtester():
                                     break      
 
                    
-                # Calculate returns for strategy one.
-                if ticker_return != 0:
-                    payout =  ticker_return * max_shares
-                    if locate_cost_per_on == 1:
-                        new_locate_cost_ps = open_price * max_locate_per_price
-                    else:
-                        new_locate_cost_ps = locate_fee # fixed fee
-                        
-                    locate_cost = new_locate_cost_ps * locates_acq
-                    print('shares located for ',ticker)
-                    
-                    strategy1_comm = (trip_comm * trade_count)+locate_cost
-                    strategy1_return  = (payout - strategy1_comm)
-                    print('strategy1_return',strategy1_return)
-                    strategy1_equity += strategy1_return
-                    print('1combined_equity',combined_equity)
-                    combined_equity += strategy1_return
-                    print('2combined_equity',combined_equity)
-                # else:
-                #     strategy1_return = 0
-                # print('strategy1_return',strategy1_return )                
                 # Calculate returns for strategy two.
                 if ticker_return_2 != 0:
                     payout_2 =  ticker_return_2 * max_shares_2
                     # Check if shares have already been located
                     if locate_cost == 0:
-                        print('no shares locates for ',ticker)
+                        print('sno shares locates for ',ticker)
                         
                         if locate_cost_per_on == 1:
-                            new_locate_cost_ps = open_price_2 * max_locate_per_price
+                            locate_cost_ps = open_price * max_locate_per_price
                         else:
-                            new_locate_cost_ps = locate_fee # fixed fee
-                        locate_cost_2 = new_locate_cost_ps * locates_acq_2
-                        print('new_locate_cost_ps',new_locate_cost_ps)
-                        print('max_shares_2',max_shares_2)
+                            locate_cost_ps = locate_fee # fixed fee
+                        locate_cost_2 = locate_cost_ps * max_shares_2
                         print('locateing share at a price of ',locate_cost_2)
                     else:#if theres valve in locte feee al
                         print('shares already locates',ticker)
@@ -928,13 +903,22 @@ class Backtester():
                     strategy2_return = (payout_2 - strategy2_comm)
                     print('strategy2_return',strategy2_return)
                     strategy2_equity += strategy2_return
-                    print('3combined_equity',combined_equity)
                     combined_equity += strategy2_return
-                    print('4combined_equity',combined_equity)
                 # else:
                 #     strategy2_return = 0
                 # print('strategy2_return',strategy2_return)
-
+                
+                # # Calculate the new account balance for each strategy 
+                # strategy1_balance = strategy1_equity + [strategy1_return]
+    
+                # strategy1_balance = strategy1_equity + strategy1_return
+                # # print('strategy1_balance',strategy1_balance)
+                # strategy2_balance = strategy2_equity + strategy2_return
+                # # print('strategy2_balance',strategy2_balance)
+                # combined_balance = combined_equity + (strategy1_return + strategy2_return)
+                # print('combined_balance',combined_balance,'combined_equity',combined_equity,'strategy1_return',strategy1_return,'strategy2_return',strategy2_return)
+                # print('combined_balance',combined_balance)
+                # # Append the new account balance to each equity curve list
                 strategy1_equity_gain.append(strategy1_equity)
                 strategy2_equity_gain.append(strategy2_equity)
                 combined_equity_gain.append(combined_equity)
@@ -986,22 +970,22 @@ class Backtester():
                     else:
                         pass
             
-        
-        
-        # except (FileNotFoundError,IndexError ) as e:
-        #     print(e)
-        #     print('Interday file not found for ----------------------------------------------', date, ticker)  
-            # date1 = date.strftime("%Y-%m-%d")
-            # print('Getting interday data for',ticker,date1)
-            # missingdf = polygon_interday(ticker,date1)
-                
-            # #Save Intraday data for each Gapper for the future 
-            # dateticker = date1 + ' ' + ticker +'.csv' # adds ticker to date
-            # missingdf.to_csv(r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_2022\%s'% dateticker )
-            # missingdf.to_csv(r'B:\2T_Quant\Intraday_Ticker_Database_2T\download_all_2022_2T\%s'% dateticker ) 
-            # print('Missin data retrived')
-            # pass
             
+            
+            # except (FileNotFoundError,IndexError ) as e:
+            #     print(e)
+            #     print('Interday file not found for ----------------------------------------------', date, ticker)  
+                # date1 = date.strftime("%Y-%m-%d")
+                # print('Getting interday data for',ticker,date1)
+                # missingdf = polygon_interday(ticker,date1)
+                    
+                # #Save Intraday data for each Gapper for the future 
+                # dateticker = date1 + ' ' + ticker +'.csv' # adds ticker to date
+                # missingdf.to_csv(r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_2022\%s'% dateticker )
+                # missingdf.to_csv(r'B:\2T_Quant\Intraday_Ticker_Database_2T\download_all_2022_2T\%s'% dateticker ) 
+                # print('Missin data retrived')
+                # pass
+                
         #####################################################################################################################
         ######  Calculating results ##
         #####################################################################################################################
@@ -1026,5 +1010,5 @@ class Backtester():
             
         if mac == 0:
             btresults.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% results_name, index=False)
-        return ohlc_intraday, results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2 
+            return ohlc_intraday, results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2 
     
