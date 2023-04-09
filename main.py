@@ -214,9 +214,10 @@ class Backtester():
         print('------  Starting Testing strategy  ---------------------------------------------------------')      
         # print('Going ', longshort)
         #dictionarys to store data
-        strategy1_equity = imaginary_account
-        strategy2_equity = imaginary_account
-        combined_equity = imaginary_account
+        strategy1_equity = imaginary_account + full_balance
+        strategy2_equity = imaginary_account + full_balance
+        combined_equity = imaginary_account + full_balance
+        
         strategy1_equity_gain = []
         strategy2_equity_gain = []
         combined_equity_gain = []
@@ -969,12 +970,12 @@ class Backtester():
                 ###########################################################################################################
                 ###################################  Plot    ##############################################################
                 ###########################################################################################################
-    
-                if plot == 1 and trade_count >= plot_trades_only or trade_count_2 >= plot_trades_only :
-                    my_plt.plot_fips(self,strategy1_equity_gain, strategy2_equity_gain,combined_equity_gain)
-                    my_plt.plt_chart(self,longshort ,date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2)
-                else:
-                    pass
+                if plot == 1:
+                    if trade_count >= plot_trades_only or trade_count_2 >= plot_trades_only :
+                        my_plt.plot_fips(self,strategy1_equity_gain, strategy2_equity_gain,combined_equity_gain)
+                        my_plt.plt_chart(self,longshort ,date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2)
+                    else:
+                        pass
             
             
             
