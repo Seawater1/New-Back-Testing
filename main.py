@@ -238,7 +238,7 @@ class Backtester():
             date_stats[date] = {} #store the day return of eash ticker
             date_stats_2[date] = {} #store the day return of eash ticker
             for ticker in self.top_gap_by_date[date]:# the key is date
-                #print('Loading data and applying indicator for ',date,ticker)
+                print('Loading data and applying indicator for ',date,ticker)
                 # try:
                 risk_per_trade = imaginary_account * risk_acc
                     
@@ -882,115 +882,115 @@ class Backtester():
                                     break      
 
         
-                    # Calculate returns for strategy one.
-                    if ticker_return != 0:
-                        payout =  ticker_return * max_shares
-                        if locate_cost_per_on == 1:
-                            new_locate_cost_ps = open_price * max_locate_per_price
-                        else:
-                            new_locate_cost_ps = locate_fee # fixed fee
-                            
-                        locate_cost = new_locate_cost_ps * max_shares
-                        
-                        strategy1_comm = (trip_comm * trade_count)+locate_cost
-                        strategy1_return  = (payout - strategy1_comm)
-                        print('payout',payout)
-                        print('strategy1_comm',strategy1_comm)
-                        print('strategy1_return',strategy1_return )
-                    # Calculate returns for strategy two.
-                    if ticker_return_2 != 0:
-                        payout_2 =  ticker_return_2 * max_shares_2
-                        # Check if shares have already been located
-                        if locate_cost != 0:
-                            if locate_cost_per_on == 1:
-                                new_locate_cost_ps_2 = open_price_2 * max_locate_per_price
-                            else:
-                                new_locate_cost_ps_2 = locate_fee # fixed fee
-                            locate_cost_2 = new_locate_cost_ps_2 * max_shares_2
-                            
-                        strategy2_comm = (trip_comm * trade_count_2) + locate_cost_2
-                        strategy2_return = (payout_2 - strategy2_comm)
-                        print('payout_2',payout_2)
-                        print('strategy2_comm',strategy2_comm)
-                        print('strategy2_return',strategy2_return )
-                    
-                    # # Calculate the new account balance for each strategy 
-                    # strategy1_balance = strategy1_equity + [strategy1_return]
-        
-                    strategy1_balance = strategy1_equity + strategy1_return
-                    # print('strategy1_balance',strategy1_balance)
-                    strategy2_balance = strategy2_equity + strategy2_return
-                    # print('strategy2_balance',strategy2_balance)
-                    combined_balance = combined_equity + (strategy1_return + strategy2_return)
-                    print('combined_balance',combined_balance,'combined_equity',combined_equity,'strategy1_return',strategy1_return,'strategy2_return',strategy2_return)
-                    # print('combined_balance',combined_balance)
-                    # # Append the new account balance to each equity curve list
-                    strategy1_equity_gain.append(strategy1_balance)
-                    strategy2_equity_gain.append(strategy2_balance)
-                    combined_equity_gain.append(combined_balance)
-                    
-                    print(f'Strategy 1 final equity: {strategy1_equity_gain[-1]}')
-                    print(f'Strategy 2 final equity: {strategy2_equity_gain[-1]}')
-                    print(f'Combined strategy final equity: {combined_equity_gain[-1]}')
-        
-        
-                    # new_gain =  (payout - new_commission)  + (payout_2 - new_commission_2)
-                    # total_Gain = imaginary_account + full_balance
-                    # gains.append(total_Gain)
-                    # print('gains',gains)
-                    
-                    # total_Gain_2 = imaginary_account_2 + full_balance_2
-                    # gains_2.append(total_Gain_2)
-                    # print('gains_2',gains_2)
-                    # new_new_gain.append(new_gain+5000)
-                    # print('new_new_gain',new_new_gain)
-                    
-                    
-                    #print('Adding this ticker to Results df        ',date,ticker)
-                    results = pd.DataFrame([[date, ticker ,  open_price_slippage, close_price_slippage,   stop_price,  ticker_return,  outcome,  max_shares,  locates_acq, locate_cost_ps, locate_cost_ps_2, open_price_slippage_2, close_price_slippage_2,   stop_price_2,  ticker_return_2,  outcome_2,  trade_count, trade_count_2,  max_shares_2,  locates_acq_2]],
-                                   columns=['date','ticker',  'open_price',       'close_price',          'stop_price','ticker_return','outcome','max_shares','locates_acq','locate_cost_ps', 'locate_cost_ps_2','open_price_2',        'close_price_2',          'stop_price_2','ticker_return_2','outcome_2','trade_count','trade_count_2','max_shares_2','locates_acq_2'] )  
-                    #Adds new line to dic each loop 
-                    # results_store = results_store.append(results,ignore_index=True) 
-                    results_store = pd.concat([results_store, results], ignore_index=True)
-        
-                    results_store.reset_index(drop=True)        
-                    
-                    # print("**********Strategy Performance Statistics**********")
-                    # print("total cumulative return = {}".format(round(abs_return(date_stats),4)))
-                    # print("total win rate = {}".format(round(win_rate(date_stats),2)))
-                    # print("mean return per win trade = {}".format(round(mean_ret_winner(date_stats),4)))
-                    # print("mean return per loss trade = {}".format(round(mean_ret_loser(date_stats),4)))
-                    
-                    # btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward,trail_stop_per ,num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
-                    #                         columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','trail_stop_per','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
-        
-                            
-                                
-                    ###########################################################################################################
-                    ###################################  Plot    ##############################################################
-                    ###########################################################################################################
-        
-                    if plot == 1 and trade_count >= plot_trades_only or trade_count_2 >= plot_trades_only :
-                        my_plt.plot_fips(self,strategy1_equity_gain, strategy2_equity_gain,combined_equity_gain)
-                        my_plt.plt_chart(self,longshort ,date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2)
+                # Calculate returns for strategy one.
+                if ticker_return != 0:
+                    payout =  ticker_return * max_shares
+                    if locate_cost_per_on == 1:
+                        new_locate_cost_ps = open_price * max_locate_per_price
                     else:
-                        pass
-                
-                
-                
-                # except (FileNotFoundError,IndexError ) as e:
-                #     print(e)
-                #     print('Interday file not found for ----------------------------------------------', date, ticker)  
-                    # date1 = date.strftime("%Y-%m-%d")
-                    # print('Getting interday data for',ticker,date1)
-                    # missingdf = polygon_interday(ticker,date1)
+                        new_locate_cost_ps = locate_fee # fixed fee
                         
-                    # #Save Intraday data for each Gapper for the future 
-                    # dateticker = date1 + ' ' + ticker +'.csv' # adds ticker to date
-                    # missingdf.to_csv(r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_2022\%s'% dateticker )
-                    # missingdf.to_csv(r'B:\2T_Quant\Intraday_Ticker_Database_2T\download_all_2022_2T\%s'% dateticker ) 
-                    # print('Missin data retrived')
-                    # pass
+                    locate_cost = new_locate_cost_ps * max_shares
+                    
+                    strategy1_comm = (trip_comm * trade_count)+locate_cost
+                    strategy1_return  = (payout - strategy1_comm)
+                    print('payout',payout)
+                    print('strategy1_comm',strategy1_comm)
+                    print('strategy1_return',strategy1_return )
+                # Calculate returns for strategy two.
+                if ticker_return_2 != 0:
+                    payout_2 =  ticker_return_2 * max_shares_2
+                    # Check if shares have already been located
+                    if locate_cost != 0:
+                        if locate_cost_per_on == 1:
+                            new_locate_cost_ps_2 = open_price_2 * max_locate_per_price
+                        else:
+                            new_locate_cost_ps_2 = locate_fee # fixed fee
+                        locate_cost_2 = new_locate_cost_ps_2 * max_shares_2
+                        
+                    strategy2_comm = (trip_comm * trade_count_2) + locate_cost_2
+                    strategy2_return = (payout_2 - strategy2_comm)
+                    print('payout_2',payout_2)
+                    print('strategy2_comm',strategy2_comm)
+                    print('strategy2_return',strategy2_return )
+                
+                # # Calculate the new account balance for each strategy 
+                # strategy1_balance = strategy1_equity + [strategy1_return]
+    
+                strategy1_balance = strategy1_equity + strategy1_return
+                # print('strategy1_balance',strategy1_balance)
+                strategy2_balance = strategy2_equity + strategy2_return
+                # print('strategy2_balance',strategy2_balance)
+                combined_balance = combined_equity + (strategy1_return + strategy2_return)
+                print('combined_balance',combined_balance,'combined_equity',combined_equity,'strategy1_return',strategy1_return,'strategy2_return',strategy2_return)
+                # print('combined_balance',combined_balance)
+                # # Append the new account balance to each equity curve list
+                strategy1_equity_gain.append(strategy1_balance)
+                strategy2_equity_gain.append(strategy2_balance)
+                combined_equity_gain.append(combined_balance)
+                
+                print(f'Strategy 1 final equity: {strategy1_equity_gain[-1]}')
+                print(f'Strategy 2 final equity: {strategy2_equity_gain[-1]}')
+                print(f'Combined strategy final equity: {combined_equity_gain[-1]}')
+    
+    
+                # new_gain =  (payout - new_commission)  + (payout_2 - new_commission_2)
+                # total_Gain = imaginary_account + full_balance
+                # gains.append(total_Gain)
+                # print('gains',gains)
+                
+                # total_Gain_2 = imaginary_account_2 + full_balance_2
+                # gains_2.append(total_Gain_2)
+                # print('gains_2',gains_2)
+                # new_new_gain.append(new_gain+5000)
+                # print('new_new_gain',new_new_gain)
+                
+                
+                #print('Adding this ticker to Results df        ',date,ticker)
+                results = pd.DataFrame([[date, ticker ,  open_price_slippage, close_price_slippage,   stop_price,  ticker_return,  outcome,  max_shares,  locates_acq, locate_cost_ps, locate_cost_ps_2, open_price_slippage_2, close_price_slippage_2,   stop_price_2,  ticker_return_2,  outcome_2,  trade_count, trade_count_2,  max_shares_2,  locates_acq_2]],
+                               columns=['date','ticker',  'open_price',       'close_price',          'stop_price','ticker_return','outcome','max_shares','locates_acq','locate_cost_ps', 'locate_cost_ps_2','open_price_2',        'close_price_2',          'stop_price_2','ticker_return_2','outcome_2','trade_count','trade_count_2','max_shares_2','locates_acq_2'] )  
+                #Adds new line to dic each loop 
+                # results_store = results_store.append(results,ignore_index=True) 
+                results_store = pd.concat([results_store, results], ignore_index=True)
+    
+                results_store.reset_index(drop=True)        
+                
+                # print("**********Strategy Performance Statistics**********")
+                # print("total cumulative return = {}".format(round(abs_return(date_stats),4)))
+                # print("total win rate = {}".format(round(win_rate(date_stats),2)))
+                # print("mean return per win trade = {}".format(round(mean_ret_winner(date_stats),4)))
+                # print("mean return per loss trade = {}".format(round(mean_ret_loser(date_stats),4)))
+                
+                # btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward,trail_stop_per ,num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
+                #                         columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','trail_stop_per','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
+    
+                        
+                            
+                ###########################################################################################################
+                ###################################  Plot    ##############################################################
+                ###########################################################################################################
+    
+                if plot == 1 and trade_count >= plot_trades_only or trade_count_2 >= plot_trades_only :
+                    my_plt.plot_fips(self,strategy1_equity_gain, strategy2_equity_gain,combined_equity_gain)
+                    my_plt.plt_chart(self,longshort ,date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2)
+                else:
+                    pass
+            
+            
+            
+            # except (FileNotFoundError,IndexError ) as e:
+            #     print(e)
+            #     print('Interday file not found for ----------------------------------------------', date, ticker)  
+                # date1 = date.strftime("%Y-%m-%d")
+                # print('Getting interday data for',ticker,date1)
+                # missingdf = polygon_interday(ticker,date1)
+                    
+                # #Save Intraday data for each Gapper for the future 
+                # dateticker = date1 + ' ' + ticker +'.csv' # adds ticker to date
+                # missingdf.to_csv(r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_2022\%s'% dateticker )
+                # missingdf.to_csv(r'B:\2T_Quant\Intraday_Ticker_Database_2T\download_all_2022_2T\%s'% dateticker ) 
+                # print('Missin data retrived')
+                # pass
                 
         #####################################################################################################################
         ######  Calculating results ##
