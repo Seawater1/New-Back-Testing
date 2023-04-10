@@ -12,11 +12,15 @@ start_time = time.time()
 
 
 default_parms = {
-    'mac': [0],
+    'mac': [1],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
     'start_date': ['2021-10-01'], # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
     'end_date': ['2023-4-02'],
+    # Scanner
+    'volume_min': [-999999],
+    'pm_vol_set': [0],  # main
+    'yclose_to_open_percent_filter': [30],  # only working filter for All file
     # Scanner Settings
     # Insample out of sample settings
     "insample_per_on": [1],
@@ -26,10 +30,7 @@ default_parms = {
     "random_insample_on": [0],  # Turn on randon insample
     "random_insample_start": [1],  # 1 for start 0 for end
     "random_insample_per": [0.25],
-    # Scanner
-    'volume_min': [-999999],
-    'pm_vol_set': [0],  # main
-    'yclose_to_open_percent_filter': [30],  # only working filter for All file
+
     # System settings
     "longshort": ["short"],  # 'long' or 'short'
     # Plots
