@@ -181,7 +181,6 @@ class Backtester():
         strategy1_equity = imaginary_account + full_balance
         strategy2_equity = imaginary_account + full_balance
         combined_equity = imaginary_account + full_balance
-
         strategy1_equity_gain = []
         strategy2_equity_gain = []
         combined_equity_gain = []
@@ -197,7 +196,8 @@ class Backtester():
             date_stats_2[date] = {}
             for ticker in self.top_gap_by_date[date]:  # the key is date
                 # print('Loading data and applying indicator for ',date,ticker)
-                risk_per_trade = imaginary_account * risk_acc
+                risk_per_trade = strategy1_equity * risk_acc
+                # print('max_riskmax_risk ',risk_per_trade)
                 if risk_per_trade > max_risk:
                     risk_per_trade = max_risk
                     # print('Compounding off ')

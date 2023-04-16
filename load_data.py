@@ -44,10 +44,15 @@ class Load_date():
         random_insample_start = load_parms['random_insample_start']
         volume_min = load_parms['volume_min']
         pm_vol_set = load_parms['pm_vol_set']
-        yclose_to_open_percent_filter = load_parms['yclose_to_open_percent_filter']
+        yclose_to_open_percent = load_parms['yclose_to_open_percent']
+        Gap_per = load_parms['Gap_per']
+        Pre_market_Gap = load_parms['Pre_market_Gap']
+        Change_from_Open = load_parms['Change_from_Open']
+        Change_per = load_parms['Change_per']
+        
         if mac == 1:
             if main_or_all == 'all':
-                file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_database/download_all_main.csv"
+                file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_database/main_database_april_2023.csv"
                 print('mac: all file')
             if main_or_all == 'main':
                 file_path = "/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/2021DataBase.csv"   
@@ -56,16 +61,16 @@ class Load_date():
             
         if mac == 0:
             if main_or_all == 'all': 
-                file_path = r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_database\download_all_main.csv'
+                file_path = r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_database\main_database_april_2023.csv'
                 print('win: all file')
             if main_or_all == 'main':
                 file_path = r'C:\Users\brian\Desktop\PythonProgram\MainTickerDataBase\2021DataBase.csv'
                 print('win: main file')
             
         # Load file of tickers and date
-        # print('Using filepath', file_path)
-        df = pd.read_csv(file_path,
-                          parse_dates=[1], dayfirst=True,index_col=0)# Puts year first
+        df = pd.read_csv(file_path, index_col='Date')
+        df = df.reset_index()
+        print(df)
         df['Date'] = pd.to_datetime(df.Date)#Change time object to datetime
         # print('Ticker Database no filter',df)
         
@@ -105,24 +110,17 @@ class Load_date():
                 df = end_df
                 print('Random insample end')
                 print(df)        
+
         
-        # if main_or_all == 'all':                  
-        #     df2 = df.loc[(df['open_to_high_percent'] > change_from_open) & 
-        #                  (df['Yclose_to_hod'] > Yclose_to_hod) &
-        #                  (df['Pre-market Volume'] > all_pm_vol_filter) &
-        #                  ((df['Pre-market Gap %'] > all_pm_gap_filter) | (df['Pre-market Change'] > all_pm_gap_filter))]
-        #     #            (df['Shares Float'] > sharesfloat_min) &
-        #     #            (df['Shares Float'] < sharesfloat_max) &
-        #     #            (df['Market Capitalization'] > market_cap_min) & 
-        #     #            (df['Market Capitalization'] < market_cap_max))
-        if main_or_all == 'all':     
-            condition2 = df['Yclose_to_open_percent'] > yclose_to_open_percent_filter
-            df = df.loc[condition2 ]#& condition2]
-    
-            #            (df['Shares Float'] > sharesfloat_min) &
-            #            (df['Shares Float'] < sharesfloat_max) &
-            #            (df['Market Capitalization'] > market_cap_min) & 
-            #            (df['Market Capitalization'] < market_cap_max))
+        if main_or_all == 'all':
+            df = df.loc[(df['Yclose_to_open_percent'] >= yclose_to_open_percent) |
+                        (df['Gap %'] >= Gap_per) |
+                        (df['Pre-market Gap %'] >= Pre_market_Gap) |
+                        (df['Change from Open %'] >= Change_from_Open) |
+                        (df['Change %'] >= Change_per)]
+            print('All Gap filters')
+            print(df)
+        
         if main_or_all == 'main':                                    
              df = df.loc[(df['Volume'] > volume_min) &
                                (df['Pre-market Volume'] >= pm_vol_set)] # &
@@ -130,6 +128,7 @@ class Load_date():
                                # (df['Shares Float'] < sharesfloat_max) &
                                # (df['Market Capitalization'] > market_cap_min) & 
                                # (df['Market Capitalization'] < market_cap_max))
+                             
          
         
         df1 = df.set_index('Date')

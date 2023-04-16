@@ -12,18 +12,23 @@ start_time = time.time()
 
 
 default_parms = {
-    'mac': [1],
+    'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2021-10-01'], # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
-    'end_date': ['2023-4-02'],
-    # Scanner
+    'start_date': ['2023-01-01'], # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
+    'end_date': ['2023-03-01'],
+    
+    # Scanner Settings 
     'volume_min': [-999999],
-    'pm_vol_set': [0],  # main
-    'yclose_to_open_percent_filter': [30],  # only working filter for All file
-    # Scanner Settings
+    'pm_vol_set': [-999999],  # main
+    # filter by one or all 
+    'yclose_to_open_percent': [50],
+    'Gap_per': [999999],
+    'Pre_market_Gap': [999999],
+    'Change_from_Open': [999999],
+    'Change_per': [999999],
     # Insample out of sample settings
-    "insample_per_on": [1],
+    "insample_per_on": [0],
     "split_per": [0.6],
     "return_start": [1],  # True
     # Random insample out of sample testing
@@ -39,10 +44,10 @@ default_parms = {
     "save_winners_df": [0],
     # Starting balance
     "full_balance": [0],
-    "imaginary_account": [5000],
+    "imaginary_account": [10000],
     # Percent of account to risk
-    "risk_acc": [0.02],  # 0.01
-    "max_risk": [999999],  # set low to prevent compounding
+    "risk_acc": [0.01],  # 0.01
+    "max_risk": [100],  # set low to prevent compounding#???
     # Locate fees
     "locate_fee": [0.01],  # set locate fee %default
     "locate_cost_per_on": [1],
@@ -66,7 +71,7 @@ default_parms = {
     "trip_comm": [2],  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.1, .2, .4, .8, .10],  # percent percent away from open pricee/ .001 is to small dont get even
+    "close_stop": [.5,.10,.15],  # percent percent away from open pricee/ .001 is to small dont get even
     # Pre-market high stop
     "pre_market_h_stop_on": [0],
     # Trailing stop
@@ -118,7 +123,7 @@ default_parms = {
 
     "last_close_change_on": [1],
 
-    "last_close_per": [.4, .5, .6],
+    "last_close_per": [.4,.5,.6],
 
     "percent_from_pmh_on": [0],
     "per_pmh_val": [0.3],
@@ -129,20 +134,20 @@ default_parms = {
     "st_close_greaterthan_on": [0],  # short
 
     # System 2
-    "take_second_trade": [True],
+    "take_second_trade": [False],
 
-    "last_close_change_on_2": [1],
-    "last_close_per_2": [.4, .5, .6],
+    "last_close_change_on_2": [0],
+    "last_close_per_2": [.4],
 
-    "percent_from_pmh_on_2": [1],
-    "per_pmh_val_2": [0.02, 0.04, 0.06, 0.1],
+    "percent_from_pmh_on_2": [0],
+    "per_pmh_val_2": [0.02],
 
-    "close_stop_on_2": [1],
-    "close_stop_2": [.02, .05, 0.1],
+    "close_stop_on_2": [0],
+    "close_stop_2": [.1],
     "min_reward_then_let_it_run_2": [0],
     "buy_between_time_on_2": [1],
     "buy_after_2": ["09:32:00"],
-    "buy_before_2": ["11:00:00", "14:00:00"],
+    "buy_before_2": ["11:00:00"],
 
     "st_close_greaterthan_on_2": [0],  # short 2
     }
