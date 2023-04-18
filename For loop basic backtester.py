@@ -15,8 +15,8 @@ default_parms = {
     'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2023-01-01'], # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
-    'end_date': ['2023-03-01'],
+    'start_date': ['2023-04-17'], # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
+    'end_date': ['2023-04-17'],
     
     # Scanner Settings 
     'volume_min': [-999999],
