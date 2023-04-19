@@ -106,6 +106,43 @@ class Indicators:
         vwap = df['vwap'] <= df['close']
         df['vwap_below'] = vwap
         return df
+    # Price above VWAP 
+    def vwap_push(self, df,date, open_greater_vwap_push):
+        
+        # Check is just before the open
+        date_str = date.strftime("%Y-%m-%d")
+        datebuy = date_str + ' ' + "09:29:00"
+        datesell = date_str + ' ' + "09:30:00"
+        df.reset_index(inplace = True, drop = False)
+        # Create a boolean mask for the timestamp range
+        timestamp_mask = (df['timestamp'] >= datebuy) & (df['timestamp'] <= datesell)
+        # Find the index of the first True value in the mask
+        first_true_idx = timestamp_mask.idxmax()
+        # Set all rows after the first True value to True
+        df.loc[first_true_idx:, 'vwap_check_time'] = True
+        df.set_index('timestamp', inplace=True)
+        # Check if vwap is below
+        df['vwap_below']  = df['vwap'] <= df['close']    
+        
+        Date0930 = date_str + ' 09:30:00'
+        Date1600 = date_str + ' 16:00:00'
+        day = df.loc[Date0930:Date1600]
+        open_price = day.iloc[0,0]# get open price
+        df['vwap_open_change'] = ((df['open'] - open_price) / open_price)
+        df['vwap_push_test'] = df['vwap_open_change'] >= open_greater_vwap_push# returns true false
+        
+        # Check if both are true
+        mask = (df['vwap_below'] == True) & (df['vwap_check_time'] == True) & (df['vwap_push_test'] == True)
+        df.loc[mask, 'vwap_push'] = True
+        
+        # if price below vwap on open place trade stright away#???????
+        
+        
+        return df  
+        
+        
+        
+        
     
     # % Change from first tick of my data greater than
     def per_change_first_tick(self, df,precent_greater):
@@ -274,7 +311,8 @@ class Indicators:
         df['st_short'] = ''
         df.loc[df.st > df.close, 'st_short'] = True
         return df
-        
+
+          
     # ATF with shift calculations
     def ATR(self, DF,lenth, lessthan,shift):
         "function to calculate True Range and Average True Range"

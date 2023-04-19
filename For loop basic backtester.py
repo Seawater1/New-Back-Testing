@@ -15,8 +15,8 @@ default_parms = {
     'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2023-04-17'], # YYYY-MM-DD Maintickerdatabase starts 21-04-11 DownloadAll '2021-10-01'
-    'end_date': ['2023-04-17'],
+    'start_date': ['2023-04-18'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
+    'end_date': ['2023-04-19'],
     
     # Scanner Settings 
     'volume_min': [-999999],
@@ -27,9 +27,10 @@ default_parms = {
     'Pre_market_Gap': [999999],
     'Change_from_Open': [999999],
     'Change_per': [999999],
+    
     # Insample out of sample settings
     "insample_per_on": [0],
-    "split_per": [0.6],
+    "split_per": [0.05],
     "return_start": [1],  # True
     # Random insample out of sample testing
     "random_insample_on": [0],  # Turn on randon insample
@@ -71,7 +72,7 @@ default_parms = {
     "trip_comm": [2],  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.5,.10,.15],  # percent percent away from open pricee/ .001 is to small dont get even
+    "close_stop": [.10],  # percent percent away from open pricee/ .001 is to small dont get even
     # Pre-market high stop
     "pre_market_h_stop_on": [0],
     # Trailing stop
@@ -103,7 +104,7 @@ default_parms = {
 
     "buy_between_time_on": [1],
     "buy_after": ["09:29:00"],
-    "buy_before": ["09:30:00"],
+    "buy_before": ["09:45:00"],
 
     "volume_sum_cal_on": [0],
     "vol_sum_greaterthan": [1000000],
@@ -120,10 +121,13 @@ default_parms = {
 
     "vwap_above_on": [0],
     "vwap_below_on": [0],
+    
+    "vwap_push_on": [1],
+    "open_greater_vwap_push": [.10],
 
     "last_close_change_on": [1],
 
-    "last_close_per": [.4,.5,.6],
+    "last_close_per": [.5],
 
     "percent_from_pmh_on": [0],
     "per_pmh_val": [0.3],
@@ -133,7 +137,8 @@ default_parms = {
     "st_close_lessthan_on": [0],  # Long
     "st_close_greaterthan_on": [0],  # short
 
-    # System 2
+
+    # System 2--------------------------------
     "take_second_trade": [False],
 
     "last_close_change_on_2": [0],

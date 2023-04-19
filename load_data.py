@@ -9,6 +9,7 @@ Created on Thu Mar 16 14:15:34 2023
 import pandas as pd
 from indicators import Indicators
 import pytz
+import time
 # from polygon  import PolygonData
 # create an instance of the Polygon class
 # polygon = PolygonData()
@@ -68,11 +69,19 @@ class Load_date():
                 print('win: main file')
             
         # Load file of tickers and date
-        df = pd.read_csv(file_path, index_col='Date')
+        # df = pd.read_csv(file_path, index_col='Date')
+        # df = pd.read_csv(file_path, parse_dates=['Date'], infer_datetime_format=True)
+        df = pd.read_csv(file_path, parse_dates=['Date'], date_parser=lambda x: pd.to_datetime(x, format='%d/%m/%y'))
         df = df.reset_index()
         print(df)
+        # for index, row in df.iterrows():
+        #     print(row['Date'])
+        #     time.sleep(.1)
+
+
+        
         df['Date'] = pd.to_datetime(df.Date)#Change time object to datetime
-        # print('Ticker Database no filter',df)
+        print('Ticker Database no filter',df)
         
         #Filter by dates
         if filter_by_dates_on == 1:
@@ -165,35 +174,35 @@ class Load_date():
             DESCRIPTION.
     
         """
-        try:
-            # take filtered database from loadmaindata and retreave float and market cap 
-            filter_criteria = ((flt_database['Date'] == date) & (flt_database['Ticker'] == ticker)) 
-            today_symbol_data = flt_database[ filter_criteria ] 
-            sf = today_symbol_data.iloc[0,10]#shares float
-            mc = today_symbol_data.iloc[0,28]# market cap 
-             
-            year = date.strftime("%Y") 
+        # try:
+        # take filtered database from loadmaindata and retreave float and market cap 
+        filter_criteria = ((flt_database['Date'] == date) & (flt_database['Ticker'] == ticker)) 
+        today_symbol_data = flt_database[ filter_criteria ] 
+        sf = today_symbol_data.iloc[0,10]#shares float
+        mc = today_symbol_data.iloc[0,28]# market cap 
+         
+        year = date.strftime("%Y") 
+        
+        if mac == 1:
+            date = date.strftime("/%Y-%m-%d")# convert datetime to string
+            dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
+            data = pd.read_csv('/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_%s'% dateticker )
+        
+        if mac == 0:
+            date = date.strftime("\%Y-%m-%d")# convert datetime to string
+            dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
+            data = pd.read_csv(r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_%s'% dateticker )
             
-            if mac == 1:
-                date = date.strftime("/%Y-%m-%d")# convert datetime to string
-                dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
-                data = pd.read_csv('/Users/briansheehan/Documents/mac_quant/Intraday_Ticker_Database/download_all_%s'% dateticker )
-            
-            if mac == 0:
-                date = date.strftime("\%Y-%m-%d")# convert datetime to string
-                dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
-                data = pd.read_csv(r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_%s'% dateticker )
-                
-            data.columns = ['timestamp','open','high','low','close','volume','vwap']
-            data['shares_float'] = sf
-            data['market_cap'] = mc 
-            
-            data['timestamp'] = pd.to_datetime(data['timestamp'])# change column to datetime
-            # Remove the time offset
-            data['timestamp'] = data['timestamp'].apply(lambda x: x.replace(tzinfo=None))
-            data.set_index('timestamp', inplace=True)# set datetime as index s i can filter time
-        except:
-            print('Interday file not found will i get polygon to get it for you?', date, ticker)  
+        data.columns = ['timestamp','open','high','low','close','volume','vwap']
+        data['shares_float'] = sf
+        data['market_cap'] = mc 
+        
+        data['timestamp'] = pd.to_datetime(data['timestamp'])# change column to datetime
+        # Remove the time offset
+        data['timestamp'] = data['timestamp'].apply(lambda x: x.replace(tzinfo=None))
+        data.set_index('timestamp', inplace=True)# set datetime as index s i can filter time
+        # except:
+            # print('Interday file not found will i get polygon to get it for you?', date, ticker)  
             # df = polygon.interday(ticker, date)
             # if mac == 0:
             #     date = date.strftime("\%Y-%m-%d")# convert datetime to string

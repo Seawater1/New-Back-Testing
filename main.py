@@ -113,6 +113,11 @@ class Backtester():
         open_greater = active_value["open_greater"]
         vwap_above_on = active_value["vwap_above_on"]
         vwap_below_on = active_value["vwap_below_on"]
+        
+        vwap_push_on = active_value["vwap_push_on"]
+        open_greater_vwap_push = active_value["open_greater_vwap_push"]
+        
+        
         last_close_change_on = active_value["last_close_change_on"]
         last_close_per = active_value["last_close_per"],
         percent_from_pmh_on = active_value["percent_from_pmh_on"]
@@ -155,6 +160,8 @@ class Backtester():
             print('vwap_above_on')
         if vwap_below_on == 1:
             print('vwap_below_on')
+        if vwap_push_on == 1:
+            print('vwap_push_on')
         if last_close_change_on == 1 or last_close_change_on_2 == 1:
             print('last_close_change 1 or 2 is on?:', last_close_per)
         if day_greater_than_pm_on == 1:
@@ -242,6 +249,8 @@ class Backtester():
                     df = indc.vwap_above(df)  # Close below VWAP
                 if vwap_below_on == 1:
                     df = indc.vwap_below(df)
+                if vwap_push_on == 1:
+                    df = indc.vwap_push(df,date, open_greater_vwap_push)
                 if last_close_change_on == 1:
                     df = indc.last_close_change(df, last_close, last_close_per)
                 if day_greater_than_pm_on == 1:
@@ -355,6 +364,11 @@ class Backtester():
                         is_vwap_below = ohlc_intraday[date, ticker]["vwap_below"][i]
                     else:
                         is_vwap_below = True
+                    if vwap_push_on == 1:
+                        is_vwap_push = ohlc_intraday[date, ticker]["vwap_push"][i]
+                    else:
+                        is_vwap_push = True    
+                    
                     if last_close_change_on == 1:
                         is_last_close_change = ohlc_intraday[date, ticker]["last_close_change_test"][i] 
                     else:
@@ -423,6 +437,7 @@ class Backtester():
                         is_open_greater == True and
                         is_vwap_above == True and
                         is_vwap_below == True and
+                        is_vwap_push == True and
                         is_last_close_change == True and
                         is_dh_greater_than_pmh == True and
                         is_pmg_greater_than_dy == True and
@@ -471,6 +486,8 @@ class Backtester():
                         is_open_greater == True and
                         is_vwap_above == True and
                         is_vwap_below == True and
+                        is_vwap_above == True and
+                        is_vwap_push == True and
                         is_last_close_change == True and
                         is_dh_greater_than_pmh == True and
                         is_pmg_greater_than_dy == True and
@@ -534,6 +551,7 @@ class Backtester():
                         is_last_close_change_2 == True and#
                         is_st_short_2  == True and
                         is_from_pmh_test_2  == True and
+                        is_vwap_push == True and
                         open_price_2 == 0 and
                         system_1_not_trade == True and
                         trade_count_2 == 0):
