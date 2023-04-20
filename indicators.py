@@ -108,6 +108,18 @@ class Indicators:
         return df
     # Price above VWAP 
     def vwap_push(self, df,date, open_greater_vwap_push):
+        # Define boolean mask
+        # mask = df['vwap'] <= df['close']
+
+        # Initialize 'vwap_push' column with False values
+        df['vwap_push'] = False
+        df['vwap_push']  = df['vwap'] >= df['close'] 
+
+        # Set 'vwap_push' column to True where condition is satisfied
+        # df.loc[mask & (df['vwap'] >= df['close']), 'vwap_push'] = True
+
+        
+        
         
         # Check is just before the open
         date_str = date.strftime("%Y-%m-%d")
@@ -135,6 +147,10 @@ class Indicators:
         mask = (df['vwap_below'] == True) & (df['vwap_check_time'] == True) & (df['vwap_push_test'] == True)
         df.loc[mask, 'vwap_push'] = True
         
+        # df['vwap_push']  = open_price >= df['close'] 
+
+        
+
         # if price below vwap on open place trade stright away#???????
         
         

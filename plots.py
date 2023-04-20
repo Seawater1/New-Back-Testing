@@ -86,7 +86,28 @@ class Plots:
         fig.tight_layout()
         return plt.show()
     
-    def plot_results(self,results_store):
-        fig, ax = plt.subplots(figsize=(15,10), dpi=150)#?
-        results_store.plot(x='date',  y=['balance', 'balance_no_fee'], color=['red', 'blue'],ax=ax,linewidth=0.25)
+    # def plot_results(self,results_store):
+    #     fig, ax = plt.subplots(figsize=(15,10), dpi=150)#?
+    #     results_store.plot(x='date',  y=['balance', 'balance_no_fee'], color=['red', 'blue'],ax=ax,linewidth=0.25)
+    #     return plt.show()
+    
+      
+    def plot_results(self, results_store):
+        fig, ax = plt.subplots(figsize=(15, 10), dpi=150)
+    
+        # Scatter plot
+        profit_df = results_store[results_store['profit_win'] == 1]
+        loss_df = results_store[results_store['loss'] == 1]
+        ax.scatter(results_store.index, results_store['shares_float'], color='grey', label='No Profit/Loss')
+        ax.scatter(profit_df.index, profit_df['shares_float'], color='green', label='Profit')
+        ax.scatter(loss_df.index, loss_df['shares_float'], color='red', label='Loss')
+    
+        # Line plot
+        results_store.plot(x='date', y=['balance', 'balance_no_fee'], color=['red', 'blue'], ax=ax, linewidth=0.25)
+    
+        ax.set_xlabel('Date')
+        ax.set_ylabel('Balance')
+        ax.set_title('Balance vs. Date with Shares Float Highlighted')
+        ax.legend()
+    
         return plt.show()

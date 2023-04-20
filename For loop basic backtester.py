@@ -15,7 +15,7 @@ default_parms = {
     'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2023-04-18'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
+    'start_date': ['2021-10-01'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
     'end_date': ['2023-04-19'],
     
     # Scanner Settings 
@@ -29,8 +29,8 @@ default_parms = {
     'Change_per': [999999],
     
     # Insample out of sample settings
-    "insample_per_on": [0],
-    "split_per": [0.05],
+    "insample_per_on": [1],
+    "split_per": [0.1],
     "return_start": [1],  # True
     # Random insample out of sample testing
     "random_insample_on": [0],  # Turn on randon insample
@@ -123,7 +123,7 @@ default_parms = {
     "vwap_below_on": [0],
     
     "vwap_push_on": [1],
-    "open_greater_vwap_push": [.10],
+    "open_greater_vwap_push": [.5],
 
     "last_close_change_on": [1],
 
@@ -150,15 +150,12 @@ default_parms = {
     "close_stop_on_2": [0],
     "close_stop_2": [.1],
     "min_reward_then_let_it_run_2": [0],
-    "buy_between_time_on_2": [1],
+    "buy_between_time_on_2": [0],
     "buy_after_2": ["09:32:00"],
     "buy_before_2": ["11:00:00"],
 
     "st_close_greaterthan_on_2": [0],  # short 2
     }
-
-
-# # define ranges of values for each parameter
 # close_stop_range = [i / 100 for i in range(1, 21, 2)]
 # last_close_per_range  = [round(0.05 + i*0.05, 2) for i in range(math.ceil((0.50-0.05)/0.05))]
 # [i / 100 for i in range(1, 21, 2)] #generates a sequence of numbers starting from 1 and incrementing by 2 until it reaches 21 (exclusive).
@@ -175,6 +172,9 @@ def dict_combinations(default_parms):
     df = pd.DataFrame()
     for combination in combinations:
         # print(combination)
+
+
+# # define ranges of values for each parameter
         my_dict = {}
         for i, value in enumerate(combination):
             my_dict[keys[i]] = value

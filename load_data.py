@@ -72,7 +72,9 @@ class Load_date():
         # df = pd.read_csv(file_path, index_col='Date')
         # df = pd.read_csv(file_path, parse_dates=['Date'], infer_datetime_format=True)
         df = pd.read_csv(file_path, parse_dates=['Date'], date_parser=lambda x: pd.to_datetime(x, format='%d/%m/%y'))
-        df = df.reset_index()
+        df = df.drop('Unnamed: 0', axis=1)
+
+        # df = df.reset_index()
         print(df)
         # for index, row in df.iterrows():
         #     print(row['Date'])
@@ -176,10 +178,13 @@ class Load_date():
         """
         # try:
         # take filtered database from loadmaindata and retreave float and market cap 
-        filter_criteria = ((flt_database['Date'] == date) & (flt_database['Ticker'] == ticker)) 
-        today_symbol_data = flt_database[ filter_criteria ] 
-        sf = today_symbol_data.iloc[0,10]#shares float
-        mc = today_symbol_data.iloc[0,28]# market cap 
+        date_string = date.strftime('%Y-%m-%d')
+        
+        mc = flt_database.loc[(flt_database['Ticker'] == ticker) & (flt_database['Date'] == date_string), 'Market Capitalization'].values[0]
+        sf = flt_database.loc[(flt_database['Ticker'] == ticker) & (flt_database['Date'] == date_string), 'Shares Float'].values[0]
+
+
+
          
         year = date.strftime("%Y") 
         
@@ -196,6 +201,8 @@ class Load_date():
         data.columns = ['timestamp','open','high','low','close','volume','vwap']
         data['shares_float'] = sf
         data['market_cap'] = mc 
+        print('sf',sf)
+        print('mc',mc)
         
         data['timestamp'] = pd.to_datetime(data['timestamp'])# change column to datetime
         # Remove the time offset

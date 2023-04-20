@@ -43,7 +43,7 @@ class Backtester():
         """
 
     def backtester(self,active_value):
-        print(json.dumps(active_value, indent=4))
+        # print(json.dumps(active_value, indent=4))
         start = time.time()
 
         ohlc_intraday = {}
@@ -210,12 +210,12 @@ class Backtester():
                     # print('Compounding off ')
                 # print('risk_per_trade',risk_per_trade)
                 # flt_database = self.flt_database
-                try:
-                    df = ld.load_interday(self, date, ticker, mac, self.flt_database)  # load interday files ??? does this need to be moved to the top of fucntion
-                except:
-                    print('Interday file not found for ------------------------', date, ticker)
-                    # df = polygon.interday(ticker, date)
-                    continue
+                # try:
+                df = ld.load_interday(self, date, ticker, mac, self.flt_database)  # load interday files ??? does this need to be moved to the top of fucntion
+                # except:
+                #     print('Interday file not found for ------------------------', date, ticker)
+                #     # df = polygon.interday(ticker, date)
+                #     continue
                 # get last close price
                 last_close = self.top_gap_by_date[date][ticker]
 
@@ -924,10 +924,12 @@ class Backtester():
                 # new_new_gain.append(new_gain+5000)
                 # print('new_new_gain',new_new_gain)
                 
-                
+                shares_float = df['shares_float'].iloc[-1]
+                print(shares_float)
+
                 #print('Adding this ticker to Results df        ',date,ticker)
-                results = pd.DataFrame([[date, ticker ,  open_price_slippage, close_price_slippage,   stop_price,  ticker_return,  outcome,  max_shares,  locates_acq, locate_cost_ps, locate_cost_ps_2, open_price_slippage_2, close_price_slippage_2,   stop_price_2,  ticker_return_2,  outcome_2,  trade_count, trade_count_2,  max_shares_2,  locates_acq_2]],
-                               columns=['date','ticker',  'open_price',       'close_price',          'stop_price','ticker_return','outcome','max_shares','locates_acq','locate_cost_ps', 'locate_cost_ps_2','open_price_2',        'close_price_2',          'stop_price_2','ticker_return_2','outcome_2','trade_count','trade_count_2','max_shares_2','locates_acq_2'] )  
+                results = pd.DataFrame([[date, ticker ,  open_price_slippage, close_price_slippage,   stop_price,  ticker_return,  outcome,  max_shares,  locates_acq, locate_cost_ps, locate_cost_ps_2, open_price_slippage_2, close_price_slippage_2,   stop_price_2,  ticker_return_2,  outcome_2,  trade_count, trade_count_2,  max_shares_2,  locates_acq_2, shares_float]],
+                               columns=['date','ticker',  'open_price',       'close_price',          'stop_price','ticker_return','outcome','max_shares','locates_acq','locate_cost_ps', 'locate_cost_ps_2','open_price_2',        'close_price_2',          'stop_price_2','ticker_return_2','outcome_2','trade_count','trade_count_2','max_shares_2','locates_acq_2','shares_float'] )  
                 #Adds new line to dic each loop 
                 # results_store = results_store.append(results,ignore_index=True) 
                 results_store = pd.concat([results_store, results], ignore_index=True)
