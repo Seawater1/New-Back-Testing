@@ -78,14 +78,12 @@ class Backtester():
         min_reward_then_let_it_run_2 = active_value["min_reward_then_let_it_run_2"]
         reward = active_value["reward"]
         trail_stop_per = active_value["trail_stop_per"]
-        
         sharesfloat_on = active_value["sharesfloat_on"]
         sharesfloat_min = active_value["sharesfloat_min"]
         sharesfloat_max = active_value["sharesfloat_max"]
         market_cap_on = active_value["market_cap_on"]
         market_cap_min = active_value["market_cap_min"]
         market_cap_max = active_value["market_cap_max"]
-        
         price_between_on = active_value["price_between_on"]
         min_between_price = active_value["min_between_price"]
         max_between_price = active_value["max_between_price"]
@@ -927,14 +925,11 @@ class Backtester():
                 # print('new_new_gain',new_new_gain)
                 
                 shares_float = df['shares_float'].iloc[-1]
-                market_cap = df['market_cap'].iloc[-1]
-                country = df['country'].iloc[-1]
-                number_of_employees = df['number_of_employees'].iloc[-1]
-                pm_volume = df['pm_volume'].iloc[-1]
-                
+                print(shares_float)
+
                 #print('Adding this ticker to Results df        ',date,ticker)
-                results = pd.DataFrame([[date, ticker ,  open_price_slippage, close_price_slippage,   stop_price,  ticker_return,  outcome,  max_shares,  locates_acq, locate_cost_ps, locate_cost_ps_2, open_price_slippage_2, close_price_slippage_2,   stop_price_2,  ticker_return_2,  outcome_2,  trade_count, trade_count_2,  max_shares_2,  locates_acq_2, shares_float, market_cap, country, number_of_employees, pm_volume]],
-                               columns=['date','ticker',  'open_price',       'close_price',          'stop_price','ticker_return','outcome','max_shares','locates_acq','locate_cost_ps', 'locate_cost_ps_2','open_price_2',        'close_price_2',          'stop_price_2','ticker_return_2','outcome_2','trade_count','trade_count_2','max_shares_2','locates_acq_2','shares_float','market_cap','country', 'number_of_employees','pm_volume'] )  
+                results = pd.DataFrame([[date, ticker ,  open_price_slippage, close_price_slippage,   stop_price,  ticker_return,  outcome,  max_shares,  locates_acq, locate_cost_ps, locate_cost_ps_2, open_price_slippage_2, close_price_slippage_2,   stop_price_2,  ticker_return_2,  outcome_2,  trade_count, trade_count_2,  max_shares_2,  locates_acq_2, shares_float]],
+                               columns=['date','ticker',  'open_price',       'close_price',          'stop_price','ticker_return','outcome','max_shares','locates_acq','locate_cost_ps', 'locate_cost_ps_2','open_price_2',        'close_price_2',          'stop_price_2','ticker_return_2','outcome_2','trade_count','trade_count_2','max_shares_2','locates_acq_2','shares_float'] )  
                 #Adds new line to dic each loop 
                 # results_store = results_store.append(results,ignore_index=True) 
                 results_store = pd.concat([results_store, results], ignore_index=True)

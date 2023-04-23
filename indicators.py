@@ -14,13 +14,13 @@ class Indicators:
         pass
 
     def float_share_between(self, df, sharesfloat_min, sharesfloat_max):
-        mask = ((df['shares_float'].isna()) | (df['shares_float'] >= sharesfloat_min)) & ((df['shares_float'].isna()) | (df['shares_float'] <= sharesfloat_max))
-        df['shares_float_test'] = mask
+        test = (df['shares_float'] >= sharesfloat_min) & (df['shares_float'] <= sharesfloat_max)
+        df['shares_float_test'] = test
         return df
-
+    
     def market_cap_between(self, df, market_cap_min, market_cap_max):
-        mask = ((df['market_cap'].isna()) | (df['market_cap'] >= market_cap_min)) & ((df['market_cap'].isna()) | (df['market_cap'] <= market_cap_max))
-        df['market_cap_test'] = mask
+        test = (df['market_cap'] >= market_cap_min) & (df['market_cap'] <= market_cap_max)
+        df['market_cap_test'] = test
         return df
     
     def price_greater(self, df,min_price):

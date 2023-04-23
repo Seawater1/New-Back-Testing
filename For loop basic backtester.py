@@ -16,22 +16,22 @@ default_parms = {
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
     'start_date': ['2021-10-01'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
-    'end_date': ['2023-04-23'],
+    'end_date': ['2023-04-19'],
     
     # Scanner Settings 
     'volume_min': [-999999],
     'pm_vol_set': [-999999],  # main
     # filter by one or all 
-    'yclose_to_open_percent': [30],
+    'yclose_to_open_percent': [50],
     'Gap_per': [999999],
     'Pre_market_Gap': [999999],
     'Change_from_Open': [999999],
     'Change_per': [999999],
     
     # Insample out of sample settings
-    "insample_per_on": [0],
-    "split_per": [0.6],
-    "return_start": [0],  # True
+    "insample_per_on": [1],
+    "split_per": [0.1],
+    "return_start": [1],  # True
     # Random insample out of sample testing
     "random_insample_on": [0],  # Turn on randon insample
     "random_insample_start": [1],  # 1 for start 0 for end
@@ -80,14 +80,12 @@ default_parms = {
     "min_reward_then_let_it_run": [0],
     "reward": [4],  # times the close_stop - 1 R for trailstop
     "trail_stop_per": [.03],  #.03,.06,.1 if this is greater than close_stop it affects R
-    
-    
-    
-    "sharesfloat_on": [1],
-    "sharesfloat_min": [1000000],
+    # Both Main and All
+    "sharesfloat_on": [0],
+    "sharesfloat_min": [-999999999],
     "sharesfloat_max": [9999999999],
-    "market_cap_on": [1],
-    "market_cap_min": [3000000],
+    "market_cap_on": [0],
+    "market_cap_min": [-999],
     "market_cap_max": [9999999999999999],
     # for both strategys
     "price_between_on": [1],
@@ -124,7 +122,7 @@ default_parms = {
     "vwap_above_on": [0],
     "vwap_below_on": [0],
     
-    "vwap_push_on": [0],
+    "vwap_push_on": [1],
     "open_greater_vwap_push": [.5],
 
     "last_close_change_on": [1],
