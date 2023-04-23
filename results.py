@@ -33,11 +33,11 @@ class Results:
             results_store['stop_p_one'] = results_store['open_price'] - results_store['stop_price']
             results_store['loss_if_stop'] = results_store['stop_p_one'].abs() * results_store['max_shares']
             # profit
-            results_store['profit'] =   results_store['ticker_return'] * results_store['max_shares']
+            results_store['profit_1'] =   results_store['ticker_return'] * results_store['max_shares']
             
-            # results_store['profit_win'] = np.nan
-            # results_store['loss'] = np.nan 
-            # results_store['total_win'] = np.nan
+            results_store['profit_win'] = np.nan
+            results_store['loss'] = np.nan 
+            results_store['total_win_1'] = np.nan
                     
             # Strategy 2
             # loss if stop hit
@@ -46,21 +46,21 @@ class Results:
             # profit_2
             results_store['profit_2'] =   results_store['ticker_return_2'] * results_store['max_shares_2']
             
-            # results_store['profit_win_2'] = np.nan
-            # results_store['loss_2'] = np.nan 
-            # results_store['total_win_2'] = np.nan
+            results_store['profit_win_2'] = np.nan
+            results_store['loss_2'] = np.nan 
+            results_store['total_win_2'] = np.nan
             
-            results_store['profit_1_and_2'] = results_store['profit'] + results_store['profit_2']
+            results_store['profit'] = results_store['profit_1'] + results_store['profit_2']
             
             # Strategy 1 Commisions and locate fees
-            results_store['commission'] = results_store['trade_count'] * trip_comm
+            results_store['commission_1'] = results_store['trade_count'] * trip_comm
             
             # Strategy 2 Commisions and locate fees
             results_store['commission_2'] = results_store['trade_count_2'] * trip_comm
             
-            results_store['total_commission'] = results_store['commission'] + results_store['commission_2']
+            results_store['total_commission'] = results_store['commission_1'] + results_store['commission_2']
             
-            results_store['total_1'] =  results_store['profit_1'] -  results_store['commission']
+            results_store['total_1'] =  results_store['profit_1'] -  results_store['commission_1']
             results_store['total_2'] =  results_store['profit_2'] -  results_store['commission_2']
             
             
@@ -103,7 +103,7 @@ class Results:
             # First trade
             results_store['profit_win'] = 0
             results_store['loss'] = 0
-            results_store['total_win'] = 0
+            results_store['total_win_1'] = 0
             # assign 'qualitative_rating' based on 'grade' with .loc
             results_store.loc[results_store.profit > 0, 'profit_win'] = 1
             results_store.loc[results_store.profit < 0, 'loss'] = 1
@@ -117,18 +117,13 @@ class Results:
             results_store.loc[results_store.profit_2 > 0, 'profit_win_2'] = 1
             results_store.loc[results_store.profit_2 < 0, 'loss_2'] = 1
             results_store.loc[results_store.total_2 > 0, 'total_win_2'] = 1
-            # combine win loss
-            results_store.loc[results_store.profit > 0| results_store.profit_2 > 0 ,'profit_win_1_and_2'] = 1
-            results_store.loc[results_store.loss  < 0 | results_store.loss_2  < 0 , 'loss_1_and_2'] = 1
-            
-            
             
             # Exposed Capital
             results_store ['exposed'] = (results_store['max_shares'] * results_store['open_price'])#.cumsum()
               
             # Cal balance
             results_store['start_bal'] = imaginary_account
-            results_store['cum_profit'] =  results_store['profit_1_and_2'].cumsum()
+            results_store['cum_profit'] =  results_store['profit'].cumsum()
             results_store['balance_no_fee'] = results_store['start_bal'] + results_store['cum_profit']
             results_store['cum_total'] = results_store['total'].cumsum()
             results_store['balance'] = results_store['start_bal'] + results_store['cum_total']
@@ -148,7 +143,7 @@ class Results:
             # Calculate the averages
             losser_average = round(results_store['R_losser'].mean(),3)
             winner_average = round(results_store['R_winner'].mean(),3)
-            gross_profit = round(results_store['proprofit_1_and_2'].sum(),3)
+            gross_profit = round(results_store['profit'].sum(),3)
             total_locate_fee = results_store['locate_fee_total'].sum()
             total_comm = results_store['total_commission'].sum()
             total_profit = round(results_store['total'].sum(),2)
