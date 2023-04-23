@@ -71,14 +71,14 @@ class Load_date():
         # Load file of tickers and date
         # df = pd.read_csv(file_path, index_col='Date')
         df = pd.read_csv(file_path, parse_dates=['Date'], infer_datetime_format=True)
-        # df = pd.read_csv(file_path, parse_dates=['Date'], date_parser=lambda x: pd.to_datetime(x, format='%d/%m/%y'))
+        # df = pd.read_csv(file_path, parse_dates=['Date'], date_parser=lambda x: pd.to_datetime(x, format='%Y/%m/%d')) #%d/%m/%y
         # df = df.drop('Unnamed: 0', axis=1)
 
         # df = df.reset_index()
-        print(df)
+        # print(df)
         # for index, row in df.iterrows():
         #     print(row['Date'])
-        #     time.sleep(.1)
+            # time.sleep(.1)
 
 
         
@@ -99,10 +99,12 @@ class Load_date():
             split_index = int(num_rows * split_per)
             if return_start == 1:
                 df = df[:split_index]
-                # print('start --- split')
+                print('start --- split')
+                print(df)
             else:
                 df = df[split_index:]
-                # print('start --- split')
+                print('end --- split')
+                print(df)
             # print('Split Percent ', split_per)
             # print('In sample df ',df)
             
@@ -134,11 +136,7 @@ class Load_date():
         
         if main_or_all == 'main':                                    
              df = df.loc[(df['Volume'] > volume_min) &
-                               (df['Pre-market Volume'] >= pm_vol_set)] # &
-                               # (df['Shares Float'] > sharesfloat_min) &
-                               # (df['Shares Float'] < sharesfloat_max) &
-                               # (df['Market Capitalization'] > market_cap_min) & 
-                               # (df['Market Capitalization'] < market_cap_max))
+                               (df['Pre-market Volume'] >= pm_vol_set)] 
                              
          
         
@@ -180,8 +178,7 @@ class Load_date():
         # take filtered database from loadmaindata and retreave float and market cap 
         date_string = date.strftime('%Y-%m-%d')
         
-        mc = flt_database.loc[(flt_database['Ticker'] == ticker) & (flt_database['Date'] == date_string), 'Market Capitalization'].values[0]
-        sf = flt_database.loc[(flt_database['Ticker'] == ticker) & (flt_database['Date'] == date_string), 'Shares Float'].values[0]
+        
 
 
 
@@ -198,11 +195,14 @@ class Load_date():
             dateticker = year + date + ' ' + ticker +'.csv' # adds ticker to date
             data = pd.read_csv(r'C:\Users\brian\Desktop\PythonProgram\Intraday_Ticker_Database\download_all_%s'% dateticker )
             
-        data.columns = ['timestamp','open','high','low','close','volume','vwap']
-        data['shares_float'] = sf
-        data['market_cap'] = mc 
-        print('sf',sf)
-        print('mc',mc)
+        # data.columns = ['timestamp','open','high','low','close','volume','vwap']
+        data['market_cap'] = flt_database.loc[(flt_database['Ticker'] == ticker) & (flt_database['Date'] == date_string), 'Market Capitalization'].values[0]
+        data['shares_float'] = flt_database.loc[(flt_database['Ticker'] == ticker) & (flt_database['Date'] == date_string), 'Shares Float'].values[0]
+        data['sector'] = flt_database.loc[(flt_database['Ticker'] == ticker) & (flt_database['Date'] == date_string), 'Sector'].values[0]
+        data['country'] = flt_database.loc[(flt_database['Ticker'] == ticker) & (flt_database['Date'] == date_string), 'Country'].values[0]
+        data['number_of_employees'] = flt_database.loc[(flt_database['Ticker'] == ticker) & (flt_database['Date'] == date_string), 'Number of Employees'].values[0]
+        data['pm_volume'] = flt_database.loc[(flt_database['Ticker'] == ticker) & (flt_database['Date'] == date_string), 'Pre-market Volume'].values[0]
+
         
         data['timestamp'] = pd.to_datetime(data['timestamp'])# change column to datetime
         # Remove the time offset

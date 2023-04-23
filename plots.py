@@ -12,6 +12,13 @@ import matplotlib.gridspec as gridspec
 import matplotlib.dates as mpl_dates
 import pytz
 
+from mpl_toolkits.mplot3d import Axes3D
+
+import plotly.express as px
+
+import matplotlib.ticker as ticker
+
+
 
 plt.style.use('ggplot')#Data Viz
 class Plots:
@@ -86,28 +93,178 @@ class Plots:
         fig.tight_layout()
         return plt.show()
     
-    # def plot_results(self,results_store):
-    #     fig, ax = plt.subplots(figsize=(15,10), dpi=150)#?
-    #     results_store.plot(x='date',  y=['balance', 'balance_no_fee'], color=['red', 'blue'],ax=ax,linewidth=0.25)
-    #     return plt.show()
+    def plot_results(self,results_store):
+        fig, ax = plt.subplots(figsize=(15,10), dpi=150)#?
+        results_store.plot(x='date',  y=['balance', 'balance_no_fee'], color=['red', 'blue'],ax=ax,linewidth=0.25)
+        
+        
+        return plt.show()
     
-      
-    def plot_results(self, results_store):
-        fig, ax = plt.subplots(figsize=(15, 10), dpi=150)
-    
-        # Scatter plot
+    def scatter_polts(self, results_store):
+        # Filter the DataFrame by profit_win and loss
         profit_df = results_store[results_store['profit_win'] == 1]
         loss_df = results_store[results_store['loss'] == 1]
-        ax.scatter(results_store.index, results_store['shares_float'], color='grey', label='No Profit/Loss')
+        
+        # Create the scatter plot
+        fig, ax = plt.subplots(figsize=(10, 8))
+        
         ax.scatter(profit_df.index, profit_df['shares_float'], color='green', label='Profit')
         ax.scatter(loss_df.index, loss_df['shares_float'], color='red', label='Loss')
-    
-        # Line plot
-        results_store.plot(x='date', y=['balance', 'balance_no_fee'], color=['red', 'blue'], ax=ax, linewidth=0.25)
-    
-        ax.set_xlabel('Date')
-        ax.set_ylabel('Balance')
-        ax.set_title('Balance vs. Date with Shares Float Highlighted')
+        
+        ax.set_xlabel('Index')
+        ax.set_ylabel('Shares Float')
+        ax.set_title('Shares Float vs. Index with Profit/Loss Highlighted')
+        
         ax.legend()
+        # Set the y-axis limits to be between 250 and 10,000,000
+        ax.set_ylim(0, 10000000)
+        # Format the y-axis tick labels with commas
+        ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, pos: '{:,.0f}'.format(x)))
+        
+        # Add grid lines every 1 million units on the y-axis
+        ax.yaxis.grid(True, which='major', linestyle='--', color='gray', alpha=0.5, linewidth=0.5)
+        ax.set_yticks(range(0, 10000001, 1000000))
+
+        
+        plt.show()
+        
+        # profit_df = results_store[results_store['profit_win'] == 1]
+        # loss_df = results_store[results_store['loss'] == 1]
+        
+        # Create the scatter plot
+        fig, ax = plt.subplots(figsize=(10, 8))
+        
+        ax.scatter(profit_df.index, profit_df['market_cap'], color='green', label='Profit')
+        ax.scatter(loss_df.index, loss_df['market_cap'], color='red', label='Loss')
+        
+        ax.set_xlabel('Index')
+        ax.set_ylabel('market_cap')
+        ax.set_title('market_cap vs. Index with Profit/Loss Highlighted')
+        
+        ax.legend()
+        # Set the y-axis limits to be between 250 and 10,000,000
+        ax.set_ylim(1000000, 10000000)
+        # Format the y-axis tick labels with commas
+        ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, pos: '{:,.0f}'.format(x)))
+        
+        # # Add grid lines every 1 million units on the y-axis
+        # ax.yaxis.grid(True, which='major', linestyle='--', color='gray', alpha=0.5, linewidth=0.5)
+        # ax.set_yticks(range(0, 10000001, 10000000))
+        
+        
+        plt.show()
+        
+        # profit_df = results_store[results_store['profit_win'] == 1]
+        # loss_df = results_store[results_store['loss'] == 1]
+        
+        # Create the scatter plot
+        fig, ax = plt.subplots(figsize=(10, 8))
+        
+        ax.scatter(profit_df.index, profit_df['pm_volume'], color='green', label='Profit')
+        ax.scatter(loss_df.index, loss_df['pm_volume'], color='red', label='Loss')
+        
+        ax.set_xlabel('Index')
+        ax.set_ylabel('pm_volume')
+        ax.set_title('pm_volume vs. Index with Profit/Loss Highlighted')
+        
+        ax.legend()
+        # Set the y-axis limits to be between 250 and 10,000,000
+        ax.set_ylim(-100000, 10000000)
+        # Format the y-axis tick labels with commas
+        ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, pos: '{:,.0f}'.format(x)))
+        
+        
+        plt.show()
+
+        # Create the scatter plot
+        fig, ax = plt.subplots(figsize=(10, 8))
+        
+        ax.scatter(profit_df.index, profit_df['number_of_employees'], color='green', label='Profit')
+        ax.scatter(loss_df.index, loss_df['number_of_employees'], color='red', label='Loss')
+        
+        ax.set_xlabel('Index')
+        ax.set_ylabel('number_of_employees')
+        ax.set_title('number_of_employees vs. Index with Profit/Loss Highlighted')
+        
+        ax.legend()
+        # Set the y-axis limits to be between 250 and 10,000,000
+        ax.set_ylim(0, 150)
+        # Format the y-axis tick labels with commas
+        ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, pos: '{:,.0f}'.format(x)))
+        
+        # # Add grid lines every 1 million units on the y-axis
+        # ax.yaxis.grid(True, which='major', linestyle='--', color='gray', alpha=0.5, linewidth=0.5)
+        # ax.set_yticks(range(0, 10000001, 10000000))
+        
+        
+        
+        
+        
+        plt.show()
+        
+        # Create the scatter plot
+        fig, ax = plt.subplots(figsize=(10, 8))
+        
+        ax.scatter(profit_df.index, profit_df['open_price'], color='green', label='Profit')
+        ax.scatter(loss_df.index, loss_df['open_price'], color='red', label='Loss')
+        
+        ax.set_xlabel('Index')
+        ax.set_ylabel('open_price')
+        ax.set_title('open_price vs. Index with Profit/Loss Highlighted')
+        
+        ax.legend()
+        # Set the y-axis limits to be between 250 and 10,000,000
+        ax.set_ylim(0, 20)
+        # Format the y-axis tick labels with commas
+        ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, pos: '{:,.0f}'.format(x)))
+        
+        
+        
+        plt.show()
+                
+                
+
+
+        
     
-        return plt.show()
+      
+    # def plot_results(self, results_store):
+    #     fig, ax = plt.subplots(figsize=(15, 10), dpi=150)
+    
+    #     # Scatter plot
+    #     profit_df = results_store[results_store['profit_win'] == 1]
+    #     loss_df = results_store[results_store['loss'] == 1]
+    #     ax.scatter(results_store.index, results_store['shares_float'], color='grey', label='No Profit/Loss')
+    #     ax.scatter(profit_df.index, profit_df['shares_float'], color='green', label='Profit')
+    #     ax.scatter(loss_df.index, loss_df['shares_float'], color='red', label='Loss')
+    
+    #     # Line plot
+    #     results_store.plot(x='date', y=['balance', 'balance_no_fee'], color=['red', 'blue'], ax=ax, linewidth=0.25)
+    
+    #     ax.set_xlabel('Date')
+    #     ax.set_ylabel('Balance')
+    #     ax.set_title('Balance vs. Date with Shares Float Highlighted')
+    #     ax.legend()
+        
+    #     return plt.show()
+    #     import matplotlib.pyplot as plt
+
+# # Filter the DataFrame by profit_win and loss
+# profit_df = results_store[results_store['profit_win'] == 1]
+# loss_df = results_store[results_store['loss'] == 1]
+
+# # Create the scatter plot
+# fig, ax = plt.subplots(figsize=(10, 8))
+
+# ax.scatter(results_store.index, results_store['shares_float'], color='grey', label='No Profit/Loss')
+# ax.scatter(profit_df.index, profit_df['shares_float'], color='green', label='Profit')
+# ax.scatter(loss_df.index, loss_df['shares_float'], color='red', label='Loss')
+
+# ax.set_xlabel('Index')
+# ax.set_ylabel('Shares Float')
+# ax.set_title('Shares Float vs. Index with Profit/Loss Highlighted')
+# ax.legend()
+
+# plt.show()
+# 
+
