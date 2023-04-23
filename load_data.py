@@ -70,9 +70,9 @@ class Load_date():
             
         # Load file of tickers and date
         # df = pd.read_csv(file_path, index_col='Date')
-        # df = pd.read_csv(file_path, parse_dates=['Date'], infer_datetime_format=True)
-        df = pd.read_csv(file_path, parse_dates=['Date'], date_parser=lambda x: pd.to_datetime(x, format='%d/%m/%y'))
-        df = df.drop('Unnamed: 0', axis=1)
+        df = pd.read_csv(file_path, parse_dates=['Date'], infer_datetime_format=True)
+        # df = pd.read_csv(file_path, parse_dates=['Date'], date_parser=lambda x: pd.to_datetime(x, format='%d/%m/%y'))
+        # df = df.drop('Unnamed: 0', axis=1)
 
         # df = df.reset_index()
         print(df)
