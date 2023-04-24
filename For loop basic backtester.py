@@ -29,9 +29,9 @@ default_parms = {
     'Change_per': [999999],
     
     # Insample out of sample settings
-    "insample_per_on": [0],
-    "split_per": [0.6],
-    "return_start": [0],  # True
+    "insample_per_on": [1],
+    "split_per": [0.1],
+    "return_start": [1],  # True
     # Random insample out of sample testing
     "random_insample_on": [0],  # Turn on randon insample
     "random_insample_start": [1],  # 1 for start 0 for end

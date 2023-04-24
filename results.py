@@ -60,8 +60,8 @@ class Results:
             
             results_store['total_commission'] = results_store['commission'] + results_store['commission_2']
             
-            results_store['total_1'] =  results_store['profit_1'] -  results_store['commission']
-            results_store['total_2'] =  results_store['profit_2'] -  results_store['commission_2']
+            # results_store['total_1'] =  results_store['profit_1'] -  results_store['commission']
+            # results_store['total_2'] =  results_store['profit_2'] -  results_store['commission_2']
             
             
             
