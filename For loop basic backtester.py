@@ -29,8 +29,8 @@ default_parms = {
     'Change_per': [999999],
     
     # Insample out of sample settings
-    "insample_per_on": [1],
-    "split_per": [0.1],
+    "insample_per_on": [0],
+    "split_per": [0.6],
     "return_start": [1],  # True
     # Random insample out of sample testing
     "random_insample_on": [0],  # Turn on randon insample
@@ -40,7 +40,7 @@ default_parms = {
     # System settings
     "longshort": ["short"],  # 'long' or 'short'
     # Plots
-    "plot": [1],  # 1 to plot on
+    "plot": [0],  # 1 to plot on
     "plot_trades_only": [1],
     "save_winners_df": [0],
     # Starting balance
@@ -72,7 +72,7 @@ default_parms = {
     "trip_comm": [2],  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.10],  # percent percent away from open pricee/ .001 is to small dont get even
+    "close_stop": [.1,.15,2,2.5,3],  # percent percent away from open pricee/ .001 is to small dont get even
     # Pre-market high stop
     "pre_market_h_stop_on": [0],
     # Trailing stop
