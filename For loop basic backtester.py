@@ -15,8 +15,8 @@ default_parms = {
     'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2021-10-01'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
-    'end_date': ['2023-04-23'],
+    'start_date': ['2023-04-23'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
+    'end_date': ['2023-04-26'],
     
     # Scanner Settings 
     'volume_min': [-999999],
@@ -30,7 +30,7 @@ default_parms = {
     
     # Insample out of sample settings
     "insample_per_on": [0],
-    "split_per": [0.6],
+    "split_per": [0.05],
     "return_start": [1],  # True
     # Random insample out of sample testing
     "random_insample_on": [0],  # Turn on randon insample
@@ -40,7 +40,7 @@ default_parms = {
     # System settings
     "longshort": ["short"],  # 'long' or 'short'
     # Plots
-    "plot": [0],  # 1 to plot on
+    "plot": [1],  # 1 to plot on
     "plot_trades_only": [1],
     "save_winners_df": [0],
     # Starting balance
@@ -72,7 +72,12 @@ default_parms = {
     "trip_comm": [2],  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.1,.15,2,2.5,3],  # percent percent away from open pricee/ .001 is to small dont get even
+    "close_stop": [.1],  # percent percent away from open pricee/ .001 is to small dont get even
+    
+    "vwap_stop_on":[1],
+    "dip_below_per":[.1],
+    "vwap_stop_per":[.1],
+    
     # Pre-market high stop
     "pre_market_h_stop_on": [0],
     # Trailing stop
@@ -83,10 +88,10 @@ default_parms = {
     
     
     
-    "sharesfloat_on": [1],
+    "sharesfloat_on": [0],
     "sharesfloat_min": [1000000],
     "sharesfloat_max": [9999999999],
-    "market_cap_on": [1],
+    "market_cap_on": [0],
     "market_cap_min": [3000000],
     "market_cap_max": [9999999999999999],
     # for both strategys

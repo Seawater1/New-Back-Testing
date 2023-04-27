@@ -327,6 +327,25 @@ class Indicators:
         df['st_short'] = ''
         df.loc[df.st > df.close, 'st_short'] = True
         return df
+    
+    # def vwap_stop_cal(self, df, date):
+    #     str_date = date.strftime("%Y-%m-%d")#convert datetime to string
+    #     Date0930 = str_date + ' 09:30:00'
+    #     day_df = df.loc[Date0930:Date1600]
+    #     print(day_df)
+    #     day_df['high_below_vwap'] = day_df["high"] < day_df["vwap"]
+    #     return day_df
+    def vwap_stop_cal(self, df, date, dip_below_per ):
+        df['vwap_lower'] = (df["vwap"] * dip_below_per) + df["vwap"]
+        # str_date = date.strftime("%Y-%m-%d")#convert datetime to string
+        # Date0930 = str_date + ' 09:30:00'
+        # day_df = df[df.index >= Date0930]  # filter df to include only rows from 9:30am onwards
+        # reduction = day_df["high"] * dip_below_per
+        df['high_below_vwap'] = df["high"] < df['vwap_lower']
+        return df
+
+        
+        
 
           
     # ATF with shift calculations

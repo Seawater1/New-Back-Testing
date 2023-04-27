@@ -69,6 +69,11 @@ class Backtester():
         trip_comm = active_value["trip_comm"]
         close_stop_on = active_value["close_stop_on"]
         close_stop = active_value["close_stop"]
+        
+        vwap_stop_on = active_value["vwap_stop_on"]
+        dip_below_per = active_value["dip_below_per"]
+        vwap_stop_per = active_value["vwap_stop_per"]
+        
         close_stop_on_2 = active_value["close_stop_on_2"]
         close_stop_2 = active_value["close_stop_2"]
         pre_market_h_stop_on = active_value["pre_market_h_stop_on"]
@@ -158,12 +163,16 @@ class Backtester():
             print('per_change_first_tick:', precent_greater)
         if per_change_open_on == 1 or per_change_open_on_2 == 1:
             print('per_change_open 1 or two is on?:', open_greater)
+        
+        
         if vwap_above_on == 1:
             print('vwap_above_on')
         if vwap_below_on == 1:
             print('vwap_below_on')
         if vwap_push_on == 1:
             print('vwap_push_on')
+        if vwap_stop_on == 1:
+            print('vwap_push_on %:',vwap_stop_per)
         if last_close_change_on == 1 or last_close_change_on_2 == 1:
             print('last_close_change 1 or 2 is on?:', last_close_per)
         if day_greater_than_pm_on == 1:
@@ -259,6 +268,8 @@ class Backtester():
                     df = indc.day_greater_than_pm(df,date)
                 if pm_greater_than_day_on == 1:
                     df = indc.pm_greater_than_day(df,date)
+                if vwap_stop_on == 1:
+                    df = indc.vwap_stop_cal(df, date, dip_below_per)                    
                 if st_close_lessthan_on == 1:
                     df = indc.st_close_lessthan(df)  #Supertrend lessthan
                 if st_close_greaterthan_on == 1 or st_close_greaterthan_on_2 == 1:
@@ -516,7 +527,7 @@ class Backtester():
                                     
                         # print('close_stop',close_stop)
                         if close_stop_on == 1:
-                            stop_price = (open_price * close_stop) + open_price
+                            stop_price = (open_price * close_stop) + open_price    
                         if pre_market_h_stop_on == 1:
                             pmh_price = indc.get_pmh_price(df,date)
                             #print('PMH price',pmh_price,ticker,date)
@@ -759,6 +770,23 @@ class Backtester():
                                     outcome = 'stopped_out'
                                     # print('Stopped out',ticker, ' Price',stop_price)
                                     # print('Ticker return', ticker_return)
+                        ###############
+                        # VWAP Stop ###
+                        ###############
+                        elif (
+                                vwap_stop_on == 1 and
+                                close_price == 0 and
+                                ohlc_intraday[date,ticker]["high_below_vwap"][i] and                                
+                                ohlc_intraday[date,ticker]["high"][i] < (ohlc_intraday[date,ticker]["vwap"][i]*vwap_stop_per)+ohlc_intraday[date,ticker]["vwap"][i]) :# stop loss
+                                    system_1_not_trade = True
+                                    close_price = ohlc_intraday[date,ticker]["vwap"][i]
+                                    close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
+                                    ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage 
+                                    ticker_return = open_price_slippage - close_price_slippage 
+                                    date_stats[date][ticker] = ticker_return
+                                    outcome = 'vwap_stop'
+                                    print('vwap_stop',ticker, ' Price',stop_price)
+                                    print('Ticker return', ticker_return)
                         ###############
                         # Time stop
                         ###############  
