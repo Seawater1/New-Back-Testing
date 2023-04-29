@@ -15,8 +15,8 @@ default_parms = {
     'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2010-01-20'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
-    'end_date': ['2010-12-26'],
+    'start_date': ['2023-04-22'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
+    'end_date': ['2023-04-29'],
     
     # Scanner Settings 
     'volume_min': [-999999],
@@ -72,7 +72,7 @@ default_parms = {
     "trip_comm": [2],  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.15],  # percent percent away from open pricee/ .001 is to small dont get even
+    "close_stop": [.10],  # percent percent away from open pricee/ .001 is to small dont get even
     
     "vwap_stop_on":[0],
     "dip_below_per":[.1],
