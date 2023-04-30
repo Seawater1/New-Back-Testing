@@ -45,9 +45,9 @@ default_parms = {
     "save_winners_df": [0],
     # Starting balance
     "full_balance": [0],
-    "imaginary_account": [10000],
+    "imaginary_account": [1000],
     # Percent of account to risk
-    "risk_acc": [0.01],  # 0.01
+    "risk_acc": [0.03],  # 0.01
     "max_risk": [100],  # set low to prevent compounding#???
     # Locate fees
     "locate_fee": [0.01],  # set locate fee %default
