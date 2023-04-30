@@ -15,7 +15,7 @@ default_parms = {
     'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2023-04-22'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
+    'start_date': ['2021-10-01'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
     'end_date': ['2023-04-29'],
     
     # Scanner Settings 
@@ -47,7 +47,7 @@ default_parms = {
     "full_balance": [0],
     "imaginary_account": [1000],
     # Percent of account to risk
-    "risk_acc": [0.03],  # 0.01
+    "risk_acc": [0.01],  # 0.01
     "max_risk": [100],  # set low to prevent compounding#???
     # Locate fees
     "locate_fee": [0.01],  # set locate fee %default
@@ -72,7 +72,7 @@ default_parms = {
     "trip_comm": [2],  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.10],  # percent percent away from open pricee/ .001 is to small dont get even
+    "close_stop": [.05],  # percent percent away from open pricee/ .001 is to small dont get even
     
     "vwap_stop_on":[0],
     "dip_below_per":[.1],

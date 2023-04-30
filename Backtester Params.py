@@ -20,7 +20,7 @@ default_parms = {
     "split_per": [0.6],
     "return_start": [1],  # True
     # Random insample out of sample testing
-    "random_insample_on": [0],  # Turn on randon insample
+    "random_insample_on": [0],  # Turn on random insample
     "random_insample_start": [1],  # 1 for start 0 for end
     "random_insample_per": [0.25],
  
@@ -79,7 +79,7 @@ default_parms = {
     
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.01,.03,.05,.07,.10],  # percent percent away from open pricee/ .001 is to small dont get even r
+    "close_stop": [.01,.03,.05,.07,.10],  # percent percent away from open price/ .001 is to small dont get even r
 
     # Pre-market high stop
     "pre_market_h_stop_on": [0],
@@ -87,7 +87,7 @@ default_parms = {
     "trail_stop_on": [0],
     "min_reward_then_let_it_run": [0],
     
-    "reward": [4],# times the close_stop - 1 R for trailstop
+    "reward": [4],# times the close_stop - 1 R for trail stop
     "trail_stop_per": [.03],#.03,.06,.1 if this is greater than close_stop it affects R
 
     # Both Main and All
