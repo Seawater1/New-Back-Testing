@@ -15,8 +15,8 @@ default_parms = {
     'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2021-10-01'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
-    'end_date': ['2023-04-29'],
+    'start_date': ['2023-05-01'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
+    'end_date': ['2023-05-03'],
     
     # Scanner Settings 
     'volume_min': [-999999],
@@ -30,7 +30,7 @@ default_parms = {
     
     # Insample out of sample settings
     "insample_per_on": [0],
-    "split_per": [0.05],
+    "split_per": [0.6],
     "return_start": [1],  # True
     # Random insample out of sample testing
     "random_insample_on": [0],  # Turn on randon insample
@@ -45,7 +45,7 @@ default_parms = {
     "save_winners_df": [0],
     # Starting balance
     "full_balance": [0],
-    "imaginary_account": [1000],
+    "imaginary_account": [10000],
     # Percent of account to risk
     "risk_acc": [0.01],  # 0.01
     "max_risk": [100],  # set low to prevent compounding#???
@@ -65,14 +65,14 @@ default_parms = {
     "lessthan": [0.11],
     "shift": [3],
     # Acquisition filter
-    "drop_acquistions_on": [1],
+    "drop_acquistions_on": [0],
     "aq_value": [1.05],
     # Testing Settings
     # Commissions
     "trip_comm": [2],  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.05],  # percent percent away from open pricee/ .001 is to small dont get even
+    "close_stop": [.1],  # percent percent away from open pricee/ .001 is to small dont get even
     
     "vwap_stop_on":[0],
     "dip_below_per":[.1],
@@ -86,7 +86,7 @@ default_parms = {
     "reward": [4],  # times the close_stop - 1 R for trailstop
     "trail_stop_per": [.03],  #.03,.06,.1 if this is greater than close_stop it affects R
     
-    
+    "supertrend_on":[0],
     
     "sharesfloat_on": [0],
     "sharesfloat_min": [1000000],
@@ -102,8 +102,8 @@ default_parms = {
     "buytime_on": [0],
     "buy_time": ["09:30:00"],
 
-    "buylocatecondition_on": [0],
-    "buy_locate_time": ["09:25:00"],
+    "buylocatecondition_on": [1],
+    "buy_locate_time": ["08:30:00"],
     "last_close_per_locate": [.50],
 
     "selltime_on": [1],
@@ -111,7 +111,7 @@ default_parms = {
 
     "buy_between_time_on": [1],
     "buy_after": ["09:29:00"],
-    "buy_before": ["09:45:00"],
+    "buy_before": ["09:30:00"],
 
     "volume_sum_cal_on": [0],
     "vol_sum_greaterthan": [1000000],
@@ -124,7 +124,7 @@ default_parms = {
 
     "per_change_open_on": [0],
     "per_change_open_on_2": [0],
-    "open_greater": [0.05],
+    "open_greater": [0.1],
 
     "vwap_above_on": [0],
     "vwap_below_on": [0],
@@ -132,8 +132,7 @@ default_parms = {
     "vwap_push_on": [0],
     "open_greater_vwap_push": [.5],
 
-    "last_close_change_on": [1],
-
+    "last_close_change_on": [0],
     "last_close_per": [.5],
 
     "percent_from_pmh_on": [0],
