@@ -83,6 +83,7 @@ class Backtester():
         min_reward_then_let_it_run_2 = active_value["min_reward_then_let_it_run_2"]
         reward = active_value["reward"]
         trail_stop_per = active_value["trail_stop_per"]
+        supertrend_on = active_value["supertrend_on"]   
         
         sharesfloat_on = active_value["sharesfloat_on"]
         sharesfloat_min = active_value["sharesfloat_min"]
@@ -138,7 +139,8 @@ class Backtester():
         last_close_per_2 = active_value["last_close_per_2"]
         percent_from_pmh_on_2 = active_value["percent_from_pmh_on_2"]
         per_pmh_val_2 = active_value["per_pmh_val_2"]
-
+        
+        
         if sharesfloat_on == 1:
             print('float_share_between:', sharesfloat_min, sharesfloat_max)
         if market_cap_on == 1:
@@ -213,7 +215,7 @@ class Backtester():
             date_stats[date] = {}
             date_stats_2[date] = {}
             for ticker in self.top_gap_by_date[date]:  # the key is date
-                # print('Loading data and applying indicator for ',date,ticker)
+                print('Loading data and applying indicator for ',date,ticker)
                 risk_per_trade = strategy1_equity * risk_acc
                 # print('max_riskmax_risk ',risk_per_trade)
                 if risk_per_trade > max_risk:
@@ -231,7 +233,8 @@ class Backtester():
                 last_close = self.top_gap_by_date[date][ticker]
 
                 # apply super trend always for chart#????
-                df['st'], df['s_upt'], df['st_dt'] = indc.get_supertrend(df['high'], df['low'], df['close'], lookback, multiplier)
+                if supertrend_on == 1:
+                    df['st'], df['s_upt'], df['st_dt'] = indc.get_supertrend(df['high'], df['low'], df['close'], lookback, multiplier)
                 if sharesfloat_on == 1:
                     df = indc.float_share_between(df, sharesfloat_min, sharesfloat_max)
                 if market_cap_on == 1:
