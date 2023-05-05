@@ -44,6 +44,7 @@ class Indicators:
         return df
     
     def buylocatecondition(self, df, date, buy_locate_time, last_close, last_close_per_locate):
+        # print(df)
         df['last_close_change'] = ((df['close'] - last_close) / last_close) 
         df['last_close_change_locate'] = df['last_close_change'] >= last_close_per_locate 
         date = date.strftime("%Y-%m-%d")
@@ -59,7 +60,7 @@ class Indicators:
 
         # set all rows in each group to True
         df['buy_locate_condition'] = mask.cumsum().astype(bool)
-
+        # print(df)
         return df
 
     
@@ -309,13 +310,13 @@ class Indicators:
         Date0400 = str_date + ' 08:00:00'
         Date0930 = str_date + ' 09:29:00'
         df1 = df.loc[Date0400:Date0930]#get pre-market date only
-        print(df1)
+  
         df['acquistions'] = ((df1['high'] / df1['low']))
-        print(df)
+ 
         df['acq_test'] = df['acquistions'].gt(aq_value).cumsum().gt(0)
         # Fill remaining values with last value
         df['acq_test'] = df['acq_test'].fillna(method='ffill')
-        print(df)
+        
         return df
     
     #Super trend less than close

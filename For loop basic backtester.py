@@ -15,7 +15,7 @@ default_parms = {
     'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2023-05-01'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
+    'start_date': ['2021-02-08'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
     'end_date': ['2023-05-03'],
     
     # Scanner Settings 
@@ -29,7 +29,7 @@ default_parms = {
     'Change_per': [999999],
     
     # Insample out of sample settings
-    "insample_per_on": [0],
+    "insample_per_on": [1],
     "split_per": [0.6],
     "return_start": [1],  # True
     # Random insample out of sample testing
@@ -40,7 +40,7 @@ default_parms = {
     # System settings
     "longshort": ["short"],  # 'long' or 'short'
     # Plots
-    "plot": [1],  # 1 to plot on
+    "plot": [0],  # 1 to plot on
     "plot_trades_only": [1],
     "save_winners_df": [0],
     # Starting balance
@@ -65,7 +65,7 @@ default_parms = {
     "lessthan": [0.11],
     "shift": [3],
     # Acquisition filter
-    "drop_acquistions_on": [0],
+    "drop_acquistions_on": [1 ],
     "aq_value": [1.05],
     # Testing Settings
     # Commissions
@@ -88,7 +88,7 @@ default_parms = {
     
     "supertrend_on":[0],
     
-    "sharesfloat_on": [0],
+    "sharesfloat_on": [1],
     "sharesfloat_min": [1000000],
     "sharesfloat_max": [9999999999],
     "market_cap_on": [0],
@@ -102,7 +102,7 @@ default_parms = {
     "buytime_on": [0],
     "buy_time": ["09:30:00"],
 
-    "buylocatecondition_on": [1],
+    "buylocatecondition_on": [0],
     "buy_locate_time": ["08:30:00"],
     "last_close_per_locate": [.50],
 
@@ -111,7 +111,7 @@ default_parms = {
 
     "buy_between_time_on": [1],
     "buy_after": ["09:29:00"],
-    "buy_before": ["09:30:00"],
+    "buy_before": ["09:50:00"],
 
     "volume_sum_cal_on": [0],
     "vol_sum_greaterthan": [1000000],
@@ -122,9 +122,9 @@ default_parms = {
     "per_change_first_tick_on": [0],
     "precent_greater": [0.3],
 
-    "per_change_open_on": [0],
+    "per_change_open_on": [1],
     "per_change_open_on_2": [0],
-    "open_greater": [0.1],
+    "open_greater": [0.05],
 
     "vwap_above_on": [0],
     "vwap_below_on": [0],
@@ -132,7 +132,7 @@ default_parms = {
     "vwap_push_on": [0],
     "open_greater_vwap_push": [.5],
 
-    "last_close_change_on": [0],
+    "last_close_change_on": [1],
     "last_close_per": [.5],
 
     "percent_from_pmh_on": [0],

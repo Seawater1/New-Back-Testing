@@ -215,7 +215,7 @@ class Backtester():
             date_stats[date] = {}
             date_stats_2[date] = {}
             for ticker in self.top_gap_by_date[date]:  # the key is date
-                print('Loading data and applying indicator for ',date,ticker)
+                # print('Loading data and applying indicator for ',date,ticker)
                 risk_per_trade = strategy1_equity * risk_acc
                 # print('max_riskmax_risk ',risk_per_trade)
                 if risk_per_trade > max_risk:
