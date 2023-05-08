@@ -117,7 +117,7 @@ class Plots:
         
         ax.legend()
         # Set the y-axis limits to be between 250 and 10,000,000
-        ax.set_ylim(0, 10000000)
+        ax.set_ylim(-100, 10000000)
         # Format the y-axis tick labels with commas
         ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, pos: '{:,.0f}'.format(x)))
         

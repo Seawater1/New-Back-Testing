@@ -72,7 +72,7 @@ default_parms = {
     "trip_comm": [2],  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.1],  # percent percent away from open pricee/ .001 is to small dont get even
+    "close_stop": [.08,.1,.12],  # percent percent away from open pricee/ .001 is to small dont get even
     
     "vwap_stop_on":[0],
     "dip_below_per":[.1],
@@ -104,14 +104,14 @@ default_parms = {
 
     "buylocatecondition_on": [0],
     "buy_locate_time": ["08:30:00"],
-    "last_close_per_locate": [.50],
+    "last_close_per_locate": [.4,.5,.6],
 
     "selltime_on": [1],
     "sell_time": ['15:30:00'],
 
     "buy_between_time_on": [1],
-    "buy_after": ["09:29:00"],
-    "buy_before": ["09:50:00"],
+    "buy_after": ["09:29:00","10:00:00","10:30:00"],
+    "buy_before": ["09:35:00","10:10:00","10:40:00"],
 
     "volume_sum_cal_on": [0],
     "vol_sum_greaterthan": [1000000],
@@ -122,7 +122,7 @@ default_parms = {
     "per_change_first_tick_on": [0],
     "precent_greater": [0.3],
 
-    "per_change_open_on": [1],
+    "per_change_open_on": [0],
     "per_change_open_on_2": [0],
     "open_greater": [0.05],
 

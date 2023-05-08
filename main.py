@@ -1018,21 +1018,21 @@ class Backtester():
         results_store, num_of_trades, total_win,  gross_profit,total_locate_fee,total_comm,win_per,finish_bal  = Results.cal_results(self, active_value, results_store,risk_per_trade)
         print('It took', (time.time()-start)/60, 'minutes.')
         print('Finished')
-        btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
-                                 columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
+        # btresults = pd.DataFrame([[longshort,sharesfloat_min, sharesfloat_max, market_cap_min, market_cap_max,last_close_per, open_greater, vol_sum_greaterthan, buy_after, close_stop, vwap_below_on,st_close_lessthan_on, reward, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal]],
+        #                          columns=['longshort','sharesfloat_min', 'sharesfloat_max', 'market_cap_min', 'market_cap_max','last_close_per','open_greater','vol_sum_greaterthan','buy_after','close_stop','vwap_below_on','st_close_lessthan_on','reward','num_of_trades', 'total_win', 'win_per', 'gross_profit','total_locate_fee','total_comm','finish_bal'] )  
                                                 #Adds new line to dic each loop 
                                                 
         # btresults_store = btresults_store.append(btresults,ignore_index=True) 
         # btresults_store.reset_index(drop=True)
         # Get todays date
-        today_dt = datetime.now()
-        today = today_dt.strftime("%Y-%m-%d")
-        time_now = today_dt.strftime("_%H-%M")
-        results_name = today + time_now +  '_backtest_results.csv' #
-        if mac == 1:
-            btresults.to_csv("/Users/briansheehan/Documents/mac_quant/%s"% results_name, index=False)
+        # today_dt = datetime.now()
+        # today = today_dt.strftime("%Y-%m-%d")
+        # time_now = today_dt.strftime("_%H-%M")
+        # results_name = today + time_now +  '_backtest_results.csv' #
+        # if mac == 1:
+        #     btresults.to_csv("/Users/briansheehan/Documents/mac_quant/%s"% results_name, index=False)
             
-        if mac == 0:
-            btresults.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% results_name, index=False)
+        # if mac == 0:
+        #     btresults.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% results_name, index=False)
         return ohlc_intraday, results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2 
     
