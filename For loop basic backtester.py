@@ -12,7 +12,7 @@ start_time = time.time()
 
 
 default_parms = {
-    'mac': [0],
+    'mac': [1],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
     'start_date': ['2021-02-08'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
@@ -72,7 +72,7 @@ default_parms = {
     "trip_comm": [2],  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.08,.1,.12],  # percent percent away from open pricee/ .001 is to small dont get even
+    "close_stop": [.1],  # percent percent away from open pricee/ .001 is to small dont get even
     
     "vwap_stop_on":[0],
     "dip_below_per":[.1],
@@ -107,11 +107,11 @@ default_parms = {
     "last_close_per_locate": [.4,.5,.6],
 
     "selltime_on": [1],
-    "sell_time": ['15:30:00'],
+    "sell_time": ['15:30:00','15:40:00','15:50:00','15:59:00'],
 
     "buy_between_time_on": [1],
-    "buy_after": ["09:29:00","10:00:00","10:30:00"],
-    "buy_before": ["09:35:00","10:10:00","10:40:00"],
+    "buy_after": ["09:29:00"],
+    "buy_before": ["10:10:00"],
 
     "volume_sum_cal_on": [0],
     "vol_sum_greaterthan": [1000000],
