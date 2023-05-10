@@ -8,15 +8,15 @@ Created on Thu Mar 16 11:28:41 2023
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-import matplotlib.gridspec as gridspec
 import matplotlib.dates as mpl_dates
-import pytz
 
-from mpl_toolkits.mplot3d import Axes3D
 
-import plotly.express as px
+
 
 import matplotlib.ticker as ticker
+import pandas as pd
+import seaborn as sns
+
 
 
 
@@ -143,7 +143,7 @@ class Plots:
         
         ax.legend()
         # Set the y-axis limits to be between 250 and 10,000,000
-        ax.set_ylim(1000000, 10000000)
+        ax.set_ylim(1000000, 1000000000)
         # Format the y-axis tick labels with commas
         ax.yaxis.set_major_formatter(ticker.FuncFormatter(lambda x, pos: '{:,.0f}'.format(x)))
         
@@ -225,46 +225,75 @@ class Plots:
                 
 
 
+
+    def plot_trades_by_country(self,results_store):
+        """
+        Create a grouped bar chart showing the number of winning and losing trades for each country.
+    
+        Parameters:
+        results_store (pd.DataFrame): The DataFrame containing the trade results.
+    
+        Returns:
+        None
+        """
+    
+        # Filter results_store to include both winning and losing trades
+        winning_df = results_store[results_store['profit_win'] == 1]
+        losing_df = results_store[results_store['loss'] == 1]
+    
+        # Group the results by country and count the number of winning and losing trades for each country
+        winning_counts = winning_df.groupby('country')['profit_win'].count()
+        losing_counts = losing_df.groupby('country')['loss'].count()
+    
+        # Combine the winning and losing counts into a single dataframe
+        combined_counts = pd.concat([winning_counts, losing_counts], axis=1, keys=['Winning', 'Losing'])
+    
+        # Create a bar chart
+        sns.set(style="whitegrid")
+        ax = combined_counts.plot(kind='bar')
+        ax.set_title('Winning and Losing Trades by Country')
+        ax.set_xlabel('Country')
+        ax.set_ylabel('Number of Trades')
+        plt.show()
         
-    
-      
-    # def plot_results(self, results_store):
-    #     fig, ax = plt.subplots(figsize=(15, 10), dpi=150)
-    
-    #     # Scatter plot
-    #     profit_df = results_store[results_store['profit_win'] == 1]
-    #     loss_df = results_store[results_store['loss'] == 1]
-    #     ax.scatter(results_store.index, results_store['shares_float'], color='grey', label='No Profit/Loss')
-    #     ax.scatter(profit_df.index, profit_df['shares_float'], color='green', label='Profit')
-    #     ax.scatter(loss_df.index, loss_df['shares_float'], color='red', label='Loss')
-    
-    #     # Line plot
-    #     results_store.plot(x='date', y=['balance', 'balance_no_fee'], color=['red', 'blue'], ax=ax, linewidth=0.25)
-    
-    #     ax.set_xlabel('Date')
-    #     ax.set_ylabel('Balance')
-    #     ax.set_title('Balance vs. Date with Shares Float Highlighted')
-    #     ax.legend()
+    def plot_trades_by_day(self,results_store):
+        """
+        Create grouped bar charts showing the number of winning and losing trades by day of the week.
+
+        Parameters:
+        results_store (pd.DataFrame): The DataFrame containing the trade results.
+
+        Returns:
+        None
+        """
+
+        # Convert date column to datetime format
+        results_store['date'] = pd.to_datetime(results_store['date'])
+
+        # Filter results_store to include both winning and losing trades
+        winning_df = results_store[results_store['profit_win'] == 1]
+        losing_df = results_store[results_store['loss'] == 1]
+
+        # Group the results by day of the week and count the number of winning and losing trades for each day
+        winning_counts = winning_df.groupby(winning_df['date'].dt.day_name())['profit_win'].count()
+        losing_counts = losing_df.groupby(losing_df['date'].dt.day_name())['loss'].count()
+
+        # Combine the winning and losing counts into a single DataFrame
+        counts_df = pd.concat([winning_counts, losing_counts], axis=1)
+        counts_df.columns = ['Winning Trades', 'Losing Trades']
+
+        # Sort the days of the week in the order Monday to Sunday
+        days_of_week = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        counts_df.index = pd.Categorical(counts_df.index, categories=days_of_week, ordered=True)
+        counts_df.sort_index(inplace=True)
+
+        # Create a bar chart for trades by day of the week
+        sns.set(style="whitegrid")
+        ax = counts_df.plot(kind='bar', rot=0)
+        ax.set_title('Trades by Day of Week')
+        ax.set_xlabel('Day of Week')
+        ax.set_ylabel('Number of Trades')
+        plt.show()
+
         
-    #     return plt.show()
-    #     import matplotlib.pyplot as plt
-
-# # Filter the DataFrame by profit_win and loss
-# profit_df = results_store[results_store['profit_win'] == 1]
-# loss_df = results_store[results_store['loss'] == 1]
-
-# # Create the scatter plot
-# fig, ax = plt.subplots(figsize=(10, 8))
-
-# ax.scatter(results_store.index, results_store['shares_float'], color='grey', label='No Profit/Loss')
-# ax.scatter(profit_df.index, profit_df['shares_float'], color='green', label='Profit')
-# ax.scatter(loss_df.index, loss_df['shares_float'], color='red', label='Loss')
-
-# ax.set_xlabel('Index')
-# ax.set_ylabel('Shares Float')
-# ax.set_title('Shares Float vs. Index with Profit/Loss Highlighted')
-# ax.legend()
-
-# plt.show()
-# 
-
+   

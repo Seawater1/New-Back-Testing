@@ -29,7 +29,7 @@ default_parms = {
     'Change_per': [999999],
     
     # Insample out of sample settings
-    "insample_per_on": [1],
+    "insample_per_on": [0],
     "split_per": [0.6],
     "return_start": [1],  # True
     # Random insample out of sample testing
@@ -104,10 +104,10 @@ default_parms = {
 
     "buylocatecondition_on": [0],
     "buy_locate_time": ["08:30:00"],
-    "last_close_per_locate": [.4,.5,.6],
+    "last_close_per_locate": [.5,],
 
     "selltime_on": [1],
-    "sell_time": ['15:30:00','15:40:00','15:50:00','15:59:00'],
+    "sell_time": ['15:59:00'],
 
     "buy_between_time_on": [1],
     "buy_after": ["09:29:00"],

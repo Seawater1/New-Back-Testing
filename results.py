@@ -153,6 +153,8 @@ class Results:
             
             my_plt.plot_results(self,results_store)
             my_plt.scatter_polts(self,results_store)
+            my_plt.plot_trades_by_country(self,results_store)
+            my_plt.plot_trades_by_day(self,results_store)
             #####################################################################################
 
             
@@ -181,17 +183,17 @@ class Results:
         # main_df = pd.read_csv(self.file_path , parse_dates=[1], dayfirst=True,index_col=0)# Puts year first
 
         # results_store.rename(columns = {'date' : 'Date', 'ticker' : 'Ticker'}, inplace = True)
-        # #Get todays date
+        #Get todays date
         # today_dt = datetime.now()
         # today = today_dt.strftime("%Y-%m-%d")
         # time_now = today_dt.strftime("_%H-%M")
 
         # joined = pd.merge(results_store, main_df, on=['Date', 'Ticker'], how='left')
         # winner_name = today + time_now +  '_winner_losers.csv' #
-        # if mac == 1:
-        #     joined.to_csv("/Users/briansheehan/Documents/mac_quant/Backtesting/winners.csv", index=False)
+        if mac == 1:
+            results_store.to_csv("/Users/briansheehan/Documents/mac_quant/Backtesting/result_store.csv", index=False)
         # if mac == 0:
-        #     joined.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% winner_name, index=False)
+        #    results_store.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% winner_name, index=False)
 
         # mac = load_parms['mac']
         # if mac == 0:
