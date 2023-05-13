@@ -72,7 +72,7 @@ default_parms = {
     "trip_comm": [2],  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.1],  # percent percent away from open pricee/ .001 is to small dont get even
+    "close_stop": [.15],  # percent percent away from open pricee/ .001 is to small dont get even
     
     "vwap_stop_on":[0],
     "dip_below_per":[.1],
