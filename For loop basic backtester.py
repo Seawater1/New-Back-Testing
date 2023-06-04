@@ -12,11 +12,11 @@ start_time = time.time()
 
 
 default_parms = {
-    'mac': [1],
+    'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2021-02-08'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
-    'end_date': ['2023-05-03'],
+    'start_date': ['2023-05-22'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
+    'end_date': ['2023-06-03'],
     
     # Scanner Settings 
     'volume_min': [-999999],
@@ -40,7 +40,7 @@ default_parms = {
     # System settings
     "longshort": ["short"],  # 'long' or 'short'
     # Plots
-    "plot": [0],  # 1 to plot on
+    "plot": [1],  # 1 to plot on
     "plot_trades_only": [1],
     "save_winners_df": [0],
     # Starting balance
