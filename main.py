@@ -3,6 +3,8 @@
 """
 Created on Tue Mar 14 06:27:52 2023
 
+get signal at 9:29 and exicute at 9:30
+
 @author: briansheehan
 """
 import time
@@ -112,6 +114,11 @@ class Backtester():
         vol_sum_greaterthan = active_value["vol_sum_greaterthan"]
         pm_volume_sum_cal_on = active_value["pm_volume_sum_cal_on"]
         pm_volume_sum_greaterthat = active_value["pm_volume_sum_greaterthat"]
+        
+        pm_float_rotations_on = active_value["pm_float_rotations_on"]
+        max_pm_float_rotations = active_value["max_pm_float_rotations"]
+        
+        
         pm_gap_on = active_value["pm_gap_on"]
         pmg_greater = active_value["pmg_greater"]
         per_change_first_tick_on = active_value["per_change_first_tick_on"]
@@ -159,6 +166,8 @@ class Backtester():
             print('volume_sum_cal:', vol_sum_greaterthan)
         if pm_volume_sum_cal_on == 1:
             print('pm_volume_sum_cal:', pm_volume_sum_greaterthat)
+        if pm_float_rotations_on == 1:
+            print('max_pm_float_rotations:', max_pm_float_rotations)
         if pm_gap_on == 1:
             print('pm_gap:', pmg_greater)
         if per_change_first_tick_on == 1:
@@ -253,6 +262,8 @@ class Backtester():
                     df = indc.volume_sum_cal(df, vol_sum_greaterthan)
                 if pm_volume_sum_cal_on == 1:
                     df = indc.pm_volume_sum_cal(df, date, pm_volume_sum_greaterthat)
+                if pm_float_rotations_on == 1:
+                    df = indc.pm_float_rotations(df, date, max_pm_float_rotations)
                 if pm_gap_on == 1:
                     df = indc.pm_gap(df,date, last_close, pmg_greater) 
                 if per_change_first_tick_on == 1:
@@ -356,6 +367,12 @@ class Backtester():
                         is_pm_volume_sum_greater = ohlc_intraday[date, ticker]["pm_vol_sum_greater"][i]
                     else:
                         is_pm_volume_sum_greater = True
+                        
+                    if pm_float_rotations_on == 1:
+                        is_pm_max_float_rotations = ohlc_intraday[date, ticker]["max_pm_float_rotations"][i]
+                    else:
+                        is_pm_max_float_rotations = True
+                        
                     if pm_gap_on == 1:
                         is_pm_gap_greater = ohlc_intraday[date, ticker]["pm_gap_greater"][i] 
                     else:
@@ -448,6 +465,7 @@ class Backtester():
                         is_buy_between_time == True and
                         is_volume_sum_greater == True and
                         is_pm_volume_sum_greater == True and
+                        is_pm_max_float_rotations == True and 
                         is_pm_gap_greater == True and
                         is_first_tick_greater == True and
                         is_open_greater == True and
@@ -497,6 +515,7 @@ class Backtester():
                         is_buy_between_time == True and
                         is_volume_sum_greater == True and
                         is_pm_volume_sum_greater == True and
+                        is_pm_max_float_rotations == True and 
                         is_pm_gap_greater == True and
                         is_first_tick_greater == True and
                         is_open_greater == True and
@@ -519,7 +538,7 @@ class Backtester():
                         system_1_not_trade = False
                         trade_count += 1
                         direction = 'short'
-                        open_price = ohlc_intraday[date,ticker]["open"][i+1]# ["low"][i+1] +1 is the next candle. Need to work in slipage here  
+                        open_price = ohlc_intraday[date,ticker]["open"][i+1]# ["low"][i+1] +1 is the next candle.  
                         open_price_slippage = sc.calculate_open_slippage(direction, open_price, open_slippage)
                         ohlc_intraday[date,ticker]["trade_sig"][i+1] = open_price_slippage# ["trade_sig"][i+1] 
                         # print('open_price',open_price)
@@ -755,8 +774,8 @@ class Backtester():
                                     ticker_return = open_price_slippage - close_price_slippage
                                     date_stats[date][ticker] = ticker_return
                                     outcome = 'trailing_stop_hit'
-                                    print('trailing_stop_hit',ticker, ' Price',close_price)
-                                    print('Ticker return', ticker_return)
+                                    # print('trailing_stop_hit',ticker, ' Price',close_price)
+                                    # print('Ticker return', ticker_return)
                             
                         ###############
                         # Stop Loss ###
@@ -767,7 +786,7 @@ class Backtester():
                                     system_1_not_trade = True
                                     close_price = stop_price
                                     close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
-                                    ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage 
+                                    ohlc_intraday[date,ticker]["cover_sig"][[i+1]] = close_price_slippage 
                                     ticker_return = open_price_slippage - close_price_slippage 
                                     date_stats[date][ticker] = ticker_return
                                     outcome = 'stopped_out'
@@ -788,8 +807,8 @@ class Backtester():
                                     ticker_return = open_price_slippage - close_price_slippage 
                                     date_stats[date][ticker] = ticker_return
                                     outcome = 'vwap_stop'
-                                    print('vwap_stop',ticker, ' Price',stop_price)
-                                    print('Ticker return', ticker_return)
+                                    # print('vwap_stop',ticker, ' Price',stop_price)
+                                    # print('Ticker return', ticker_return)
                         ###############
                         # Time stop
                         ###############  
@@ -962,10 +981,11 @@ class Backtester():
                 country = df['country'].iloc[-1]
                 number_of_employees = df['number_of_employees'].iloc[-1]
                 pm_volume = df['pm_volume'].iloc[-1]
+                pm_float_rotations = df['pm_float_rotations'].iloc[-1]
                 
                 #print('Adding this ticker to Results df        ',date,ticker)
-                results = pd.DataFrame([[date, ticker ,  open_price_slippage, close_price_slippage,   stop_price,  ticker_return,  outcome,  max_shares,  locates_acq, locate_cost_ps, locate_cost_ps_2, open_price_slippage_2, close_price_slippage_2,   stop_price_2,  ticker_return_2,  outcome_2,  trade_count, trade_count_2,  max_shares_2,  locates_acq_2, shares_float, market_cap, country, number_of_employees, pm_volume]],
-                               columns=['date','ticker',  'open_price',       'close_price',          'stop_price','ticker_return','outcome','max_shares','locates_acq','locate_cost_ps', 'locate_cost_ps_2','open_price_2',        'close_price_2',          'stop_price_2','ticker_return_2','outcome_2','trade_count','trade_count_2','max_shares_2','locates_acq_2','shares_float','market_cap','country', 'number_of_employees','pm_volume'] )  
+                results = pd.DataFrame([[date, ticker ,  open_price_slippage, close_price_slippage,   stop_price,  ticker_return,  outcome,  max_shares,  locates_acq, locate_cost_ps, locate_cost_ps_2, open_price_slippage_2, close_price_slippage_2,   stop_price_2,  ticker_return_2,  outcome_2,  trade_count, trade_count_2,  max_shares_2,  locates_acq_2, shares_float, market_cap, country, number_of_employees, pm_volume, pm_float_rotations]],
+                               columns=['date','ticker',  'open_price',       'close_price',          'stop_price','ticker_return','outcome','max_shares','locates_acq','locate_cost_ps', 'locate_cost_ps_2','open_price_2',        'close_price_2',          'stop_price_2','ticker_return_2','outcome_2','trade_count','trade_count_2','max_shares_2','locates_acq_2','shares_float','market_cap','country', 'number_of_employees','pm_volume','pm_float_rotations'] )  
                 #Adds new line to dic each loop 
                 # results_store = results_store.append(results,ignore_index=True) 
                 results_store = pd.concat([results_store, results], ignore_index=True)
@@ -1025,14 +1045,14 @@ class Backtester():
         # btresults_store = btresults_store.append(btresults,ignore_index=True) 
         # btresults_store.reset_index(drop=True)
         # Get todays date
-        # today_dt = datetime.now()
-        # today = today_dt.strftime("%Y-%m-%d")
-        # time_now = today_dt.strftime("_%H-%M")
-        # results_name = today + time_now +  '_backtest_results.csv' #
+        today_dt = datetime.now()
+        today = today_dt.strftime("%Y-%m-%d")
+        time_now = today_dt.strftime("_%H-%M")
+        results_name = today + time_now +  '_backtest_results.csv' #
         # if mac == 1:
         #     btresults.to_csv("/Users/briansheehan/Documents/mac_quant/%s"% results_name, index=False)
             
         # if mac == 0:
-        #     btresults.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% results_name, index=False)
+        # results_store.to_csv(r"C:/Users/brian/OneDrive/Documents/Quant/2_System_Trading/Backtesting/Backtest_results\%s"% results_name, index=False)
         return ohlc_intraday, results_store, num_of_trades, total_win, win_per, gross_profit,total_locate_fee,total_comm,finish_bal ,date_stats, date_stats_2 
     

@@ -295,5 +295,32 @@ class Plots:
         ax.set_ylabel('Number of Trades')
         plt.show()
 
+    
+    
+    def plot_pm_float_rotations(self, results_store):
+        # Convert date column to datetime format
+        results_store['date'] = pd.to_datetime(results_store['date'])
+    
+        # Filter results_store to include both winning and losing trades
+        winning_df = results_store[results_store['profit_win'] == 1]
+        losing_df = results_store[results_store['loss'] == 1]
+        # Set figure size
+        plt.figure(figsize=(16, 10))  # Adjust the width and height as desired
+
+        # Plotting the 'pm_float_rotations' column as a scatter plot
+        plt.scatter(winning_df['date'], winning_df['pm_float_rotations'], color='g', label='Winning Trades')
+        plt.scatter(losing_df['date'], losing_df['pm_float_rotations'], color='r', label='Losing Trades')
+    
+        # Add labels and title to the plot
+        plt.xlabel('Date')
+        plt.ylabel('pm_float_rotations')
+        plt.title('pm_float_rotations for Winning and Losing Trades')
+    
+        # Show a legend
+        plt.legend()
+    
+        # Show the plot
+        plt.show()
+
         
    

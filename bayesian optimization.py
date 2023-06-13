@@ -8,15 +8,15 @@ Created on Sat Mar 18 07:08:52 2023
 
 
 
-from ML_backtester import ml_backtester
+# from ML_backtester import ml_backtester
 
-from skopt import gp_minimize
-from skopt.space import Real, Integer
-from skopt.utils import use_named_args
-import telegram_send
+# from skopt import gp_minimize
+# from skopt.space import Real, Integer
+# from skopt.utils import use_named_args
+# import telegram_send
 
-from skopt.utils import use_named_args
-import time
+# from skopt.utils import use_named_args
+# import time
 
 # Start the timer
 start_time = time.time()

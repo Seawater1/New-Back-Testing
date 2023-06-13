@@ -15,8 +15,8 @@ default_parms = {
     'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2023-05-22'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
-    'end_date': ['2023-06-03'],
+    'start_date': ['2021-10-01'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
+    'end_date': ['2023-06-07'],
     
     # Scanner Settings 
     'volume_min': [-999999],
@@ -40,7 +40,7 @@ default_parms = {
     # System settings
     "longshort": ["short"],  # 'long' or 'short'
     # Plots
-    "plot": [1],  # 1 to plot on
+    "plot": [0],  # 1 to plot on
     "plot_trades_only": [1],
     "save_winners_df": [0],
     # Starting balance
@@ -66,7 +66,7 @@ default_parms = {
     "shift": [3],
     # Acquisition filter
     "drop_acquistions_on": [1 ],
-    "aq_value": [1.05],
+    "aq_value": [0.02],
     # Testing Settings
     # Commissions
     "trip_comm": [2],  # round trip commission
@@ -117,6 +117,10 @@ default_parms = {
     "vol_sum_greaterthan": [1000000],
     "pm_volume_sum_cal_on": [0],
     "pm_volume_sum_greaterthat": [1000000],
+    
+    "pm_float_rotations_on": [1],
+    "max_pm_float_rotations": [99999999999999999999],
+   
     "pm_gap_on": [0],
     "pmg_greater": [0.4],
     "per_change_first_tick_on": [0],

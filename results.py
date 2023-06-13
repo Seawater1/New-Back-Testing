@@ -155,6 +155,7 @@ class Results:
             my_plt.scatter_polts(self,results_store)
             my_plt.plot_trades_by_country(self,results_store)
             my_plt.plot_trades_by_day(self,results_store)
+            my_plt.plot_pm_float_rotations(self,results_store)
             #####################################################################################
 
             

@@ -7,6 +7,7 @@ Created on Wed Mar 15 19:28:33 2023
 """
 import pandas as pd
 import numpy as np
+import math
 
 
 class Indicators:
@@ -237,6 +238,38 @@ class Indicators:
         df['pm_vol_sum_greater'] = vol
         return df   
     
+    def pm_float_rotations(self, df, date, max_pm_float_rotations):
+        """date is Timestamp 2022-01-03 00:00:00
+        the index is the timestampe and it filtered by date already
+        """
+             
+        
+        str_date = date.strftime("%Y-%m-%d")#convert datetime to string
+        Date0400 = str_date + ' 04:00:00'
+        Date0930 = str_date + ' 09:29:00'
+        pre_market_df = df.loc[Date0400:Date0930]
+        pre_market_df['volume_sum'] = pre_market_df['volume'].cumsum()
+      
+        # df['max_float_rotations'] = df.apply(lambda row: (row['volume_sum'] / row['shares_float']).astype(int), axis=1)
+        # df.reset_index(drop=True, inplace=True)
+       
+
+
+        df['pm_float_rotations'] = pre_market_df.apply(lambda row: int(round(row['volume_sum'] / row['shares_float'])), axis=1)
+     
+        df = df.fillna(method='ffill')#fill nan with last value#
+      
+        df['max_pm_float_rotations'] = df['pm_float_rotations'] <= max_pm_float_rotations
+        
+        
+        
+        
+
+
+
+        return df
+        
+    
     def day_greater_than_pm(self, df,date):
         print('dfsd')
         str_date = date.strftime("%Y-%m-%d")#convert datetime to string
@@ -304,19 +337,42 @@ class Indicators:
         return df
         
     
-    def drop_acquistions(self, df,date,aq_value):    
+    # def drop_acquistions(self, df, date, aq_value):    
+    #     ' Drop Acquistions '
+    #     str_date = date.strftime("%Y-%m-%d")#convert datetime to string
+    #     Date0400 = str_date + ' 08:00:00'
+    #     Date0930 = str_date + ' 09:29:00'
+    #     df1 = df.loc[Date0400:Date0930]#get pre-market date only
+  
+    #     df['acquistions'] = ((df1['high'] / df1['low']))
+ 
+    #     df['acq_test'] = df['acquistions'].gt(aq_value).cumsum().gt(0)
+    #     # Fill remaining values with last value
+    #     df['acq_test'] = df['acq_test'].fillna(method='ffill')
+        
+    #     return df
+
+    def drop_acquistions(self, df, date, aq_value):
         ' Drop Acquistions '
         str_date = date.strftime("%Y-%m-%d")#convert datetime to string
         Date0400 = str_date + ' 08:00:00'
         Date0930 = str_date + ' 09:29:00'
-        df1 = df.loc[Date0400:Date0930]#get pre-market date only
-  
-        df['acquistions'] = ((df1['high'] / df1['low']))
- 
-        df['acq_test'] = df['acquistions'].gt(aq_value).cumsum().gt(0)
-        # Fill remaining values with last value
-        df['acq_test'] = df['acq_test'].fillna(method='ffill')
-        
+        pre_market_df = df.loc[Date0400:Date0930]#get pre-market date only
+        # Get the first, middle, and last third of the dataframe based on the 'close' column
+        n = len(pre_market_df)
+        third = int(n/3)
+        first_third = pre_market_df[:third]
+        middle_third = pre_market_df[third:2*third]
+        last_third = pre_market_df[2*third:]
+    
+        # Check if there is a % difference between any two values in the 'close' column for each subset
+        diff1 = first_third['close'].pct_change().abs()
+        diff2 = middle_third['close'].pct_change().abs()
+        diff3 = last_third['close'].pct_change().abs()
+        if (diff1 > aq_value).any() or (diff2 > aq_value).any() or (diff3 > aq_value).any():
+            df['acq_test'] = True
+        else:
+            df['acq_test'] = False
         return df
     
     #Super trend less than close

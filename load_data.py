@@ -7,14 +7,14 @@ Created on Thu Mar 16 14:15:34 2023
 """
 
 import pandas as pd
-from indicators import Indicators
-import pytz
-import time
+# from indicators import Indicators
+# import pytz
+# import time
 # from polygon  import PolygonData
 # create an instance of the Polygon class
 # polygon = PolygonData()
 
-from plots import Plots
+# from plots import Plots
 
 
 ############################################################################################################
@@ -69,20 +69,8 @@ class Load_date():
                 print('win: main file')
             
         # Load file of tickers and date
-        # df = pd.read_csv(file_path, index_col='Date')
-        df = pd.read_csv(file_path, parse_dates=['Date'], infer_datetime_format=True)
-        # df = pd.read_csv(file_path, parse_dates=['Date'], date_parser=lambda x: pd.to_datetime(x, format='%Y/%m/%d')) #%d/%m/%y
-        # df = df.drop('Unnamed: 0', axis=1)
-
-        # df = df.reset_index()
-        # print(df)
-        # for index, row in df.iterrows():
-        #     print(row['Date'])
-            # time.sleep(.1)
-
-
-        
-        df['Date'] = pd.to_datetime(df.Date)#Change time object to datetime
+        df = pd.read_csv(file_path, index_col=0)
+        df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d') #format='%d/%m/%y'
         print('Ticker Database no filter',df)
         
         #Filter by dates
