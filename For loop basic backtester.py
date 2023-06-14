@@ -12,7 +12,7 @@ start_time = time.time()
 
 
 default_parms = {
-    'mac': [0],
+    'mac': [1],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
     'start_date': ['2021-10-01'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
@@ -96,7 +96,7 @@ default_parms = {
     "market_cap_max": [9999999999999999],
     # for both strategys
     "price_between_on": [1],
-    "min_between_price": [2.5],
+    "min_between_price": [.5],#2.5
     "max_between_price": [20],
 
     "buytime_on": [0],
@@ -119,7 +119,7 @@ default_parms = {
     "pm_volume_sum_greaterthat": [1000000],
     
     "pm_float_rotations_on": [1],
-    "max_pm_float_rotations": [99999999999999999999],
+    "max_pm_float_rotations": [0,1,2,3,4,5,6,7,8],
    
     "pm_gap_on": [0],
     "pmg_greater": [0.4],

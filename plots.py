@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import matplotlib.dates as mpl_dates
 
-
+import numpy as np
 
 
 import matplotlib.ticker as ticker
@@ -19,11 +19,19 @@ import seaborn as sns
 
 
 
-
 plt.style.use('ggplot')#Data Viz
 class Plots:
     def __init__(self):
         pass
+    
+    def plot_all(self, longshort, date, ticker, ohlc_intraday, outcome, ticker_return, outcome_2, ticker_return_2, gains, gains_2, new_new_gain, results_store):
+        self.plt_chart(longshort, date, ticker, ohlc_intraday, outcome, ticker_return, outcome_2, ticker_return_2)
+        self.plot_fips(gains, gains_2, new_new_gain)
+        self.plot_results(results_store)
+        self.scatter_plots(results_store)
+        self.plot_trades_by_country(results_store)
+        self.plot_trades_by_day(results_store)
+        self.plot_pm_float_rotations(results_store)
 
     def plt_chart(self,longshort,date, ticker, ohlc_intraday,outcome,ticker_return,outcome_2,ticker_return_2):
         
@@ -100,7 +108,7 @@ class Plots:
         
         return plt.show()
     
-    def scatter_polts(self, results_store):
+    def scatter_polts(self,results_store):
         # Filter the DataFrame by profit_win and loss
         profit_df = results_store[results_store['profit_win'] == 1]
         loss_df = results_store[results_store['loss'] == 1]
@@ -296,31 +304,98 @@ class Plots:
         plt.show()
 
     
+    def plot_pm_float_rotations( self, data):
+        # Grouping ranges for pm_float_rotations
+        ranges = [0, 1, 2, 3, 6, 10, 20, 40, float('inf')]
+        labels = ['0', '1', '2', '3-6', '6-10', '10-20', '20-40', '+40']
     
-    def plot_pm_float_rotations(self, results_store):
-        # Convert date column to datetime format
-        results_store['date'] = pd.to_datetime(results_store['date'])
+        # Grouping and aggregating data
+        data['pm_float_rotations_group'] = pd.cut(data['pm_float_rotations'], ranges, labels=labels)
+        grouped_data = data.groupby('pm_float_rotations_group').sum()[['profit_win', 'loss']]
     
-        # Filter results_store to include both winning and losing trades
-        winning_df = results_store[results_store['profit_win'] == 1]
-        losing_df = results_store[results_store['loss'] == 1]
-        # Set figure size
-        plt.figure(figsize=(16, 10))  # Adjust the width and height as desired
-
-        # Plotting the 'pm_float_rotations' column as a scatter plot
-        plt.scatter(winning_df['date'], winning_df['pm_float_rotations'], color='g', label='Winning Trades')
-        plt.scatter(losing_df['date'], losing_df['pm_float_rotations'], color='r', label='Losing Trades')
+        # Calculate winning percentage
+        grouped_data['win_percentage'] = grouped_data['profit_win'] / (
+                    grouped_data['profit_win'] + grouped_data['loss']) * 100
     
-        # Add labels and title to the plot
-        plt.xlabel('Date')
-        plt.ylabel('pm_float_rotations')
-        plt.title('pm_float_rotations for Winning and Losing Trades')
+        # Set a larger figure size
+        plt.figure(figsize=(10, 6))
     
-        # Show a legend
+        # Plotting the bar graph
+        bar_width = 0.4  # Adjust the bar width as needed
+        index = np.arange(len(grouped_data))
+    
+        plt.bar(index, grouped_data['profit_win'], bar_width, label='profit_win', align='center')
+        plt.bar(index + bar_width, grouped_data['loss'], bar_width, label='loss', align='center')
+    
+        plt.xlabel('pm_float_rotations_group')
+        plt.ylabel('Number Of Trades')
+        plt.title('Profit and Loss by pm_float_rotations Group')
+        plt.xticks(index + bar_width / 2, grouped_data.index)
+    
+        # Adding winning percentage above each group with adjusted positioning and font size
+        for i, win_percentage in enumerate(grouped_data['win_percentage']):
+            bar_x = index[i] + bar_width / 2
+            bar_y = max(grouped_data['profit_win'][i], grouped_data['loss'][i]) + 10  # Adjust the positioning as needed
+            plt.text(bar_x, bar_y, f'Win %: {win_percentage:.2f}%', ha='center', fontsize=8)
+    
+        # Plotting a line for the winning percentages
+        plt.plot(index + bar_width / 2, grouped_data['win_percentage'], marker='o', color='r', linestyle='--')
+    
         plt.legend()
-    
-        # Show the plot
+        plt.tight_layout()
         plt.show()
 
+    def plot_open_price_Profit(self,  data):
+        # Grouping ranges for pm_float_rotations
+        ranges = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, float('inf')]
+        labels = ['0', '1', '2', '3', '4', '5', '6','7','8', '9', '10', '11', '12', '13', '14','15', '16', '17', '18', '19', '20']
+    
+        # Grouping and aggregating data
+        data['open_price_group'] = pd.cut(data['open_price'], ranges, labels=labels)
+        grouped_data = data.groupby('open_price_group').sum()[['profit_win', 'loss']]
+    
+        # Calculate winning percentage
+        grouped_data['win_percentage'] = grouped_data['profit_win'] / (
+                    grouped_data['profit_win'] + grouped_data['loss']) * 100
+    
+        # Set a larger figure size
+        plt.figure(figsize=(10, 6))
+    
+        # Plotting the bar graph
+        bar_width = 0.4  # Adjust the bar width as needed
+        index = np.arange(len(grouped_data))
+    
+        plt.bar(index, grouped_data['profit_win'], bar_width, label='profit_win', align='center')
+        plt.bar(index + bar_width, grouped_data['loss'], bar_width, label='loss', align='center')
+    
+        plt.xlabel('open_price_group')
+        plt.ylabel('Number Of Trades')
+        plt.title('Open price to Profit/Loss')
+        plt.xticks(index + bar_width / 2, grouped_data.index)
+    
+        # Adding winning percentage above each group with adjusted positioning and font size
+        for i, win_percentage in enumerate(grouped_data['win_percentage']):
+            bar_x = index[i] + bar_width / 2
+            bar_y = max(grouped_data['profit_win'][i], grouped_data['loss'][i]) + 10  # Adjust the positioning as needed
+            plt.text(bar_x, bar_y, f'Win %: {win_percentage:.2f}%', ha='center', fontsize=8)
+    
+        # Plotting a line for the winning percentages
+        plt.plot(index + bar_width / 2, grouped_data['win_percentage'], marker='o', color='r', linestyle='--')
+    
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
         
+            
+    
+
+# csv_path = "/Users/briansheehan/Documents/mac_quant/Backtesting/result_store.csv"
+# results_store = pd.read_csv(csv_path)
+
+# # Display the DataFrame
+# print(results_store)
+
+# plot_open_price_Profit(results_store)
+
+
    
