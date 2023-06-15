@@ -20,7 +20,7 @@ import seaborn as sns
 import matplotlib.dates as mdates
 import matplotlib.ticker as mpl_ticker
 
-
+import mplfinance as mpf
 
 plt.style.use('ggplot')#Data Viz
 class Plots:
@@ -41,7 +41,6 @@ class Plots:
         df = ohlc_intraday[date,ticker]
         filtered_df = df[df.index.date == date.date()]
         
-        print(filtered_df)
         
         # fig, ax = plt.subplots(nrows=2, sharex=True, figsize=(15,8))
         fig, ax = plt.subplots(nrows=2, sharex=True, figsize=(15,8), gridspec_kw={'height_ratios': [0.7, 0.3]})
@@ -86,6 +85,54 @@ class Plots:
         
         return plt.show()
     
+
+    # def plt_chart(self, longshort, date, ticker, ohlc_intraday, outcome, ticker_return, outcome_2, ticker_return_2):
+    #     # Filter by trade day
+    #     df = ohlc_intraday[date, ticker]
+    #     filtered_df = df[df.index.date == date.date()]
+        
+    #     fig, ax = plt.subplots(nrows=2, sharex=True, figsize=(15, 8), gridspec_kw={'height_ratios': [0.7, 0.3]})
+        
+    #     # Convert the datetime index to integer format required by mplfinance
+    #     filtered_df['index_int'] = mpl_dates.date2num(filtered_df.index.to_pydatetime())
+        
+    #     # Create the candlestick chart
+    #     mpf.plot(filtered_df, type='candle', ax=ax[0])
+        
+    #     ax[1].bar(filtered_df.index, filtered_df.volume, width=1/(5*len(filtered_df.index)))
+        
+    #     # Add shaded background before 14:30
+    #     start_time = date.replace(hour=4, minute=0, second=0, microsecond=0)
+    #     end_time = date.replace(hour=9, minute=30, second=0, microsecond=0)
+    #     ax[0].axvspan(mpl_dates.date2num(start_time), mpl_dates.date2num(end_time), alpha=0.3, color='gray')
+        
+    #     if longshort == 'long':
+    #         ax[0].plot(filtered_df['cover_sig'], marker='^', color='r', markersize=12, linewidth=0, label='Sell SIGNAL')
+    #         ax[0].plot(filtered_df['trade_sig'], marker='v', color='green', markersize=12, linewidth=0, label='BUY SIGNAL')
+    #     if longshort == 'short':
+    #         ax[0].plot(filtered_df['cover_sig'], marker='^', color='green', markersize=12, linewidth=0, label='COVER SIGNAL')
+    #         ax[0].plot(filtered_df['trade_sig'], marker='v', color='r', markersize=12, linewidth=0, label='SHORT SIGNAL')
+    #         ax[0].plot(filtered_df['trade_sig_2'], marker='v', color='b', markersize=12, linewidth=0, label='SHORT SIGNAL 2')
+    #         ax[0].plot(filtered_df['cover_sig_2'], marker='^', color='y', markersize=12, linewidth=0, label='COVER SIGNAL')
+        
+    #     strdate = date.strftime("%Y-%m-%d")
+    #     t = ticker + ' ' + strdate + ' ' + outcome + ' Returns ' + str(ticker_return) + ' ' + outcome_2 + ' Returns_2 ' + str(ticker_return_2)
+        
+    #     plt.title(t)
+    #     ax[0].legend(loc='upper left')
+        
+    #     xfmt = mpl.dates.DateFormatter('%H:%M')
+    #     ax[1].xaxis.set_major_locator(mpl.dates.HourLocator(interval=3))
+    #     ax[1].xaxis.set_major_formatter(xfmt)
+    #     ax[1].xaxis.set_minor_locator(mpl.dates.HourLocator(interval=1))
+    #     ax[1].xaxis.set_minor_formatter(xfmt)
+    #     ax[1].get_xaxis().set_tick_params(which='major', pad=25)
+        
+    #     fig.autofmt_xdate()
+        
+    #     return plt.show()
+    
+        
     def plot_fips(self, gains, gains_2,new_new_gain):
         
         fig, ax1 = plt.subplots(figsize=(15,10), dpi=150)

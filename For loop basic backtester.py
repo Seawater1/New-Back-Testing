@@ -12,10 +12,10 @@ start_time = time.time()
 
 
 default_parms = {
-    'mac': [0],
+    'mac': [1],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2021-04-11'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
+    'start_date': ['2023-01-01'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
     'end_date': ['2023-06-15'],
     
     # Scanner Settings 
@@ -73,6 +73,15 @@ default_parms = {
     # Stop loss percent from trade price
     "close_stop_on": [1],
     "close_stop": [.15],  # percent percent away from open pricee/ .001 is to small dont get even
+    
+    "time_open_stop_on": [0],
+    "time_open_stop_per": [0], 
+    "time_open_stop_time": ["10:00:00"],#"11:00:00","12:00:00","13:00:00","14:00:00","15:00:00"],
+    
+    "time_vwap_stop_on": [1],
+    "time_vwap_stop_per": [0], 
+    "time_vwap_stop_time": ["11:00:00"],
+    
     
     "vwap_stop_on":[0],
     "dip_below_per":[.1],

@@ -72,6 +72,14 @@ class Backtester():
         close_stop_on = active_value["close_stop_on"]
         close_stop = active_value["close_stop"]
         
+        time_open_stop_on = active_value["time_open_stop_on"]
+        time_open_stop_per = active_value["time_open_stop_per"] 
+        time_open_stop_time = active_value["time_open_stop_time"]
+        
+        time_vwap_stop_on = active_value["time_vwap_stop_on"]
+        time_vwap_stop_per = active_value["time_vwap_stop_per"] 
+        time_vwap_stop_time = active_value["time_vwap_stop_time"]
+        
         vwap_stop_on = active_value["vwap_stop_on"]
         dip_below_per = active_value["dip_below_per"]
         vwap_stop_per = active_value["vwap_stop_per"]
@@ -827,9 +835,58 @@ class Backtester():
                                     date_stats[date][ticker] = ticker_return
                                     outcome = 'time_stop'
                                     # print('Sell time hit',ticker, ' Price',close_price)
-                                    # print('Ticker return', ticker_return)          
+                                    # print('Ticker return', ticker_return)    
+                        ################
+                        # time open stop
+                        ############### # 
+                        if (
+                                time_open_stop_on == 1 and
+                                close_price == 0 
+                                ):
+                                timestamp_time = ohlc_intraday[date, ticker].index[i].time()
+                                given_time = datetime.strptime(time_open_stop_time, "%H:%M:%S").time()
+                                # ohlc_intraday[date,ticker]["high"][i]
                                 
-                        
+                                if (
+                                        timestamp_time > given_time and
+                                        ohlc_intraday[date, ticker]["high"][i] > open_price * (1 + time_open_stop_per )
+                                        ):
+                                    system_1_not_trade = True
+                                    close_price = ohlc_intraday[date,ticker]["high"][i]
+                                    close_price_slippage = close_price 
+                                    # close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
+                                    ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage
+                                    ticker_return = open_price_slippage - close_price_slippage
+                                    date_stats[date][ticker] = ticker_return
+                                    outcome = 'time_open_stop'
+                                    # print('Sell time_open_stop hit',ticker, ' Price',close_price)
+                                    # print('Ticker return', ticker_return) 
+                        ################
+                        # time VWAP stop
+                        ############### # 
+                        if (
+                                time_vwap_stop_on == 1 and
+                                close_price == 0 
+                                ):
+                                timestamp_time = ohlc_intraday[date, ticker].index[i].time()
+                                given_time = datetime.strptime(time_open_stop_time, "%H:%M:%S").time()
+                                
+                                
+                                if (
+                                        timestamp_time > given_time and
+                                        ohlc_intraday[date, ticker]["high"][i] > ohlc_intraday[date, ticker]["vwap"][i] * (1 + time_vwap_stop_per )
+                                        ):
+                                    system_1_not_trade = True
+                                    close_price = ohlc_intraday[date,ticker]["high"][i]
+                                    close_price_slippage = close_price 
+                                    # close_price_slippage = sc.calculate_close_slippage(direction, close_price, close_slippage)
+                                    ohlc_intraday[date,ticker]["cover_sig"][i] = close_price_slippage
+                                    ticker_return = open_price_slippage - close_price_slippage
+                                    date_stats[date][ticker] = ticker_return
+                                    outcome = 'time_vwap_stop'
+                                    print('Sell time_vwap_stop hit',ticker, ' Price',close_price)
+                                    print('Ticker return', ticker_return) 
+                                
                         
                     
                     ###################################################
