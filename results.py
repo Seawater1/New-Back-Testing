@@ -22,6 +22,9 @@ class Results:
         mac = active_value['mac']
         trip_comm = active_value["trip_comm"]
         imaginary_account = active_value["imaginary_account"]
+        pm_float_rotations_on = active_value["pm_float_rotations_on"]
+        
+        
         #dictionarys to store data
         profit_trade_dic = {}
         
@@ -155,7 +158,8 @@ class Results:
             my_plt.scatter_polts(self,results_store)
             my_plt.plot_trades_by_country(self,results_store)
             my_plt.plot_trades_by_day(self,results_store)
-            my_plt.plot_pm_float_rotations(self, results_store)
+            if pm_float_rotations_on == 1:
+                my_plt.plot_pm_float_rotations(self, results_store)
             
             my_plt.plot_open_price_Profit(self, results_store)
             

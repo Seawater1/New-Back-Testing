@@ -116,6 +116,9 @@ class Backtester():
         pm_volume_sum_greaterthat = active_value["pm_volume_sum_greaterthat"]
         
         pm_float_rotations_on = active_value["pm_float_rotations_on"]
+        
+        max_pm_float_rotations_on = active_value["max_pm_float_rotations_on"]
+        
         max_pm_float_rotations = active_value["max_pm_float_rotations"]
         
         
@@ -368,10 +371,10 @@ class Backtester():
                     else:
                         is_pm_volume_sum_greater = True
                         
-                    if pm_float_rotations_on == 1:
-                        is_pm_max_float_rotations = ohlc_intraday[date, ticker]["max_pm_float_rotations"][i]
+                    if max_pm_float_rotations_on == 1:
+                        is_max_pm_float_rotations_on = ohlc_intraday[date, ticker]["max_pm_float_rotations"][i]
                     else:
-                        is_pm_max_float_rotations = True
+                        is_max_pm_float_rotations_on = True
                         
                     if pm_gap_on == 1:
                         is_pm_gap_greater = ohlc_intraday[date, ticker]["pm_gap_greater"][i] 
@@ -465,7 +468,7 @@ class Backtester():
                         is_buy_between_time == True and
                         is_volume_sum_greater == True and
                         is_pm_volume_sum_greater == True and
-                        is_pm_max_float_rotations == True and 
+                        is_max_pm_float_rotations_on == True and 
                         is_pm_gap_greater == True and
                         is_first_tick_greater == True and
                         is_open_greater == True and
@@ -515,7 +518,7 @@ class Backtester():
                         is_buy_between_time == True and
                         is_volume_sum_greater == True and
                         is_pm_volume_sum_greater == True and
-                        is_pm_max_float_rotations == True and 
+                        is_max_pm_float_rotations_on == True and 
                         is_pm_gap_greater == True and
                         is_first_tick_greater == True and
                         is_open_greater == True and
@@ -981,7 +984,10 @@ class Backtester():
                 country = df['country'].iloc[-1]
                 number_of_employees = df['number_of_employees'].iloc[-1]
                 pm_volume = df['pm_volume'].iloc[-1]
-                pm_float_rotations = df['pm_float_rotations'].iloc[-1]
+                if pm_float_rotations_on == 1:
+                    pm_float_rotations = df['pm_float_rotations'].iloc[-1]
+                else:
+                    pm_float_rotations = None
                 
                 #print('Adding this ticker to Results df        ',date,ticker)
                 results = pd.DataFrame([[date, ticker ,  open_price_slippage, close_price_slippage,   stop_price,  ticker_return,  outcome,  max_shares,  locates_acq, locate_cost_ps, locate_cost_ps_2, open_price_slippage_2, close_price_slippage_2,   stop_price_2,  ticker_return_2,  outcome_2,  trade_count, trade_count_2,  max_shares_2,  locates_acq_2, shares_float, market_cap, country, number_of_employees, pm_volume, pm_float_rotations]],
