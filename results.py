@@ -162,6 +162,7 @@ class Results:
                 my_plt.plot_pm_float_rotations(self, results_store)
             
             my_plt.plot_open_price_Profit(self, results_store)
+            my_plt.plot_by_marketcap(self, results_store)
             
             #####################################################################################
 

@@ -86,51 +86,7 @@ class Plots:
         return plt.show()
     
 
-    # def plt_chart(self, longshort, date, ticker, ohlc_intraday, outcome, ticker_return, outcome_2, ticker_return_2):
-    #     # Filter by trade day
-    #     df = ohlc_intraday[date, ticker]
-    #     filtered_df = df[df.index.date == date.date()]
-        
-    #     fig, ax = plt.subplots(nrows=2, sharex=True, figsize=(15, 8), gridspec_kw={'height_ratios': [0.7, 0.3]})
-        
-    #     # Convert the datetime index to integer format required by mplfinance
-    #     filtered_df['index_int'] = mpl_dates.date2num(filtered_df.index.to_pydatetime())
-        
-    #     # Create the candlestick chart
-    #     mpf.plot(filtered_df, type='candle', ax=ax[0])
-        
-    #     ax[1].bar(filtered_df.index, filtered_df.volume, width=1/(5*len(filtered_df.index)))
-        
-    #     # Add shaded background before 14:30
-    #     start_time = date.replace(hour=4, minute=0, second=0, microsecond=0)
-    #     end_time = date.replace(hour=9, minute=30, second=0, microsecond=0)
-    #     ax[0].axvspan(mpl_dates.date2num(start_time), mpl_dates.date2num(end_time), alpha=0.3, color='gray')
-        
-    #     if longshort == 'long':
-    #         ax[0].plot(filtered_df['cover_sig'], marker='^', color='r', markersize=12, linewidth=0, label='Sell SIGNAL')
-    #         ax[0].plot(filtered_df['trade_sig'], marker='v', color='green', markersize=12, linewidth=0, label='BUY SIGNAL')
-    #     if longshort == 'short':
-    #         ax[0].plot(filtered_df['cover_sig'], marker='^', color='green', markersize=12, linewidth=0, label='COVER SIGNAL')
-    #         ax[0].plot(filtered_df['trade_sig'], marker='v', color='r', markersize=12, linewidth=0, label='SHORT SIGNAL')
-    #         ax[0].plot(filtered_df['trade_sig_2'], marker='v', color='b', markersize=12, linewidth=0, label='SHORT SIGNAL 2')
-    #         ax[0].plot(filtered_df['cover_sig_2'], marker='^', color='y', markersize=12, linewidth=0, label='COVER SIGNAL')
-        
-    #     strdate = date.strftime("%Y-%m-%d")
-    #     t = ticker + ' ' + strdate + ' ' + outcome + ' Returns ' + str(ticker_return) + ' ' + outcome_2 + ' Returns_2 ' + str(ticker_return_2)
-        
-    #     plt.title(t)
-    #     ax[0].legend(loc='upper left')
-        
-    #     xfmt = mpl.dates.DateFormatter('%H:%M')
-    #     ax[1].xaxis.set_major_locator(mpl.dates.HourLocator(interval=3))
-    #     ax[1].xaxis.set_major_formatter(xfmt)
-    #     ax[1].xaxis.set_minor_locator(mpl.dates.HourLocator(interval=1))
-    #     ax[1].xaxis.set_minor_formatter(xfmt)
-    #     ax[1].get_xaxis().set_tick_params(which='major', pad=25)
-        
-    #     fig.autofmt_xdate()
-        
-    #     return plt.show()
+   
     
         
     def plot_fips(self, gains, gains_2,new_new_gain):
@@ -384,7 +340,7 @@ class Plots:
         plt.bar(index + bar_width, grouped_data['loss'], bar_width, label='loss', align='center')
     
         plt.xlabel('pm_float_rotations_group')
-        plt.ylabel('Number Of Trades')
+        plt.ylabel('win_percentage')
         plt.title('Profit and Loss by pm_float_rotations Group')
         plt.xticks(index + bar_width / 2, grouped_data.index)
     
@@ -425,8 +381,52 @@ class Plots:
         plt.bar(index + bar_width, grouped_data['loss'], bar_width, label='loss', align='center')
     
         plt.xlabel('open_price_group')
-        plt.ylabel('Number Of Trades')
+        plt.ylabel('win_percentage')
         plt.title('Open price to Profit/Loss')
+        plt.xticks(index + bar_width / 2, grouped_data.index)
+    
+        # Adding winning percentage above each group with adjusted positioning and font size
+        for i, win_percentage in enumerate(grouped_data['win_percentage']):
+            bar_x = index[i] + bar_width / 2
+            bar_y = max(grouped_data['profit_win'][i], grouped_data['loss'][i]) + 10  # Adjust the positioning as needed
+            plt.text(bar_x, bar_y, f'Win %: {win_percentage:.2f}%', ha='center', fontsize=8)
+    
+        # Plotting a line for the winning percentages
+        plt.plot(index + bar_width / 2, grouped_data['win_percentage'], marker='o', color='r', linestyle='--')
+    
+        plt.legend()
+        plt.tight_layout()
+        plt.show()
+        
+    def plot_by_marketcap(self,  data):
+    
+       
+
+        # Grouping ranges for pm_float_rotations
+        ranges = [0, 1000000,2000000, 3000000, 4000000, 8000000, 16000000, 32000000, 100000000, 500000000, 1000000000, 5000000000, float('inf')]
+        labels = ['0', '1', '2', '3',  '4',    '8',      '16',     '32',    '100',     '500',     '1000',  '5000']
+    
+        # Grouping and aggregating data
+        data['market_cap'] = pd.cut(data['market_cap'], ranges, labels=labels)
+        grouped_data = data.groupby('market_cap').sum()[['profit_win', 'loss']]
+    
+        # Calculate winning percentage
+        grouped_data['win_percentage'] = grouped_data['profit_win'] / (
+                    grouped_data['profit_win'] + grouped_data['loss']) * 100
+    
+        # Set a larger figure size
+        plt.figure(figsize=(10, 6))
+    
+        # Plotting the bar graph
+        bar_width = 0.4  # Adjust the bar width as needed
+        index = np.arange(len(grouped_data))
+    
+        plt.bar(index, grouped_data['profit_win'], bar_width, label='profit_win', align='center')
+        plt.bar(index + bar_width, grouped_data['loss'], bar_width, label='loss', align='center')
+    
+        plt.xlabel('mmkt cap groups')
+        plt.ylabel('win_percentage')
+        plt.title('mmkt cap groups to Profit/Loss')
         plt.xticks(index + bar_width / 2, grouped_data.index)
     
         # Adding winning percentage above each group with adjusted positioning and font size

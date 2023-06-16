@@ -158,6 +158,10 @@ class Backtester():
         percent_from_pmh_on_2 = active_value["percent_from_pmh_on_2"]
         per_pmh_val_2 = active_value["per_pmh_val_2"]
         
+        country_filter_on = active_value["country_filter_on"]
+        country = active_value["country"]
+        
+        
         
         if sharesfloat_on == 1:
             print('float_share_between:', sharesfloat_min, sharesfloat_max)
@@ -308,7 +312,9 @@ class Backtester():
                 if last_close_change_on_2 == 1:
                     df = indc.last_close_change_2(df, last_close, last_close_per_2)
                 if percent_from_pmh_on_2 ==1:
-                    df = indc.percent_from_pmh_2(df, date, per_pmh_val_2)
+                    df = indc.percent_from_pmh_2(df, date, per_pmh_val_2)    
+                if country_filter_on ==1:
+                    df = indc.country_filter(df, country)
                 df['trade_sig'] = np.nan
                 df['trade_sig_2'] = np.nan
                 df['cover_sig'] = np.nan
@@ -465,6 +471,10 @@ class Backtester():
                         is_from_pmh_test_2 = ohlc_intraday[date, ticker]["from_pmh_test_2"][i]
                     else:
                         is_from_pmh_test_2 = True
+                    if country_filter_on == 1:
+                        is_country_filter_on = ohlc_intraday[date, ticker]["country_filter"][i]
+                    else:
+                        is_country_filter_on = True
                     ########################################################
                     # Conditions to open a long trade
                     ########################################################
@@ -493,6 +503,7 @@ class Backtester():
                         is_drop_acquistions == True and
                         is_from_pmh_test == True and
                         is_buy_locate_condition == True and
+                        is_country_filter_on == True and
                         open_price == 0
                     ):
                         trade_count += 1
@@ -544,6 +555,7 @@ class Backtester():
                         is_drop_acquistions == True and
                         is_from_pmh_test == True and
                         is_buy_locate_condition == True and
+                        is_country_filter_on == True and
                         open_price == 0
                     ):
                         system_1_not_trade = False
@@ -869,7 +881,7 @@ class Backtester():
                                 close_price == 0 
                                 ):
                                 timestamp_time = ohlc_intraday[date, ticker].index[i].time()
-                                given_time = datetime.strptime(time_open_stop_time, "%H:%M:%S").time()
+                                given_time = datetime.strptime(time_vwap_stop_time, "%H:%M:%S").time()
                                 
                                 
                                 if (
@@ -884,8 +896,8 @@ class Backtester():
                                     ticker_return = open_price_slippage - close_price_slippage
                                     date_stats[date][ticker] = ticker_return
                                     outcome = 'time_vwap_stop'
-                                    print('Sell time_vwap_stop hit',ticker, ' Price',close_price)
-                                    print('Ticker return', ticker_return) 
+                                    # print('Sell time_vwap_stop hit',ticker, ' Price',close_price)
+                                    # print('Ticker return', ticker_return) 
                                 
                         
                     

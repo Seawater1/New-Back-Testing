@@ -13,6 +13,20 @@ import math
 class Indicators:
     def __init__(self):
         pass
+ 
+    def country_filter(self, df, country_china):
+        print(country_list)
+        print(df['country'])
+        df['country_filter'] = True
+        df.loc[df['country'].notnull(), 'country_filter'] = df.loc[df['country'].notnull(), 'country'].apply(lambda x: x.lower() if isinstance(x, str) else '') != country_china.lower()
+        print(df['country_filter'])
+        return df
+
+
+
+
+
+
 
     def float_share_between(self, df, sharesfloat_min, sharesfloat_max):
         mask = ((df['shares_float'].isna()) | (df['shares_float'] >= sharesfloat_min)) & ((df['shares_float'].isna()) | (df['shares_float'] <= sharesfloat_max))

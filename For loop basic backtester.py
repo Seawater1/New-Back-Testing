@@ -12,11 +12,11 @@ start_time = time.time()
 
 
 default_parms = {
-    'mac': [1],
+    'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2023-01-01'], # YYYY-MM-DD Maintickerdatabase starts 2021-04-11 DownloadAll '2021-10-01'
-    'end_date': ['2023-06-15'],
+    'start_date': ['2021-10-01'], # YYYY-MM-DD DownloadAll '2021-10-01'
+    'end_date': ['2023-06-16'],
     
     # Scanner Settings 
     'volume_min': [-999999],
@@ -40,7 +40,7 @@ default_parms = {
     # System settings
     "longshort": ["short"],  # 'long' or 'short'
     # Plots
-    "plot": [1],  # 1 to plot on
+    "plot": [0],  # 1 to plot on
     "plot_trades_only": [1],
     "save_winners_df": [0],
     # Starting balance
@@ -78,9 +78,9 @@ default_parms = {
     "time_open_stop_per": [0], 
     "time_open_stop_time": ["10:00:00"],#"11:00:00","12:00:00","13:00:00","14:00:00","15:00:00"],
     
-    "time_vwap_stop_on": [1],
+    "time_vwap_stop_on": [0],
     "time_vwap_stop_per": [0], 
-    "time_vwap_stop_time": ["11:00:00"],
+    "time_vwap_stop_time": ["10:00:00"],#,"11:00:00","12:00:00","13:00:00","14:00:00","15:00:00"],
     
     
     "vwap_stop_on":[0],
@@ -105,8 +105,8 @@ default_parms = {
     "market_cap_max": [9999999999999999],
     # for both strategys
     "price_between_on": [1],
-    "min_between_price": [1.5],#2.5 looks like there is edge sub $1
-    "max_between_price": [25],
+    "min_between_price": [2.5],#2.5 looks like there is edge sub $1
+    "max_between_price": [20],
 
     "buytime_on": [0],
     "buy_time": ["09:30:00"],
@@ -156,6 +156,9 @@ default_parms = {
     "pm_greater_than_day_on": [0],
     "st_close_lessthan_on": [0],  # Long
     "st_close_greaterthan_on": [0],  # short
+    
+    "country_filter_on": [1],
+    "country_china": ["China"],
 
 
     # System 2--------------------------------
