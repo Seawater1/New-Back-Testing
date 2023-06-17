@@ -15,7 +15,7 @@ default_parms = {
     'mac': [1],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2021-10-01'], # YYYY-MM-DD 2010-04-01 DownloadAll '2021-10-01'
+    'start_date': ['2023-01-01'], # YYYY-MM-DD 2010-04-01 DownloadAll '2021-10-01'
     'end_date': ['2023-06-16'],
     
     # Scanner Settings 
@@ -40,7 +40,7 @@ default_parms = {
     # System settings
     "longshort": ["short"],  # 'long' or 'short'
     # Plots
-    "plot": [0],  # 1 to plot on
+    "plot": [1],  # 1 to plot on
     "plot_trades_only": [1],
     "save_winners_df": [0],
     # Starting balance
@@ -147,7 +147,7 @@ default_parms = {
     "open_greater_vwap_push": [.5],
 
     "last_close_change_on": [1],
-    "last_close_per": [.5],
+    "last_close_per": [.6],
 
     "percent_from_pmh_on": [0],
     "per_pmh_val": [0.3],
