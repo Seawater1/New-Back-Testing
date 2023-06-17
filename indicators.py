@@ -7,7 +7,7 @@ Created on Wed Mar 15 19:28:33 2023
 """
 import pandas as pd
 import numpy as np
-import math
+
 
 
 class Indicators:
@@ -15,11 +15,10 @@ class Indicators:
         pass
  
     def country_filter(self, df, country_china):
-        print(country_list)
-        print(df['country'])
+ 
         df['country_filter'] = True
         df.loc[df['country'].notnull(), 'country_filter'] = df.loc[df['country'].notnull(), 'country'].apply(lambda x: x.lower() if isinstance(x, str) else '') != country_china.lower()
-        print(df['country_filter'])
+ 
         return df
 
 

@@ -114,6 +114,7 @@ class Plots:
         return plt.show()
     
     def plot_results(self,results_store):
+        # print(results_store['balance_no_fee'])
         fig, ax = plt.subplots(figsize=(15,10), dpi=150)#?
         results_store.plot(x='date',  y=['balance', 'balance_no_fee'], color=['red', 'blue'],ax=ax,linewidth=0.25)
         

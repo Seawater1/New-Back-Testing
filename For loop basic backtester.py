@@ -12,10 +12,10 @@ start_time = time.time()
 
 
 default_parms = {
-    'mac': [0],
+    'mac': [1],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2021-10-01'], # YYYY-MM-DD DownloadAll '2021-10-01'
+    'start_date': ['2021-10-01'], # YYYY-MM-DD 2010-04-01 DownloadAll '2021-10-01'
     'end_date': ['2023-06-16'],
     
     # Scanner Settings 
@@ -72,7 +72,7 @@ default_parms = {
     "trip_comm": [2],  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.15],  # percent percent away from open pricee/ .001 is to small dont get even
+    "close_stop": [.1],  # percent percent away from open pricee/ .001 is to small dont get even
     
     "time_open_stop_on": [0],
     "time_open_stop_per": [0], 
@@ -97,7 +97,7 @@ default_parms = {
     
     "supertrend_on":[0],
     
-    "sharesfloat_on": [1],
+    "sharesfloat_on": [0],
     "sharesfloat_min": [1000000],
     "sharesfloat_max": [9999999999],
     "market_cap_on": [0],
@@ -113,7 +113,7 @@ default_parms = {
 
     "buylocatecondition_on": [0],
     "buy_locate_time": ["08:30:00"],
-    "last_close_per_locate": [.5,],
+    "last_close_per_locate": [.5],
 
     "selltime_on": [1],
     "sell_time": ['15:59:00'],
@@ -127,7 +127,7 @@ default_parms = {
     "pm_volume_sum_cal_on": [0],
     "pm_volume_sum_greaterthat": [1000000],
     
-    "pm_float_rotations_on": [1],
+    "pm_float_rotations_on": [0],
     "max_pm_float_rotations_on": [0],
     "max_pm_float_rotations": [9999999999999999999999999999999999999],
    

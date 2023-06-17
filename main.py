@@ -159,7 +159,7 @@ class Backtester():
         per_pmh_val_2 = active_value["per_pmh_val_2"]
         
         country_filter_on = active_value["country_filter_on"]
-        country = active_value["country"]
+        country_china = active_value["country_china"]
         
         
         
@@ -314,7 +314,7 @@ class Backtester():
                 if percent_from_pmh_on_2 ==1:
                     df = indc.percent_from_pmh_2(df, date, per_pmh_val_2)    
                 if country_filter_on ==1:
-                    df = indc.country_filter(df, country)
+                    df = indc.country_filter(df, country_china)
                 df['trade_sig'] = np.nan
                 df['trade_sig_2'] = np.nan
                 df['cover_sig'] = np.nan
