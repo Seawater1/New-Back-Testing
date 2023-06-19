@@ -71,14 +71,14 @@ class Load_date():
         # Load file of tickers and date
         df = pd.read_csv(file_path, index_col=0)
         df['Date'] = pd.to_datetime(df['Date'], format='%Y-%m-%d') #format='%d/%m/%y'
-        print('Ticker Database no filter',df)
+        # print('Ticker Database no filter',df)
         
         #Filter by dates
         if filter_by_dates_on == 1:
             # print('Flitering by dates -----------------------------------------------------------------------------------------------')
             date_filter = (df['Date'] >= start_date) & (df['Date'] <= end_date )
             df = df.loc[date_filter]
-            print('DF filtered by Date', df)
+            # print('DF filtered by Date', df)
         # Split insample and out of sample
         if insample_per_on == 1: 
             print('split %',split_per)
@@ -119,8 +119,8 @@ class Load_date():
                         (df['Pre-market Gap %'] >= Pre_market_Gap) |
                         (df['Change from Open %'] >= Change_from_Open) |
                         (df['Change %'] >= Change_per)]
-            print('All Gap filters')
-            print(df)
+            # print('All Gap filters')
+            # print(df)
         
         if main_or_all == 'main':                                    
              df = df.loc[(df['Volume'] > volume_min) &

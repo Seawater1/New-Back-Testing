@@ -189,6 +189,10 @@ class Backtester():
             print('per_change_first_tick:', precent_greater)
         if per_change_open_on == 1 or per_change_open_on_2 == 1:
             print('per_change_open 1 or two is on?:', open_greater)
+        if close_stop_on ==1:
+            print('close_stop',close_stop)
+            
+            
         
         
         if vwap_above_on == 1:

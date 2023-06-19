@@ -15,7 +15,7 @@ default_parms = {
     'mac': [0],
     'main_or_all': ['all'],
     'filter_by_dates_on': [1],
-    'start_date': ['2023-01-01'], # YYYY-MM-DD 2010-04-01 DownloadAll '2021-10-01'
+    'start_date': ['2021-06-01'], # YYYY-MM-DD 2010-04-01 DownloadAll '2021-10-01'
     'end_date': ['2023-06-16'],
     
     # Scanner Settings 
@@ -50,12 +50,12 @@ default_parms = {
     "risk_acc": [0.01],  # 0.01
     "max_risk": [100],  # set low to prevent compounding#???
     # Locate fees
-    "locate_fee": [0.01],  # set locate fee %default
-    "locate_cost_per_on": [1],
+    "locate_fee": [0.0],  # 0.01  set locate fee %default
+    "locate_cost_per_on": [0],#1
     "max_locate_per_price": [0.01],  # variable depending on share price % if above on
     # Slippage
-    "open_slippage": [0.01],
-    "close_slippage": [0.01],
+    "open_slippage": [0.0],# 0.01
+    "close_slippage": [0.0],# 0.01
     # Indicator Settings
     # Super T setting
     "lookback": [10],
@@ -69,10 +69,10 @@ default_parms = {
     "aq_value": [0.02],
     # Testing Settings
     # Commissions
-    "trip_comm": [2],  # round trip commission
+    "trip_comm": [0],#2  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.01,.02,.03,.05,.07,.1],  # percent percent away from open pricee/ .001 is to small dont get even
+    "close_stop": [.1,.5,1.5,2,3],  # percent percent away from open pricee/ .001 is to small dont get even
     
     "time_open_stop_on": [0],
     "time_open_stop_per": [0], 
@@ -116,7 +116,7 @@ default_parms = {
     "last_close_per_locate": [.5],
 
     "selltime_on": [1],
-    "sell_time": ['15:59:00'],
+    "sell_time": ['15:59:00'],#'15:59:00'
 
     "buy_between_time_on": [1],
     "buy_after": ["09:29:00"],
