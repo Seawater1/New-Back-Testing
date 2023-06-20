@@ -1,3 +1,5 @@
+
+
 from main import Backtester
 
 
@@ -47,8 +49,8 @@ default_parms = {
     "full_balance": [0],
     "imaginary_account": [10000],
     # Percent of account to risk
-    "risk_acc": [0.25],  # 0.01
-    "max_risk": [2500],  # set low to prevent compounding#???
+    "risk_acc": [0.10],  # 0.01
+    "max_risk": [1000],  # set low to prevent compounding#???
     # Locate fees
     "locate_fee": [0.01],  # 0.01  set locate fee %default
     "locate_cost_per_on": [1],#1
@@ -72,7 +74,7 @@ default_parms = {
     "trip_comm": [1],#2  # round trip commission
     # Stop loss percent from trade price
     "close_stop_on": [1],
-    "close_stop": [.15],  # percent percent away from open pricee/ .001 is to small dont get even
+    "close_stop": [.5],  # percent percent away from open pricee/ .001 is to small dont get even
     
     "time_open_stop_on": [0],
     "time_open_stop_per": [0], 
@@ -90,7 +92,7 @@ default_parms = {
     # Pre-market high stop
     "pre_market_h_stop_on": [0],
     # Trailing stop
-    "trail_stop_on": [1],
+    "trail_stop_on": [0],
     "min_reward_then_let_it_run": [2],
     "reward": [4],  # times the close_stop - 1 R for trailstop
     "trail_stop_per": [.03],  #.03,.06,.1 if this is greater than close_stop it affects R
